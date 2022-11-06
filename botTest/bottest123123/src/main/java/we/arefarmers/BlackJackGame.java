@@ -11,35 +11,33 @@ public class BlackJackGame{
   private Deck deck;
   private static final int MAXBET = 500, MINBET = 2;
 
-  public BlackJackGame(Deck deck, int numPlayers){
+  public BlackJackGame(Deck deck){
         this.deck = deck;
-        playBlackJack(numPlayers);
+        playBlackJack();
   }
   
-  public void playBlackJack(int numPlayers) {
+  public void playBlackJack() {
     String choice;
     
-    //System.out.print("How many players are playing? ");
+    System.out.print("How many players are playing? ");
     
     
-    //do{
-      //choice = input.nextLine();
-      //try{
-        //if(Integer.parseInt(choice) < 1){
+    do{
+      choice = input.nextLine();
+      try{
+        if(Integer.parseInt(choice) < 1){
           System.out.print("Invalid Response.\nPlease reenter response: ");
-        //} else{
-          for(int i = 0; i < numPlayers; i++){
-            //System.out.format("Player %s, what is your name? ", i+1);
-            //tempPlayer = new BlackJackPlayer(input.nextLine());
-            System.out.print("Player " + (i+1) + ", please identify yourself with /me");
-            tempPlayer = new BlackJackPlayer(); //add something that waits for a person the type /me in the same channel
+        } else{
+          for(int i = 0; i < Integer.parseInt(choice); i++){
+            System.out.format("Player %s, what is your name? ", i+1);
+            tempPlayer = new BlackJackPlayer(input.nextLine());
             players.add(tempPlayer);
           }
-        //} 
-      //} catch(Exception e){
+        } 
+      } catch(Exception e){
         System.out.print("Invalid Response.\nPlease reenter response: ");
-      //}
-    //} while(players.isEmpty());
+      }
+    } while(players.isEmpty());
 
     do{
       

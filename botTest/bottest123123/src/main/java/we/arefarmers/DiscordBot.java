@@ -20,14 +20,10 @@ public class DiscordBot
     public static void main( String[] args ) throws LoginException, InterruptedException
     {
 
-        bot = JDABuilder.createDefault("MTAzODg2MzI4MDIzMzUxMzAyMQ.GLvQMf.G1ZEPpix5LqUT6spJQL4XlRDrb5wlGzgEY64dQ")
+        bot = JDABuilder.createDefault("")
         .setActivity(Activity.playing("with your mom"))
         .addEventListeners(new Listeners(), new CommandManager())
         .build();
-        //new BlackJackGame(new Deck());
-        while(true){
-            
-        }
     }
 
     //add playBlackJack method for event listeners

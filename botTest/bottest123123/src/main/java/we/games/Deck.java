@@ -1,5 +1,5 @@
 
-package we.arefarmers;
+package we.games;
 
 import java.util.ArrayList;
 import java.util.Collections;

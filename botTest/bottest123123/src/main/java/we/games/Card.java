@@ -1,4 +1,4 @@
-package we.arefarmers;
+package we.games;
 
 public class Card {
   private int suit = -1;

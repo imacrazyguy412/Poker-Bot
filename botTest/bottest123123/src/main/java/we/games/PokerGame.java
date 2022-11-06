@@ -1,4 +1,4 @@
-package we.arefarmers;
+package we.games;
 
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ public class PokerGame {
   //private int currentSidePot = 0;
   //there will be multiple possible pots. pots[0] will always be the main pot while other pots in the array will be side pots
 
-  private Scanner input = new Scanner(System.in);
+  //private Scanner input = new Scanner(System.in);
   private Deck pokerDeck = new Deck();
   private ArrayList<PokerPlayer> players = new ArrayList<PokerPlayer>();
   private ArrayList<Card> communityCards = new ArrayList<Card>();
@@ -21,12 +21,16 @@ public class PokerGame {
 
   }
 
-  private static void setTable(){
+  private void setTable(){
     System.out.print("How many players are there");
     int numPlayers;
     //try{
        // numPlayers = input.nextInt(); //fix or something
    // }
+    
+  }
+
+  private static void getHandStrength(){
     
   }
 }

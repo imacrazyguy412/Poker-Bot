@@ -1,4 +1,4 @@
-package we.arefarmers;
+package we.games;
 
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class BlackJackGame{
     
     System.out.print("How many players are playing? ");
     
-    
+    //fix all of this to work as a discord bot
     do{
       choice = input.nextLine();
       try{

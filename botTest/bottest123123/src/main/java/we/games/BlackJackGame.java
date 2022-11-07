@@ -1,7 +1,12 @@
 package we.games;
 
 import java.util.Scanner;
+
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import we.arefarmers.DiscordBot;
+
 import java.util.ArrayList;
+
 
 public class BlackJackGame{
   private Scanner input = new Scanner(System.in);
@@ -11,17 +16,18 @@ public class BlackJackGame{
   private Deck deck;
   private static final int MAXBET = 500, MINBET = 2;
 
-  public BlackJackGame(Deck deck){
-        this.deck = deck;
-        playBlackJack();
+  public BlackJackGame(int numPlayers, MessageChannel channel){
+    playBlackJack(numPlayers, channel);
   }
   
-  public void playBlackJack() {
+  public void playBlackJack(int numPlayers, MessageChannel channel) {
+    deck = new Deck();
     String choice;
     
-    System.out.print("How many players are playing? ");
+    /*System.out.print("How many players are playing? ");
     
     //fix all of this to work as a discord bot
+    //nvm, just rewrite it or something
     do{
       choice = input.nextLine();
       try{
@@ -37,7 +43,13 @@ public class BlackJackGame{
       } catch(Exception e){
         System.out.print("Invalid Response.\nPlease reenter response: ");
       }
-    } while(players.isEmpty());
+    } while(players.isEmpty());*/
+
+    for(int i = 0; i < numPlayers; i++){
+      System.out.print("Player " + (i+1) + ", what is your name? ");
+      tempPlayer = new BlackJackPlayer(input.nextLine());
+      players.add(tempPlayer);
+    }
 
     do{
       
@@ -166,6 +178,8 @@ public class BlackJackGame{
       //SHOULD (keyword should) clear the screen of text
     } while(playersArePlaying());
     input.close();
+
+    DiscordBot.message("Ending BlackJack Game", channel); //no idea if this is right
   }
 
   public void playerTurn(BlackJackPlayer p){

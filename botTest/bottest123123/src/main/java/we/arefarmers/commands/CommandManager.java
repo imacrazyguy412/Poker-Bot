@@ -1,6 +1,8 @@
 package we.arefarmers.commands;
 
-import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+//import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -9,12 +11,14 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import we.games.BlackJackGame;
 
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import we.games.*;
 
 
 
@@ -42,7 +46,13 @@ public class CommandManager extends ListenerAdapter {
                 break;
 
             case "playblackjack":
-                event.reply("Currently unavailable because we are incompetent").setEphemeral(true).queue();
+                //event.reply("Currently unavailable because we are incompetent").setEphemeral(true).queue();
+                
+                OptionMapping amount = event.getOption("amount");
+                int numPlayers = amount.getAsInt();
+                event.reply("Starting BlackJack").queue();
+                MessageChannel blackJackChannel = event.getChannel();
+                new BlackJackGame(numPlayers, blackJackChannel);
                 break;
 
         }
@@ -54,11 +64,15 @@ public class CommandManager extends ListenerAdapter {
     public void onGuildReady(@NotNull GuildReadyEvent event) {
         List<CommandData> commandData = new ArrayList<>();
         commandData.add(Commands.slash("welcome", "Get welcomed by the bot"));
-        commandData.add(Commands.slash("playblackjack", "Play BlackJack"));
+        
 
         //test
         OptionData option1 = new OptionData(OptionType.STRING, "mom", "The name of ur mom");
         commandData.add(Commands.slash("urmom", "tf bro").addOptions(option1));
+
+        //playblackjack command
+        OptionData numBlackJackPlayers = new OptionData(OptionType.INTEGER, "amount", "The amount of players.", true);
+        commandData.add(Commands.slash("playblackjack", "Play BlackJack").addOptions(numBlackJackPlayers));
 
 
         event.getGuild().updateCommands().addCommands(commandData).queue();

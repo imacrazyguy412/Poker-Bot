@@ -21,7 +21,7 @@ public class DiscordBot
     public static void main( String[] args ) throws LoginException, InterruptedException
     {
 
-        bot = JDABuilder.createDefault("MTAzODg2MzI4MDIzMzUxMzAyMQ.G0vFXd.IOy1VlbS3rHAqkU2UjZCS0azy-lOeiLdnh3L-s")
+        bot = JDABuilder.createDefault("")
         .setActivity(Activity.playing("with your mom"))
         .addEventListeners(new Listeners(), new CommandManager())
         .build();

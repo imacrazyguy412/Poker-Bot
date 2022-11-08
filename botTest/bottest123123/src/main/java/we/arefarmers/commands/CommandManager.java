@@ -48,11 +48,13 @@ public class CommandManager extends ListenerAdapter {
             case "playblackjack":
                 //event.reply("Currently unavailable because we are incompetent").setEphemeral(true).queue();
                 
-                OptionMapping amount = event.getOption("amount");
-                int numPlayers = amount.getAsInt();
+                OptionMapping numBlackJackPlayers = event.getOption("amount");
+                int numPlayers = numBlackJackPlayers.getAsInt();
+                String blackJackStartingPlayerMention = event.getUser().getAsMention(); //Hopefully this works, might not though
+                //if it doesn't, change to getAsTag() instead
                 event.reply("Starting BlackJack").queue();
                 MessageChannel blackJackChannel = event.getChannel();
-                new BlackJackGame(numPlayers, blackJackChannel);
+                new BlackJackGame(numPlayers, blackJackChannel, blackJackStartingPlayerMention);
                 break;
 
         }

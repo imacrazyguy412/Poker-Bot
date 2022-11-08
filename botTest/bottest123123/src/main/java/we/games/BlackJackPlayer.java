@@ -6,7 +6,7 @@ public class BlackJackPlayer{
   private int points;
   private int bet;
   private int score;
-  private boolean isBust, isStood;
+  private boolean isBust, isStood, hasJustJoined;
   private ArrayList<Card> hand = new ArrayList<Card>();
   private ArrayList<Card> splitHand = new ArrayList<Card>();
   private int splitHandScore;
@@ -20,6 +20,12 @@ public class BlackJackPlayer{
   public BlackJackPlayer(String n){
     points = 1000;
     name = n;
+  }
+
+  public BlackJackPlayer(String n, boolean j){
+    points = 1000;
+    name = n;
+    hasJustJoined = j;
   }
 
   public Card getCard(int i){
@@ -172,4 +178,15 @@ public class BlackJackPlayer{
     splitHandIsBust = false;
     splitHandIsStood = false;
   }
+
+  //these two methods are kinda stupid, but if it works... (it probably wont)
+  public boolean hasJustJoined(){
+    return hasJustJoined;
+  }
+
+  public void setJoined(boolean j){
+    hasJustJoined = j;
+  }
+
+
 }

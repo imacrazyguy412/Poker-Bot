@@ -15,35 +15,16 @@ public class BlackJackGame{
   private BlackJackPlayer dealer = new BlackJackPlayer();
   private Deck deck;
   private static final int MAXBET = 500, MINBET = 2;
+  private MessageChannel channel;
 
-  public BlackJackGame(int numPlayers, MessageChannel channel){
-    playBlackJack(numPlayers, channel);
+  public BlackJackGame(int numPlayers, MessageChannel channel, String startingPlayerNameMention){
+    playBlackJack(numPlayers);
+    this.channel = channel; //might work, not sure.
   }
   
-  public void playBlackJack(int numPlayers, MessageChannel channel) {
+  public void playBlackJack(int numPlayers) {
     deck = new Deck();
     String choice;
-    
-    /*System.out.print("How many players are playing? ");
-    
-    //fix all of this to work as a discord bot
-    //nvm, just rewrite it or something
-    do{
-      choice = input.nextLine();
-      try{
-        if(Integer.parseInt(choice) < 1){
-          System.out.print("Invalid Response.\nPlease reenter response: ");
-        } else{
-          for(int i = 0; i < Integer.parseInt(choice); i++){
-            System.out.format("Player %s, what is your name? ", i+1);
-            tempPlayer = new BlackJackPlayer(input.nextLine());
-            players.add(tempPlayer);
-          }
-        } 
-      } catch(Exception e){
-        System.out.print("Invalid Response.\nPlease reenter response: ");
-      }
-    } while(players.isEmpty());*/
 
     for(int i = 0; i < numPlayers; i++){
       System.out.print("Player " + (i+1) + ", what is your name? ");
@@ -52,8 +33,9 @@ public class BlackJackGame{
     }
 
     do{
-      
-      
+
+
+      /*Old Code, rewriting
       deck = new Deck();
       deck.shuffle();
       
@@ -83,11 +65,11 @@ public class BlackJackGame{
       System.out.println();
 
       for(int i = 0; i < players.size(); i++){
-        try{
-          Thread.sleep(1400);
-        }catch(Exception e){
-          System.out.print("Error");
-        }
+        //try{
+          //Thread.sleep(1400);
+        //}catch(Exception e){
+          //System.out.print("Error");
+        //}
         
         players.get(i).addCard(deck.dealTopCard());
         players.get(i).addCard(deck.dealTopCard());
@@ -97,11 +79,11 @@ public class BlackJackGame{
 
         
       }
-      try{
-          Thread.sleep(1700);
-        } catch(Exception e){
-          System.out.println("Error");
-        }
+        //try{
+          //Thread.sleep(1700);
+        //} catch(Exception e){
+          //System.out.println("Error");
+        //}
   
       if(dealer.getCard(1).getFace() == 1){
         System.out.println("The dealer is showing an ace.");
@@ -123,11 +105,11 @@ public class BlackJackGame{
         }
         if(dealer.getScore() != 21){
           System.out.println("Dealer does not have black jack.\n");
-          try{
-            Thread.sleep(1700);
-          } catch(Exception e){
-            System.out.println("I don't even know how this one happened");
-          }
+          //try{
+            //Thread.sleep(1700);
+          //} catch(Exception e){
+            //System.out.println("I don't even know how this one happened");
+          //}
         }
       }
   
@@ -150,11 +132,11 @@ public class BlackJackGame{
           if(players.get(i).getScore() == 21){
             System.out.println("Blackjack! " + players.get(i).getName() + "'s bet is payed 3:2");
             players.get(i).blackJack();
-            try{
-              Thread.sleep(4000);
-            } catch(Exception e){
-              System.out.println("The door's righ- wait this is a console of text.");
-            }
+            //try{
+              //Thread.sleep(4000);
+            //} catch(Exception e){
+              //System.out.println("The door's righ- wait this is a console of text.");
+            //}
           } else{
             playerTurn(players.get(i));
           }
@@ -169,17 +151,19 @@ public class BlackJackGame{
       dealer.clearHand();
       //clears every player's hand, including the dealer's
 
-      try{
-        Thread.sleep(7777);
+      //try{
+        //Thread.sleep(7777);
         //There is absolutly nothing significant with this number
-      } catch(Exception e){
-        System.out.println("Error");
-      }
-      //SHOULD (keyword should) clear the screen of text
+      //} catch(Exception e){
+        //System.out.println("Error");
+      //}
+      */
+    
     } while(playersArePlaying());
     input.close();
 
     DiscordBot.message("Ending BlackJack Game", channel); //no idea if this is right
+    //ok cool it is right
   }
 
   public void playerTurn(BlackJackPlayer p){
@@ -199,7 +183,8 @@ public class BlackJackGame{
           printHand(players.get(i).getSplitHand());
         }
       }
-      //Clears the console and pronts all players current hands. Just here for cleanliness
+      //Clears the console and prints all players current hands. Just here for cleanliness
+      //doesnt clear the console anymore, just for ugliness (and also because its a discord bot)
       
       if(p.isPlaying()){
         System.out.println(p.getName() + "'s turn with " + p.getScore() + " and " + p.getPoints() + " points. What would you like to do?\nEnter w to hit\nEnter s to stand\nEnter d to double down\nEnter a to split\n");
@@ -219,24 +204,7 @@ public class BlackJackGame{
       switch(choice){
         case "w":
         case "hit":
-
-          if(p.isPlaying()){
-            p.addCard(deck.dealTopCard());
-            System.out.println("Your cards:");
-            printHand(p.getHand());
-            
-            if(p.getScore() > 21){
-              System.out.println("Bust with " + p.getScore());
-            }
-          } else if(p.splitHandIsPlaying()){
-            p.addCardSplit(deck.dealTopCard());
-            System.out.println("Your cards:");
-            printHand(p.getSplitHand());
-
-            if(p.getSplitScore() > 21){
-              System.out.println("Bust with " + p.getSplitScore());
-            }
-          }
+          hit(p);
           break;
 
         case "s":
@@ -307,31 +275,35 @@ public class BlackJackGame{
         default:
           System.out.println("That is not an option");
       }
+      
 
-      if(!(choice.equals("stand") || choice.equals("s"))){
-        try{
-          Thread.sleep(3000);
-        } catch(Exception e){
-          System.out.println("whatever you did, don't");
-        }
-      }
+      //if the player stands, the program will wait a bit?
+      //idk I wrote this code when I was dumb and Im still dumb
+      //if(!(choice.equals("stand") || choice.equals("s"))){
+        //try{
+          //Thread.sleep(3000);
+        //} catch(Exception e){
+          //System.out.println("whatever you did, don't");
+        //}
+      //}
+      //except also im removing this until we do the multi threading thing
       
     } while(p.isPlaying() || p.splitHandIsPlaying());
   }
 
   public void dealerTurn(){
     
-    try{
+    //try{
       while(dealer.getScore() < 17){
         System.out.println("Dealers hand");
         printHand(dealer.getHand());
         //System.out.println(dealer.getScore());
         dealer.addCard(deck.dealTopCard());
-        Thread.sleep(1700);
+        //Thread.sleep(1700);
       }
-    } catch(Exception e){
-      System.out.println("Geor- I mean Sean");
-    }
+    //} catch(Exception e){
+      //System.out.println("Geor- I mean Sean");
+    //}
     /*
     try{
       Thread.sleep(1700);
@@ -339,6 +311,7 @@ public class BlackJackGame{
       System.out.println("Error");
     }
     */
+    //DEFINITLY re-add a wait between the dealer drawing cards. It is increadible anticlimatic otherwise
     System.out.println("Dealers hand:");
     printHand(dealer.getHand());
     if(dealer.getScore() > 21){
@@ -421,5 +394,75 @@ public class BlackJackGame{
     }
     return true;
     
+  }
+
+  public void hit(BlackJackPlayer p){
+    if(p.isPlaying()){
+      p.addCard(deck.dealTopCard());
+      //System.out.println("Your cards:");
+      printHand(p.getHand());
+      
+      if(p.getScore() > 21){
+        //System.out.println("Bust with " + p.getScore());
+      }
+    } else if(p.splitHandIsPlaying()){
+      p.addCardSplit(deck.dealTopCard());
+      //System.out.println("Your cards:");
+      printHand(p.getSplitHand());
+
+      if(p.getSplitScore() > 21){
+        //System.out.println("Bust with " + p.getSplitScore());
+      }
+    }
+  }
+
+  public void setTable(){
+    clearPlayersHands();
+    //clears at the beginning of the game. might move to the end
+
+    clearHasJoinedStatus();
+
+    deck = new Deck();
+    deck.shuffle();
+    //shuffles the deck
+
+    dealer.addCard(deck.dealTopCard());
+    dealer.addCard(deck.dealTopCard());
+    //deals the dealer their 2 cards
+
+    for(int i = 0; i < players.size(); i++){
+      players.get(i).addCard(deck.dealTopCard());
+      players.get(i).addCard(deck.dealTopCard());
+    }
+    //deals the players their 2 cards
+  }
+
+  public void clearPlayersHands(){
+    for(int i = 0; i < players.size(); i++){
+      players.get(i).clearHand();
+    }
+  }
+
+  public void betting(){
+    String name;
+    for(int i = 0; i < players.size(); i++){
+      name = players.get(i).getName();
+
+      DiscordBot.message(name + ", make your bet.", channel);
+      //don't know how we will get the bot to listen to massages in here.
+      //we could have a /bet command in CommandManaager maybe?
+      //idk
+    }
+  }
+
+  public void join(String n){
+    tempPlayer = new BlackJackPlayer(n, true);
+    players.add(tempPlayer);
+  }
+
+  public void clearHasJoinedStatus(){
+    for(int i = 0; i < players.size(); i++){
+      players.get(i).setJoined(false);
+    }
   }
 }

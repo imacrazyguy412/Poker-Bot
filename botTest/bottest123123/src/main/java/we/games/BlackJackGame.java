@@ -34,6 +34,8 @@ public class BlackJackGame{
 
     do{
 
+      setTable();
+
 
       /*Old Code, rewriting
       deck = new Deck();
@@ -175,16 +177,7 @@ public class BlackJackGame{
       System.out.println("Unknown\n" + dealer.getCard(1));
       System.out.println();
 
-      for(int i = 0; i < players.size(); i++){
-        System.out.println(players.get(i).getName() + "'s hand:");
-        printHand(players.get(i).getHand());
-        if(!players.get(i).getSplitHand().isEmpty()){
-          System.out.println(players.get(i).getName() + "'s split hand:");
-          printHand(players.get(i).getSplitHand());
-        }
-      }
-      //Clears the console and prints all players current hands. Just here for cleanliness
-      //doesnt clear the console anymore, just for ugliness (and also because its a discord bot)
+      showAllHands();
       
       if(p.isPlaying()){
         System.out.println(p.getName() + "'s turn with " + p.getScore() + " and " + p.getPoints() + " points. What would you like to do?\nEnter w to hit\nEnter s to stand\nEnter d to double down\nEnter a to split\n");
@@ -198,8 +191,9 @@ public class BlackJackGame{
       
       choice = input.nextLine();
       
-      choice = choice.toLowerCase();
+      choice = choice.toLowerCase().replaceAll(" ", "");
       //sets the users choice to lower case so that their choice is registered regardless of capitalization
+      //also clears spaces
 
       switch(choice){
         case "w":
@@ -209,67 +203,19 @@ public class BlackJackGame{
 
         case "s":
         case "stand":
-          if(p.isPlaying()){
-            p.stand();
-          } else if(p.splitHandIsPlaying()){
-            p.splitStand();
-          }
+          stand(p);
           break;
 
         case "a":
         case "split":
-          if(p.splitHandIsPlaying()){
-            System.out.println("You've already split.");
-          } else{
-            if(p.getHand().size() != 2){
-              System.out.println("You can only split on the first turn.");
-            } else if(p.getPoints() < 2*p.getBet()){
-              System.out.println("Not enough points to split.");
-            } else if(p.getCard(0).getFace() == p.getCard(1).getFace()){
-              p.split();
-              p.addCard(deck.dealTopCard());
-              p.addCardSplit(deck.dealTopCard());
-  
-              System.out.println("Your new cards:");
-              printHand(p.getHand());
-              System.out.println("Hand 2:");
-              printHand(p.getSplitHand());
-            } else{
-              System.out.println("Your two cards have to have the same face.");
-            }
-          }
-          
-          
-          
+          split(p);
           break;
 
         case "d":
         case "double":
         case "double down":
         case "doubledown":
-          if(p.splitHandIsPlaying()){
-            System.out.println("You can't double down after splitting.");
-          } else{
-            if(p.getHand().size() != 2){
-              System.out.println("You can only double down on the first turn.");
-            } else if(p.getPoints() < 2*p.getBet()){
-              System.out.println("Not enough points to double bet");
-            } else{
-              p.bet(2*p.getBet());
-              p.addCard(deck.dealTopCard());
-  
-              System.out.println("Your new hand is:");
-              printHand(p.getHand());
-              
-              if(p.getScore() > 21){
-                System.out.println("Bust with " + p.getScore());
-              } else{
-                p.stand();
-              }
-            }
-          }
-          
-          
+          doubleDown(p);
           break;
 
         default:
@@ -416,11 +362,81 @@ public class BlackJackGame{
     }
   }
 
+  public void stand(BlackJackPlayer p){
+    if(p.isPlaying()){
+      p.stand();
+    } else if(p.splitHandIsPlaying()){
+      p.splitStand();
+    }
+  }
+
+  public void split(BlackJackPlayer p){
+    if(p.splitHandIsPlaying()){
+      System.out.println("You've already split.");
+    } else{
+      if(p.getHand().size() != 2){
+        System.out.println("You can only split on the first turn.");
+      } else if(p.getPoints() < 2*p.getBet()){
+        System.out.println("Not enough points to split.");
+      } else if(p.getCard(0).getFace() == p.getCard(1).getFace()){
+        p.split();
+        p.addCard(deck.dealTopCard());
+        p.addCardSplit(deck.dealTopCard());
+
+        System.out.println("Your new cards:");
+        printHand(p.getHand());
+        System.out.println("Hand 2:");
+        printHand(p.getSplitHand());
+      } else{
+        System.out.println("Your two cards have to have the same face.");
+      }
+    }
+  }
+
+  public void doubleDown(BlackJackPlayer p){
+    if(p.splitHandIsPlaying()){
+      System.out.println("You can't double down after splitting.");
+    } else{
+      if(p.getHand().size() != 2){
+        System.out.println("You can only double down on the first turn.");
+      } else if(p.getPoints() < 2*p.getBet()){
+        System.out.println("Not enough points to double bet");
+      } else{
+        p.bet(2*p.getBet());
+        p.addCard(deck.dealTopCard());
+
+        System.out.println("Your new hand is:");
+        printHand(p.getHand());
+        
+        if(p.getScore() > 21){
+          System.out.println("Bust with " + p.getScore());
+        } else{
+          p.stand();
+        }
+      }
+    }
+  }
+
+  public void showAllHands(){
+    for(int i = 0; i < players.size(); i++){
+      System.out.println(players.get(i).getName() + "'s hand:");
+      printHand(players.get(i).getHand());
+      if(!players.get(i).getSplitHand().isEmpty()){
+        System.out.println(players.get(i).getName() + "'s split hand:");
+        printHand(players.get(i).getSplitHand());
+      }
+    }
+    //Clears the console and prints all players current hands. Just here for cleanliness
+    //doesnt clear the console anymore, just for ugliness (and also because its a discord bot)
+  }
+
   public void setTable(){
     clearPlayersHands();
+    clearPlayersBets();
     //clears at the beginning of the game. might move to the end
 
     clearHasJoinedStatus();
+    
 
     deck = new Deck();
     deck.shuffle();
@@ -440,6 +456,12 @@ public class BlackJackGame{
   public void clearPlayersHands(){
     for(int i = 0; i < players.size(); i++){
       players.get(i).clearHand();
+    }
+  }
+
+  public void clearPlayersBets(){
+    for(int i = 0; i < players.size(); i++){
+      players.get(i).resetBet();
     }
   }
 

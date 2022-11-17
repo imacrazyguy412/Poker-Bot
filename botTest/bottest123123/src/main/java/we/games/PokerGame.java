@@ -30,10 +30,6 @@ public class PokerGame {
     
   }
 
-  private static void getHandStrength(){
-    
-  }
-
   
   /**
   *These methods for checking hand strength are split among 9 extra

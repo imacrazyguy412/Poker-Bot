@@ -27,8 +27,19 @@ public class Hand{
     return cards.get(index);
   }
 
-  public void sort(){
+  public void sort(ArrayList<Card> h){
     //add sorting algorithim
+    
+    for(int i = 1; i<h.size(); i++){
+    int currentValue = h.get(i).getFace();
+    int j = i-1;
+      while(j>=0 && h.get(j) > currentValue){
+        h.set(j+1, h.get(j));
+        j--;
+      }
+      h.set(j+1, currentValue);
+    }
+    
   }
 
 

@@ -27,6 +27,8 @@ public class Hand{
     return cards.get(index);
   }
 
+
+  //TODO: make method static so it sorts array then put into constructor
   public void sort(ArrayList<Card> h){
     //add sorting algorithim
     

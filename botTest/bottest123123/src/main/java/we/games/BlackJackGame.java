@@ -173,29 +173,59 @@ public class BlackJackGame{
 
     do{
 
-      System.out.println("Dealers's cards:");
-      System.out.println("Unknown\n" + dealer.getCard(1));
-      System.out.println();
+      //System.out.println("Dealers's cards:");
+      //System.out.println("Unknown\n" + dealer.getCard(1));
+      //System.out.println();
+      DiscordBot.MessageChannel("Dealer's cards: \nUnknown\n" + dealer.getCard(1).toString(), channel);
 
       showAllHands();
       
       if(p.isPlaying()){
-        System.out.println(p.getName() + "'s turn with " + p.getScore() + " and " + p.getPoints() + " points. What would you like to do?\nEnter w to hit\nEnter s to stand\nEnter d to double down\nEnter a to split\n");
-        System.out.println("Your hand:");
+        //System.out.println("Your hand:");
+        DiscordBot.MessageChannel("p.getName()"
+        + "'s turn with "
+        + p.getScore()
+        + " and "
+        + p.getPoints()
+        + " points. What would you like to do?"
+        + "\nEnter w to hit"
+        + "\nEnter s to stand"
+        + "\nEnter d to double down"
+        + "\nEnter a to split");
+        //very long string
+
         printHand(p.getHand());
       } else if(p.splitHandIsPlaying()){
-        System.out.println(p.getName() + "'s split hand with " + p.getSplitScore() + " and " + p.getPoints() + " points. What would you like to do?\nEnter w to hit\nEnter s to stand");
-        System.out.println("Your hand:");
+        //System.out.println("Your hand:");
+
+        DiscordBot.MessageChannel(p.getName()
+        + "'s split hand with "
+        + p.getSplitScore()
+        + " and "
+        + p.getPoints()
+        + " points. What would you like to do?"
+        + "\nEnter w to hit"
+        + "\nEnter s to stand");
+        //long string
+
         printHand(p.getSplitHand());
       }
       
-      choice = input.nextLine();
+      //choice = input.nextLine();
+      //add someway for the user to choose
+      //this is gonna involve the command listeners
       
       choice = choice.toLowerCase().replaceAll(" ", "");
       //sets the users choice to lower case so that their choice is registered regardless of capitalization
       //also clears spaces
 
-      switch(choice){
+      playerChoice(p, choice);
+      
+    } while(p.isPlaying() || p.splitHandIsPlaying());
+  }
+
+  public void playerChoice(BlackJackPlayer p, String s){
+    switch(choice){
         case "w":
         case "hit":
           hit(p);
@@ -219,7 +249,7 @@ public class BlackJackGame{
           break;
 
         default:
-          System.out.println("That is not an option");
+          System.out.println("You really fd this didnt ya");
       }
       
 
@@ -233,10 +263,9 @@ public class BlackJackGame{
         //}
       //}
       //except also im removing this until we do the multi threading thing
-      
-    } while(p.isPlaying() || p.splitHandIsPlaying());
   }
 
+  //rewrite this
   public void dealerTurn(){
     
     //try{
@@ -318,14 +347,17 @@ public class BlackJackGame{
   public void printHand(ArrayList<Card> hand){
     for(int i = 0; i < hand.size(); i++){
       if(players.get(0).getName().equalsIgnoreCase("james")){
-        System.out.println("James of James");
+        //System.out.println("James of James");
         //easter egg for a friend :)
+        DiscordBot.message("James of James");
+        //still an easter egg lmao
       } else{
-        System.out.println(hand.get(i));
+        //System.out.println(hand.get(i));
+        DiscordBot.message(hand.get(i).toString());
       }
       
     }
-    System.out.println();
+    //System.out.println();
   }
 
   public boolean playersArePlaying(){

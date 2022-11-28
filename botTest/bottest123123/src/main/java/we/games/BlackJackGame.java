@@ -169,20 +169,20 @@ public class BlackJackGame{
   }
 
   public void playerTurn(BlackJackPlayer p){
-    String choice;
+    String choice = "";
 
     do{
 
       //System.out.println("Dealers's cards:");
       //System.out.println("Unknown\n" + dealer.getCard(1));
       //System.out.println();
-      DiscordBot.MessageChannel("Dealer's cards: \nUnknown\n" + dealer.getCard(1).toString(), channel);
+      DiscordBot.message("Dealer's cards: \nUnknown\n" + dealer.getCard(1).toString(), channel);
 
       showAllHands();
       
       if(p.isPlaying()){
         //System.out.println("Your hand:");
-        DiscordBot.MessageChannel("p.getName()"
+        DiscordBot.message("p.getName()"
         + "'s turn with "
         + p.getScore()
         + " and "
@@ -191,21 +191,21 @@ public class BlackJackGame{
         + "\nEnter w to hit"
         + "\nEnter s to stand"
         + "\nEnter d to double down"
-        + "\nEnter a to split");
+        + "\nEnter a to split", channel);
         //very long string
 
         printHand(p.getHand());
       } else if(p.splitHandIsPlaying()){
         //System.out.println("Your hand:");
 
-        DiscordBot.MessageChannel(p.getName()
+        DiscordBot.message(p.getName()
         + "'s split hand with "
         + p.getSplitScore()
         + " and "
         + p.getPoints()
         + " points. What would you like to do?"
         + "\nEnter w to hit"
-        + "\nEnter s to stand");
+        + "\nEnter s to stand", channel);
         //long string
 
         printHand(p.getSplitHand());
@@ -225,7 +225,7 @@ public class BlackJackGame{
   }
 
   public void playerChoice(BlackJackPlayer p, String s){
-    switch(choice){
+    switch(s){
         case "w":
         case "hit":
           hit(p);
@@ -349,11 +349,11 @@ public class BlackJackGame{
       if(players.get(0).getName().equalsIgnoreCase("james")){
         //System.out.println("James of James");
         //easter egg for a friend :)
-        DiscordBot.message("James of James");
+        DiscordBot.message("James of James", channel);
         //still an easter egg lmao
       } else{
         //System.out.println(hand.get(i));
-        DiscordBot.message(hand.get(i).toString());
+        DiscordBot.message(hand.get(i).toString(), channel);
       }
       
     }

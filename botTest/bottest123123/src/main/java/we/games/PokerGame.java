@@ -31,50 +31,84 @@ public class PokerGame {
     
   }
 
-  
+  //I fucked a bit with the tab formatting of this comment, so oops
   /**
-  *These methods for checking hand strength are split among 9 extra
-  methods (10 total) to check for each type of hand.
-  *If the type of hand isn't their (check2Pair() is called with a hand
-  that does not have two pairs), it returns -1.
-  Otherwise, it returns a number based on the strength of them as below:
-    *high card: the card's face value (aces are 14)
-    *high card range: [2, 14]
-    *pair: the card's face value + 14
-    *pair range: [16, 28]
-    *2pair: a number in the hundreds or thousands. the first two digits
-    (the thousands and hundreds places) store the strength of the
-    HIGHER strength pair. The tens and ones place store the strength of
-    the lower stregth pair, in the same value that high cards are stored
-    (aces as 14). For example, a 2pair jacks and 4s would be returned as
-    1104
-    *2pair range: [0302, 1413]
-    *3 of a kind: The face value of the card multiplied by 1000
-    *3 of a kind range: [02000, 14000]
-    *straight: Probably the highest card's value multiplied by 1000 + 14000
-    *straight range: [20000, 28000]
-    *flush: Probably the highest card's value multiplied by 1000 + 28000 +
-    the suit (so the program can know when saying what the player won
-    with). The flush value shouldnt affect the game, because their shouldnt
-    be able to be more than one suit of flush in one game
-    *flush range: [060001, 42004]
-    *full house: Likely will be similar to 2pair, but instead of the
-    higher pair its the trips and instead of multiplying by 100, its
-    multiplied by 100000 + the value of the pair
-    *full house range: [0200003, 1400013]
-    *four of a kind: the value of the cards multiplied by 1000000
-    *four of a kind range: [02000000, 14000000]
-    *straight flush: Probablt highest card's value multiplied by 10000000
-    + suit
-    *straight flush range: [060000001, 140000004]
-  
-    *royal flush: doesnt matter, a player cant get a better royal flush
-    than another, so just set to an absurdly high number like 31415926535
+   * the method getWinnerIndex() returns the index of the player with the best hand strength.
+   * In the event of a tie, idk we'll work that out later
+   * also sorts the hands of the players befoer checking
+   * might add another method to return the cards used in the final hand, if we want that
 
-  *The basic goal of the methods of storing the values of hands is that
-  the stronger hand will always return a higher number, making comparisons
-  easier
+   * These methods for checking hand strength are split among 9 extra
+     methods (10 total) to check for each type of hand.
+   * If the type of hand isn't their (check2Pair() is called with a hand
+     that does not have two pairs), it returns -1.
+     Otherwise, it returns a number based on the strength of them as below:
+     *high card: the card's face value (aces are 14)
+     *high card range: [2, 14]
+
+     *pair: the card's face value + 14
+     *pair range: [16, 28]
+
+     *2pair: a number in the hundreds or thousands. the first two digits
+      (the thousands and hundreds places) store the strength of the
+      HIGHER strength pair. The tens and ones place store the strength of
+      the lower stregth pair, in the same value that high cards are stored
+      (aces as 14). For example, a 2pair jacks and 4s would be returned as
+      1104
+     *2pair range: [0302, 1413]
+
+     *3 of a kind: The face value of the card multiplied by 1000
+     *3 of a kind range: [02000, 14000]
+
+     *straight: Probably the highest card's value multiplied by 1000 + 14000
+     *straight range: [20000, 28000]
+
+     *flush: Probably the highest card's value multiplied by 1000 + 28000 +
+      the suit (so the program can know when saying what the player won
+      with). The flush value shouldnt affect the game, because their shouldnt
+      be able to be more than one suit of flush in one game
+     *flush range: [060001, 42004]
+
+     *full house: Likely will be similar to 2pair, but instead of the
+      higher pair its the trips and instead of multiplying by 100, its
+      multiplied by 100000 + the value of the pair
+     *full house range: [0200003, 1400013]
+
+     *four of a kind: the value of the cards multiplied by 1000000
+     *four of a kind range: [02000000, 14000000]
+
+     *straight flush: Probablt highest card's value multiplied by 10000000
+      + suit
+     *straight flush range: [060000001, 140000004]
+    
+     *royal flush: doesnt matter, a player cant get a better royal flush
+      than another, so just set to an absurdly high number like 31415926535
+
+   *The basic goal of the methods of storing the values of hands is that
+    the stronger hand will always return a higher number, making comparisons
+    easier
   */
+  
+  private int getWinnerIndex(){
+    int winner = 0, winningStrength = 0, currentStrength = 0;
+
+    for(int i = 0; i < players.size(); i++){
+      players.get(i).sortHand();
+      //sorts the hand first thing
+      //mainly for straights, but other checks could use it
+
+      currentStrength = getHandStrength(players.get(i).getHand());
+
+      if(currentStrength > winningStrength){
+        winningStrength = currentStrength;
+        winner = i;
+      }
+
+    }
+
+    return winner;
+  }
+
   private static int getHandStrength(ArrayList<Card> h){
     int handStrength;
 

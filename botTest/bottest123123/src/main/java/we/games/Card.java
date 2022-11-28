@@ -9,6 +9,7 @@ public class Card {
     face = f;
   }
 
+  @Override
   public String toString(){
     String suitStr = "Error";
     //if something goes wrong and the card strings are messed up, it will say error

@@ -45,6 +45,10 @@ public class PokerPlayer{
         return name;
     }
 
+    public ArrayList<Card> getHand(){
+        return hand;
+    }
+
     //should sort the hand of the player from highest to lowest i think?
     //idk I didn't write it and I am kinda dumb
     public void sortHand(){
@@ -55,7 +59,8 @@ public class PokerPlayer{
                 hand.set(j+1, hand.get(j));
                 j--;
             }
-            hand.set(j+1, currentValue);
+            //hand.set(j+1, currentValue);
+            hand.set(j+1, hand.get(currentValue)); //is this what its meant to be?
         }
     }
 

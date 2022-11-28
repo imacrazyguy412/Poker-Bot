@@ -18,11 +18,12 @@ public class PokerGame {
   private PokerPlayer tempPlayer;
 
   public PokerGame(){
-
+    //Where the hell is everything?
+    //no seriously, where did everything go?
   }
 
   private void setTable(){
-    System.out.print("How many players are there");
+    //System.out.print("How many players are there");
     int numPlayers;
     //try{
        // numPlayers = input.nextInt(); //fix or something

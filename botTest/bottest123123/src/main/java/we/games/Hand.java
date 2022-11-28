@@ -47,3 +47,5 @@ public class Hand{
 
 }
 */
+//so, the thing is, I don't think we need hand objects. ArrayLists are already abjects anyways, so we
+//should literally just give the sorting algorithim to the player object

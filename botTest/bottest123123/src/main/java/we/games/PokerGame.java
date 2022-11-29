@@ -9,17 +9,29 @@ public class PokerGame {
 
   //private int[] pots;
   //private int currentSidePot = 0;
-  //there will be multiple possible pots. pots[0] will always be the main pot while other pots in the array will be side pots
+  //there will be multiple possible pots. pots[0] will always be the main pot
+  //while other pots in the array will be side pots
+
+  //this probably isnt gonna work btw, we might need to store pots on the
+  //player or as an object
 
   //private Scanner input = new Scanner(System.in);
   private Deck pokerDeck = new Deck();
   private ArrayList<PokerPlayer> players = new ArrayList<PokerPlayer>();
   private ArrayList<Card> communityCards = new ArrayList<Card>();
-  private PokerPlayer tempPlayer;
+  //private PokerPlayer tempPlayer; //IM FKUKING DUMB. its much simpler to not
+  //take up space with a temp player
+
+  private MessageChannel channel;
 
   public PokerGame(){
     //Where the hell is everything?
     //no seriously, where did everything go?
+  }
+
+  public PokerGame(String startingPlayerName, MessageChannel channel){
+    setTable(startingPlayerName);
+    this.channel = channel
   }
 
   private void setTable(){
@@ -28,7 +40,22 @@ public class PokerGame {
     //try{
        // numPlayers = input.nextInt(); //fix or something
    // }
-    
+    //finish this eventually ig
+
+    for(int i = 0; i < numPlayers; i++){
+      //TODO: get each players name
+      //we'll probably want to use the discrod name when a player joins, but idk.
+
+      players.add(new PokerPlayer(STARTCHIPS, name));
+      //Remember to actually put the name in there
+    }
+  }
+
+  //ok, im gonna overload this in case using a /join like in blackjack is better
+  private void setTable(String startingPlayerName){
+    players.add(new PokerPlayer(STARTCHIPS, startingPlayerName));
+
+
   }
 
   //I fucked a bit with the tab formatting of this comment, so oops

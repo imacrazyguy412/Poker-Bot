@@ -57,6 +57,12 @@ public class CommandManager extends ListenerAdapter {
                 new BlackJackGame(numPlayers, blackJackChannel, blackJackStartingPlayerMention);
                 break;
 
+            case "playpoker":
+                event.reply("Currently Testing").queue();
+                new PokerGame(event.getUser().getAsTag(), event.getChannel());
+                //I just thought: should we keep an arraylist of blackjack and poker games?
+                //I have no idea if we would need to keep track of them like that, but idk
+
         }
         
         
@@ -76,6 +82,9 @@ public class CommandManager extends ListenerAdapter {
         OptionData numBlackJackPlayers = new OptionData(OptionType.INTEGER, "amount", "The amount of players.", true);
         commandData.add(Commands.slash("playblackjack", "Play BlackJack").addOptions(numBlackJackPlayers));
 
+        //playpoker command
+        commandData.add(Commands.slash("playpoker", "I sure can't wait to do some poker"));
+        //I did this right, right?
 
         event.getGuild().updateCommands().addCommands(commandData).queue();
     }

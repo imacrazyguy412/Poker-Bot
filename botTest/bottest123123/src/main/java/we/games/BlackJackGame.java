@@ -1,6 +1,6 @@
 package we.games;
 
-import java.util.Scanner;
+//import java.util.Scanner;
 
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import we.arefarmers.DiscordBot;
@@ -9,15 +9,16 @@ import java.util.ArrayList;
 
 
 public class BlackJackGame{
-  private Scanner input = new Scanner(System.in);
+  //private Scanner input = new Scanner(System.in);
   private ArrayList<BlackJackPlayer> players = new ArrayList<BlackJackPlayer>();
-  private BlackJackPlayer tempPlayer;
+  //private BlackJackPlayer tempPlayer;
   private BlackJackPlayer dealer = new BlackJackPlayer();
   private Deck deck;
   private static final int MAXBET = 500, MINBET = 2;
   private MessageChannel channel;
 
-  public BlackJackGame(int numPlayers, MessageChannel channel, String startingPlayerNameMention){
+  public BlackJackGame(MessageChannel channel, String startingPlayerNameMention){
+    players.add(new BlackJackPlayer(startingPlayerName))
     playBlackJack(numPlayers);
     this.channel = channel; //might work, not sure.
   }
@@ -26,18 +27,31 @@ public class BlackJackGame{
     deck = new Deck();
     String choice;
 
-    for(int i = 0; i < numPlayers; i++){
-      System.out.print("Player " + (i+1) + ", what is your name? ");
-      tempPlayer = new BlackJackPlayer(input.nextLine());
-      players.add(tempPlayer);
-    }
+    //for(int i = 0; i < numPlayers; i++){
+      //System.out.print("Player " + (i+1) + ", what is your name? ");
+      //DiscordBot.message("Player" + (i + 1) + ", type /join to join");
+      //might change
+      //tempPlayer = new BlackJackPlayer(input.nextLine());
+      //players.add(tempPlayer);
+    //}
 
     do{
 
       setTable();
 
+      showAllHands();
 
-      /*Old Code, rewriting
+      betting();
+
+      for(int i = 0; i < players.size(); i++){
+        if(!players.get(i).hasJustJoined){
+          playerTurn(players.get(i));
+        }
+      }
+
+      dealerTurn();
+      /*
+      Old Code, rewriting
       deck = new Deck();
       deck.shuffle();
       
@@ -168,7 +182,7 @@ public class BlackJackGame{
     //ok cool it is right
   }
 
-  public void playerTurn(BlackJackPlayer p){
+  private void playerTurn(BlackJackPlayer p){
     String choice = "";
 
     do{
@@ -188,10 +202,10 @@ public class BlackJackGame{
         + " and "
         + p.getPoints()
         + " points. What would you like to do?"
-        + "\nEnter w to hit"
-        + "\nEnter s to stand"
-        + "\nEnter d to double down"
-        + "\nEnter a to split", channel);
+        + "\nEnter w to hit" //change to /hit or whatever the command for hitting is
+        + "\nEnter s to stand" //also change
+        + "\nEnter d to double down" //also change
+        + "\nEnter a to split", channel); //also change
         //very long string
 
         printHand(p.getHand());
@@ -204,8 +218,8 @@ public class BlackJackGame{
         + " and "
         + p.getPoints()
         + " points. What would you like to do?"
-        + "\nEnter w to hit"
-        + "\nEnter s to stand", channel);
+        + "\nEnter w to hit" //change to /hit
+        + "\nEnter s to stand", channel); //also change
         //long string
 
         printHand(p.getSplitHand());
@@ -224,7 +238,7 @@ public class BlackJackGame{
     } while(p.isPlaying() || p.splitHandIsPlaying());
   }
 
-  public void playerChoice(BlackJackPlayer p, String s){
+  private void playerChoice(BlackJackPlayer p, String s){
     switch(s){
         case "w":
         case "hit":
@@ -266,11 +280,12 @@ public class BlackJackGame{
   }
 
   //rewrite this
-  public void dealerTurn(){
+  private void dealerTurn(){
     
     //try{
       while(dealer.getScore() < 17){
-        System.out.println("Dealers hand");
+        //System.out.println("Dealers hand");
+        DiscordBot.message("Dealer's hand:");
         printHand(dealer.getHand());
         //System.out.println(dealer.getScore());
         dealer.addCard(deck.dealTopCard());
@@ -295,7 +310,7 @@ public class BlackJackGame{
     }
   }
 
-  public void calcBet(BlackJackPlayer p){
+  private void calcBet(BlackJackPlayer p){
     if(p.getScore() == 21 && p.getHand().size() == 2){
       System.out.println(p.getName() + " won their bet of " + p.getBet() + " with blackjack");
     } else{
@@ -344,7 +359,7 @@ public class BlackJackGame{
     p.resetBet();
   }
 
-  public void printHand(ArrayList<Card> hand){
+  private void printHand(ArrayList<Card> hand){
     for(int i = 0; i < hand.size(); i++){
       if(players.get(0).getName().equalsIgnoreCase("james")){
         //System.out.println("James of James");
@@ -360,7 +375,7 @@ public class BlackJackGame{
     //System.out.println();
   }
 
-  public boolean playersArePlaying(){
+  private boolean playersArePlaying(){
     for(int i = 0; i < players.size(); i++){
       if(players.get(i).getPoints() <= 0){
           System.out.println(players.get(i).getName() + " has bust out!");
@@ -374,7 +389,7 @@ public class BlackJackGame{
     
   }
 
-  public void hit(BlackJackPlayer p){
+  private void hit(BlackJackPlayer p){
     if(p.isPlaying()){
       p.addCard(deck.dealTopCard());
       //System.out.println("Your cards:");
@@ -394,7 +409,7 @@ public class BlackJackGame{
     }
   }
 
-  public void stand(BlackJackPlayer p){
+  private void stand(BlackJackPlayer p){
     if(p.isPlaying()){
       p.stand();
     } else if(p.splitHandIsPlaying()){
@@ -402,7 +417,7 @@ public class BlackJackGame{
     }
   }
 
-  public void split(BlackJackPlayer p){
+  private void split(BlackJackPlayer p){
     if(p.splitHandIsPlaying()){
       System.out.println("You've already split.");
     } else{
@@ -425,7 +440,7 @@ public class BlackJackGame{
     }
   }
 
-  public void doubleDown(BlackJackPlayer p){
+  private void doubleDown(BlackJackPlayer p){
     if(p.splitHandIsPlaying()){
       System.out.println("You can't double down after splitting.");
     } else{
@@ -449,7 +464,7 @@ public class BlackJackGame{
     }
   }
 
-  public void showAllHands(){
+  private void showAllHands(){
     for(int i = 0; i < players.size(); i++){
       System.out.println(players.get(i).getName() + "'s hand:");
       printHand(players.get(i).getHand());
@@ -462,7 +477,7 @@ public class BlackJackGame{
     //doesnt clear the console anymore, just for ugliness (and also because its a discord bot)
   }
 
-  public void setTable(){
+  private void setTable(){
     clearPlayersHands();
     clearPlayersBets();
     //clears at the beginning of the game. might move to the end
@@ -485,19 +500,19 @@ public class BlackJackGame{
     //deals the players their 2 cards
   }
 
-  public void clearPlayersHands(){
+  private void clearPlayersHands(){
     for(int i = 0; i < players.size(); i++){
       players.get(i).clearHand();
     }
   }
 
-  public void clearPlayersBets(){
+  private void clearPlayersBets(){
     for(int i = 0; i < players.size(); i++){
       players.get(i).resetBet();
     }
   }
 
-  public void betting(){
+  private void betting(){
     String name;
     for(int i = 0; i < players.size(); i++){
       name = players.get(i).getName();
@@ -509,14 +524,17 @@ public class BlackJackGame{
     }
   }
 
-  public void join(String n){
-    tempPlayer = new BlackJackPlayer(n, true);
-    players.add(tempPlayer);
+  private void join(String n){
+    players.add(new BlackJackPlayer(n, true););
   }
 
-  public void clearHasJoinedStatus(){
+  private void clearHasJoinedStatus(){
     for(int i = 0; i < players.size(); i++){
       players.get(i).setJoined(false);
     }
+  }
+
+  public MessageChannel getChannel(){
+    return channel;
   }
 }

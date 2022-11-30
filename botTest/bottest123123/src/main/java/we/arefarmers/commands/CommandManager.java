@@ -11,7 +11,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import we.games.BlackJackGame;
+import we.games.*;
 
 import java.util.List;
 
@@ -24,6 +24,9 @@ import we.games.*;
 
 public class CommandManager extends ListenerAdapter {
 
+    //private static ArrayList<BlackJackGame> blackJackGames = new ArrayList<BlackJackGame>;
+    //no idea if this is a good idea, but it would let us play accross channels/servers as long
+    //as we can associate each game with a channel, which we already do.
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
@@ -33,8 +36,9 @@ public class CommandManager extends ListenerAdapter {
                 String userTag = event.getUser().getAsTag();
                 event.reply("Welcome to the server, **" + userTag + "**!").queue();
                 break;
+
             case "urmom":
-                OptionMapping daddy  = event.getOption("mom");
+                OptionMapping daddy = event.getOption("mom");
                 
                 if(daddy != null){
                     String  mommy = daddy.getAsString();
@@ -42,19 +46,26 @@ public class CommandManager extends ListenerAdapter {
                 } else{
                     event.reply("no u").queue();
                 }
-                
                 break;
 
             case "playblackjack":
                 //event.reply("Currently unavailable because we are incompetent").setEphemeral(true).queue();
                 
-                OptionMapping numBlackJackPlayers = event.getOption("amount");
-                int numPlayers = numBlackJackPlayers.getAsInt();
+                //OptionMapping numBlackJackPlayers = event.getOption("amount");
+                //int numPlayers = numBlackJackPlayers.getAsInt();
                 String blackJackStartingPlayerMention = event.getUser().getAsMention(); //Hopefully this works, might not though
                 //if it doesn't, change to getAsTag() instead
                 event.reply("Starting BlackJack").queue();
                 MessageChannel blackJackChannel = event.getChannel();
-                new BlackJackGame(numPlayers, blackJackChannel, blackJackStartingPlayerMention);
+                new BlackJackGame(blackJackChannel, blackJackStartingPlayerMention);
+                break;
+
+            case "blackjackbet":
+                //check if there is a game being played. If so:
+                //get the specific instance of BlackJackGame that is associated with the channel
+
+                //somehow pass the option blackJackBet into the specific instance of BlackJackGame in the event channel
+
                 break;
 
             case "playpoker":
@@ -79,12 +90,15 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(Commands.slash("urmom", "tf bro").addOptions(option1));
 
         //playblackjack command
-        OptionData numBlackJackPlayers = new OptionData(OptionType.INTEGER, "amount", "The amount of players.", true);
+        //OptionData numBlackJackPlayers = new OptionData(OptionType.INTEGER, "amount", "The amount of players.", true);
         commandData.add(Commands.slash("playblackjack", "Play BlackJack").addOptions(numBlackJackPlayers));
+
+        //bet command, hopefully
+        OptionData blackJackBet = new OptionData(OptionType.INTEGER, "amount", "The amount you want to bet", true)
+        commandData.add(Commands.slash("blackjackbet", "Place a bet (BlackJack)").addOptions(blackJackBet));
 
         //playpoker command
         commandData.add(Commands.slash("playpoker", "I sure can't wait to do some poker"));
-        //I did this right, right?
 
         event.getGuild().updateCommands().addCommands(commandData).queue();
     }

@@ -24,7 +24,7 @@ import we.games.*;
 
 public class CommandManager extends ListenerAdapter {
 
-    //private static ArrayList<BlackJackGame> blackJackGames = new ArrayList<BlackJackGame>;
+    private static ArrayList<BlackJackGame> blackJackGames = new ArrayList<BlackJackGame>;
     //no idea if this is a good idea, but it would let us play accross channels/servers as long
     //as we can associate each game with a channel, which we already do.
 
@@ -53,18 +53,29 @@ public class CommandManager extends ListenerAdapter {
                 
                 //OptionMapping numBlackJackPlayers = event.getOption("amount");
                 //int numPlayers = numBlackJackPlayers.getAsInt();
-                String blackJackStartingPlayerMention = event.getUser().getAsMention(); //Hopefully this works, might not though
-                //if it doesn't, change to getAsTag() instead
+                String blackJackStartingPlayerTag = event.getUser().getAsTag();
+                //changed to getAsTag() because it works better with the code
                 event.reply("Starting BlackJack").queue();
                 MessageChannel blackJackChannel = event.getChannel();
-                new BlackJackGame(blackJackChannel, blackJackStartingPlayerMention);
+                blackJackGames.add(new BlackJackGame(blackJackChannel, blackJackStartingPlayerTag));
                 break;
 
             case "blackjackbet":
-                //check if there is a game being played. If so:
-                //get the specific instance of BlackJackGame that is associated with the channel
+                int blackJackGame = -1;
+                int blackJackBetAmount = event.getOption("amount").getAsInt();
 
-                //somehow pass the option blackJackBet into the specific instance of BlackJackGame in the event channel
+                //check if there is a game being played. If so:
+                for(int i = 0; i < blackJackGames.size()); i++){
+                    if(blackJackGames.get(i).getChannel().equals(event.getChannel())){
+                        //get the specific instance of BlackJackGame that is associated with the channel
+                        blackJackGame = i;
+                        //then break convention out of a loop
+                        break;
+                    }
+                }
+
+                //pass the option blackJackBet into the specific instance of BlackJackGame in the event channel
+                blackJackGames.get(i).setChoice(blackJackBetAmount + "");
 
                 break;
 

@@ -16,6 +16,7 @@ public class BlackJackGame{
   private Deck deck;
   private static final int MAXBET = 500, MINBET = 2;
   private MessageChannel channel;
+  private String choice;
 
   public BlackJackGame(MessageChannel channel, String startingPlayerNameMention){
     players.add(new BlackJackPlayer(startingPlayerName))
@@ -183,7 +184,6 @@ public class BlackJackGame{
   }
 
   private void playerTurn(BlackJackPlayer p){
-    String choice = "";
 
     do{
 
@@ -202,10 +202,10 @@ public class BlackJackGame{
         + " and "
         + p.getPoints()
         + " points. What would you like to do?"
-        + "\nEnter w to hit" //change to /hit or whatever the command for hitting is
-        + "\nEnter s to stand" //also change
-        + "\nEnter d to double down" //also change
-        + "\nEnter a to split", channel); //also change
+        + "\nEnter /hit to hit" //change to /hit or whatever the command for hitting is
+        + "\nEnter /stand to stand" //also change
+        + "\nEnter /double to double down" //also change
+        + "\nEnter /split to split", channel); //also change
         //very long string
 
         printHand(p.getHand());
@@ -218,8 +218,8 @@ public class BlackJackGame{
         + " and "
         + p.getPoints()
         + " points. What would you like to do?"
-        + "\nEnter w to hit" //change to /hit
-        + "\nEnter s to stand", channel); //also change
+        + "\nEnter /hit to hit" //change to /hit
+        + "\nEnter /stand to stand", channel); //also change
         //long string
 
         printHand(p.getSplitHand());
@@ -229,7 +229,7 @@ public class BlackJackGame{
       //add someway for the user to choose
       //this is gonna involve the command listeners
       
-      choice = choice.toLowerCase().replaceAll(" ", "");
+      //choice = choice.toLowerCase().replaceAll(" ", "");
       //sets the users choice to lower case so that their choice is registered regardless of capitalization
       //also clears spaces
 
@@ -361,10 +361,10 @@ public class BlackJackGame{
 
   private void printHand(ArrayList<Card> hand){
     for(int i = 0; i < hand.size(); i++){
-      if(players.get(0).getName().equalsIgnoreCase("james")){
+      if(players.get(0).getName().equalsIgnoreCase("CarrotCakeツ#8734")){
         //System.out.println("James of James");
         //easter egg for a friend :)
-        DiscordBot.message("James of James", channel);
+        DiscordBot.message("J A M E S", channel);
         //still an easter egg lmao
       } else{
         //System.out.println(hand.get(i));
@@ -536,5 +536,19 @@ public class BlackJackGame{
 
   public MessageChannel getChannel(){
     return channel;
+  }
+
+  public void setChoice(String s){
+    choice = s.toLowerCase().replaceAll(" ", "");
+  }
+
+  @Override
+  public boolean equals(Object object){
+    object = (BlackJackGame)object;
+
+    if(object.getChannel().equals(channel)){
+      return true;
+    }
+    return false;
   }
 }

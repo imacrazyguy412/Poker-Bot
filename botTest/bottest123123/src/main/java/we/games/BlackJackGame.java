@@ -7,6 +7,8 @@ import we.arefarmers.DiscordBot;
 
 import java.util.ArrayList;
 
+import we.arefarmers.commands.CommandManager;
+
 
 public class BlackJackGame{
   //private Scanner input = new Scanner(System.in);
@@ -17,6 +19,10 @@ public class BlackJackGame{
   private static final int MAXBET = 500, MINBET = 2;
   private MessageChannel channel;
   private String choice;
+
+  public BlackJackGame(MessageChannel c){
+    channel = c;
+  }
 
   public BlackJackGame(MessageChannel channel, String startingPlayerName){
     players.add(new BlackJackPlayer(startingPlayerName));
@@ -179,8 +185,10 @@ public class BlackJackGame{
     } while(playersArePlaying());
     //input.close();
 
-    DiscordBot.message("Ending BlackJack Game", channel); //no idea if this is right
-    //ok cool it is right
+    DiscordBot.message("Ending BlackJack Game", channel);
+
+    CommandManager.blackJackGames.remove(CommandManager.blackJackGames.indexOf(this));
+    //should remove itself from the arrayList in CommandManager
   }
 
   private void playerTurn(BlackJackPlayer p){
@@ -540,6 +548,10 @@ public class BlackJackGame{
 
   public void setChoice(String s){
     choice = s.toLowerCase().replaceAll(" ", "");
+  }
+
+  public ArrayList<BlackJackPlayer> getPlayers(){
+    return players;
   }
 
   @Override

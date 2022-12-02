@@ -24,7 +24,7 @@ import we.games.*;
 
 public class CommandManager extends ListenerAdapter {
 
-    private static ArrayList<BlackJackGame> blackJackGames = new ArrayList<BlackJackGame>();
+    public static ArrayList<BlackJackGame> blackJackGames = new ArrayList<BlackJackGame>();
     //no idea if this is a good idea, but it would let us play accross channels/servers as long
     //as we can associate each game with a channel, which we already do.
 
@@ -61,22 +61,28 @@ public class CommandManager extends ListenerAdapter {
                 break;
 
             case "blackjackbet":
-                int blackJackGame = -1;
+                int blackJackGame;
                 int blackJackBetAmount = event.getOption("amount").getAsInt();
 
-                //check if there is a game being played. If so:
-                for(int i = 0; i < blackJackGames.size(); i++){
-                    if(blackJackGames.get(i).getChannel().equals(event.getChannel())){
-                        //get the specific instance of BlackJackGame that is associated with the channel
-                        blackJackGame = i;
-                        //then break convention out of a loop
-                        break;
+                //get the instance of the game being played
+                blackJackGame = blackJackGames.indexOf(new BlackJackGame(event.getChannel()));
+
+                //check if there is a game being played
+                if(blackJackGame == -1){
+                    event.reply("There's no game in here!").setEphemeral(true).queue();
+                } else{
+                    int player;
+
+                    //checks if the person is a player in the game
+                    player = blackJackGames.get(blackJackGame).getPlayers().indexOf(new BlackJackPlayer(event.getUser().getAsTag()));
+                    if(player == -1){
+                        event.reply("You're not in the game, type /join to join it.").setEphemeral(true).queue();
+                    } else{ //TODO: add a check to make sure it is the player's turn to bet
+                        //pass the option blackJackBet into the specific instance of BlackJackGame in the event channel
+                        blackJackGames.get(blackJackGame).setChoice(blackJackBetAmount + "");
                     }
+
                 }
-
-                //pass the option blackJackBet into the specific instance of BlackJackGame in the event channel
-                blackJackGames.get(blackJackGame).setChoice(blackJackBetAmount + "");
-
                 break;
 
             case "playpoker":

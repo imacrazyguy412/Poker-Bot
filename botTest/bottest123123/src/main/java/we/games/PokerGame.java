@@ -3,6 +3,8 @@ package we.games;
 import java.util.Scanner;
 import java.util.ArrayList;
 
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+
 public class PokerGame {
   private static final int STARTCHIPS = 500, SMALLBLIND = 10;
   private int dealer = 0;
@@ -31,12 +33,12 @@ public class PokerGame {
 
   public PokerGame(String startingPlayerName, MessageChannel channel){
     setTable(startingPlayerName);
-    this.channel = channel
+    this.channel = channel;
   }
 
   private void setTable(){
     //System.out.print("How many players are there");
-    int numPlayers;
+    int numPlayers = -1;
     //try{
        // numPlayers = input.nextInt(); //fix or something
    // }
@@ -46,7 +48,7 @@ public class PokerGame {
       //TODO: get each players name
       //we'll probably want to use the discrod name when a player joins, but idk.
 
-      players.add(new PokerPlayer(STARTCHIPS, name));
+      players.add(new PokerPlayer(STARTCHIPS, "Placeholder"));
       //Remember to actually put the name in there
     }
   }

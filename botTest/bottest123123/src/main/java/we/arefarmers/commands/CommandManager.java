@@ -24,7 +24,7 @@ import we.games.*;
 
 public class CommandManager extends ListenerAdapter {
 
-    private static ArrayList<BlackJackGame> blackJackGames = new ArrayList<BlackJackGame>;
+    private static ArrayList<BlackJackGame> blackJackGames = new ArrayList<BlackJackGame>();
     //no idea if this is a good idea, but it would let us play accross channels/servers as long
     //as we can associate each game with a channel, which we already do.
 
@@ -65,7 +65,7 @@ public class CommandManager extends ListenerAdapter {
                 int blackJackBetAmount = event.getOption("amount").getAsInt();
 
                 //check if there is a game being played. If so:
-                for(int i = 0; i < blackJackGames.size()); i++){
+                for(int i = 0; i < blackJackGames.size(); i++){
                     if(blackJackGames.get(i).getChannel().equals(event.getChannel())){
                         //get the specific instance of BlackJackGame that is associated with the channel
                         blackJackGame = i;
@@ -75,7 +75,7 @@ public class CommandManager extends ListenerAdapter {
                 }
 
                 //pass the option blackJackBet into the specific instance of BlackJackGame in the event channel
-                blackJackGames.get(i).setChoice(blackJackBetAmount + "");
+                blackJackGames.get(blackJackGame).setChoice(blackJackBetAmount + "");
 
                 break;
 
@@ -102,10 +102,10 @@ public class CommandManager extends ListenerAdapter {
 
         //playblackjack command
         //OptionData numBlackJackPlayers = new OptionData(OptionType.INTEGER, "amount", "The amount of players.", true);
-        commandData.add(Commands.slash("playblackjack", "Play BlackJack").addOptions(numBlackJackPlayers));
+        commandData.add(Commands.slash("playblackjack", "Play BlackJack"));
 
         //bet command, hopefully
-        OptionData blackJackBet = new OptionData(OptionType.INTEGER, "amount", "The amount you want to bet", true)
+        OptionData blackJackBet = new OptionData(OptionType.INTEGER, "amount", "The amount you want to bet", true);
         commandData.add(Commands.slash("blackjackbet", "Place a bet (BlackJack)").addOptions(blackJackBet));
 
         //playpoker command

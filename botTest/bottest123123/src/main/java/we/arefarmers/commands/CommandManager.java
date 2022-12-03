@@ -48,6 +48,8 @@ public class CommandManager extends ListenerAdapter {
                 }
                 break;
 
+
+            //blackjack commands
             case "playblackjack":
                 //event.reply("Currently unavailable because we are incompetent").setEphemeral(true).queue();
                 
@@ -85,12 +87,25 @@ public class CommandManager extends ListenerAdapter {
                 }
                 break;
 
+
+            //poker commands
             case "playpoker":
                 event.reply("Currently Testing").queue();
                 new PokerGame(event.getUser().getAsTag(), event.getChannel());
                 //I just thought: should we keep an arraylist of blackjack and poker games?
                 //I have no idea if we would need to keep track of them like that, but idk
+                break;
 
+            
+
+            //diceroller command
+            case "diceroller":
+                //TODO: finish this
+
+                //int diceRollerBet = event.getOption("amount").getAsInt();
+                //String diceRollerChoice = event.getOption("choice").getAsString();
+
+                //DiceRollerGame diceRollerGame = new DiceRollerGame(diceRollerChoice, event.getUser().getAsTag());
         }
         
         
@@ -116,6 +131,11 @@ public class CommandManager extends ListenerAdapter {
 
         //playpoker command
         commandData.add(Commands.slash("playpoker", "I sure can't wait to do some poker"));
+
+        //diceroller command
+        OptionData diceRollerBet = new OptionData(OptionType.INTEGER, "amount", "The amoumnt you want to bet", true);
+        OptionData diceRollerChoice = new OptionData(OptionType.STRING, "choice", "Enter \"higher\" or \"lower\"", true);
+        commandData.add(Commands.slash("diceroller", "Gamble if 2d6 will roll above or below 7").addOptions(diceRollerBet, diceRollerChoice));
 
         event.getGuild().updateCommands().addCommands(commandData).queue();
     }

@@ -5,11 +5,10 @@ import java.util.ArrayList;
 
 public class PokerPlayer{
 
-  int chips;
-  int blind;
-  int playerBet;
-  boolean isPlaying; //keeps track of if a player has folded
-  boolean hasBet; //keeps track of if a player is eligable to bet
+  private int chips;
+  //private int blind;
+  private int playerBet;
+  private boolean isPlaying; //keeps track of if a player has folded
   
   String name;
   ArrayList<Card> hand;
@@ -47,6 +46,10 @@ public class PokerPlayer{
 
     public ArrayList<Card> getHand(){
         return hand;
+    }
+
+    public boolean isPlaying(){
+        return isPlaying;
     }
 
     //should sort the hand of the player from highest to lowest i think?

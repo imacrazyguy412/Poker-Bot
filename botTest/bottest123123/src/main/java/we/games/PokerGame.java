@@ -1,6 +1,9 @@
 package we.games;
 
 import java.util.Scanner;
+
+import we.arefarmers.DiscordBot;
+
 import java.util.ArrayList;
 
 public class PokerGame {
@@ -11,6 +14,9 @@ public class PokerGame {
   //private int currentSidePot = 0;
   //there will be multiple possible pots. pots[0] will always be the main pot
   //while other pots in the array will be side pots
+  private ArrayList<Integer> pots = new ArrayList<Integer>();
+  //changed to an arraylist for dynamic size
+  //pots.get(0) should still be the main pot
 
   //this probably isnt gonna work btw, we might need to store pots on the
   //player or as an object
@@ -31,32 +37,69 @@ public class PokerGame {
 
   public PokerGame(String startingPlayerName, MessageChannel channel){
     setTable(startingPlayerName);
-    this.channel = channel
+    this.channel = channel;
   }
 
-  private void setTable(){
-    //System.out.print("How many players are there");
-    int numPlayers;
-    //try{
-       // numPlayers = input.nextInt(); //fix or something
-   // }
-    //finish this eventually ig
-
-    for(int i = 0; i < numPlayers; i++){
-      //TODO: get each players name
-      //we'll probably want to use the discrod name when a player joins, but idk.
-
-      players.add(new PokerPlayer(STARTCHIPS, name));
-      //Remember to actually put the name in there
-    }
-  }
-
-  //ok, im gonna overload this in case using a /join like in blackjack is better
-  private void setTable(String startingPlayerName){
+  private void createTable(String startingPlayerName){
     players.add(new PokerPlayer(STARTCHIPS, startingPlayerName));
 
-
+    DiscordBot.message("waiting for player to join...\nType /join to join " + startingPlayerName);
+    //TODO: make the bot wait for another player to join
   }
+
+  private void betting(){
+    int start, last;
+
+    //checks if the dealer is the last player in the array
+    if(dealer == players.size() - 1){
+      //if so, the starting player is set to the first player in the array
+      start = 0;
+    } else{
+      //otherwise, the starting player is set to the next player in the array
+      start = dealer + 1;
+    }
+    //the last player to bet always starts as the dealer
+    last = dealer;
+
+    int i = start;
+    int bet = 0;
+    do{
+      //checks if the player is playing
+      if(players.get(i).isPlaying()){
+        //if so, it goes through with the player betting
+
+        DiscordBot.message(players.get(i).getName() + ", it is your turn to bet", channel);
+        //TODO: make the bot wait for the player to bet
+
+        int playerBet = 0; //temporary
+
+        players.get(i).setPlayerBet(playerBet); //TODO: get and set the player's bet
+
+        //makes the player lose the chips
+        players.get(i).placeBet(playerBet);
+
+        //checks if the player is betting above what is needed to call
+        if(playerBet - players.get(i).getPlayerBet() > bet){ //this might change
+          //if they did raise, the last player to bet is adjusted
+          if(i > 0){
+            last = i + 1;
+          } else{
+            last = players.size() - 1;
+          }
+        }
+
+
+        //loops through
+        if(i < players.size() - 1){
+          i++;
+        } else{
+          i = 0;
+        }
+      }  
+    } while(i != last);
+  }
+
+  //handStrength methods below---------------
 
   //I fucked a bit with the tab formatting of this comment, so oops
   /**

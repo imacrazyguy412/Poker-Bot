@@ -32,9 +32,10 @@ public class PokerGame {
 
   private MessageChannel channel;
 
-  public PokerGame(){
-    //Where the hell is everything?
-    //no seriously, where did everything go?
+  private String choice;
+
+  public PokerGame(MessageChannel channel){
+    this.channel = channel;
   }
 
   public PokerGame(String startingPlayerName, MessageChannel channel){
@@ -468,4 +469,18 @@ public class PokerGame {
     return royalFlush;
   }
   //end of handstrength methods---------------------
+
+  public void setChoice(String str){
+    choice = str;
+  }
+
+  @Override
+  public boolean equals(Object obj){
+    PokerGame p = (PokerGame)(obj);
+
+    if(p.getChannel().equals(this.getChannel())){
+      return true;
+    }
+    return false;
+  }
 }

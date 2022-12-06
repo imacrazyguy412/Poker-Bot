@@ -19,6 +19,10 @@ public class PokerPlayer{
       hand = new ArrayList<Card>();
     }
 
+    public PokerPlayer(String name){
+      this.name = name;
+    }
+
     public void placeBet (int bet) {
         chips -= bet;
     }
@@ -66,5 +70,15 @@ public class PokerPlayer{
             hand.set(j+1, hand.get(currentValue)); //is this what its meant to be?
         }
     }
+
+  @Override
+  public boolean equals(Object obj){
+    PokerPlayer p = (PokerPlayer)obj;
+
+    if(p.getName().equals(this.getName())){
+      return true;
+    }
+    return false;
+  }
 
 }

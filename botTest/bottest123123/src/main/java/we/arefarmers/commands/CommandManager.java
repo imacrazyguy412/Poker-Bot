@@ -25,8 +25,7 @@ import we.games.*;
 public class CommandManager extends ListenerAdapter {
 
     public static ArrayList<BlackJackGame> blackJackGames = new ArrayList<BlackJackGame>();
-    //no idea if this is a good idea, but it would let us play accross channels/servers as long
-    //as we can associate each game with a channel, which we already do.
+    public static ArrayList<PokerGame> pokerGames = new ArrayList<PokerGame>();
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
@@ -90,11 +89,31 @@ public class CommandManager extends ListenerAdapter {
 
             //poker commands
             case "playpoker":
-                event.reply("Currently Testing").queue();
+                event.reply("Currently Testing").setEphemeral(true).queue();
                 new PokerGame(event.getUser().getAsTag(), event.getChannel());
-                //I just thought: should we keep an arraylist of blackjack and poker games?
-                //I have no idea if we would need to keep track of them like that, but idk
                 break;
+
+            case "pokerbet":
+                event.reply("Currently Testing").setEphemeral(true).queue();
+
+                int pokerGame;
+                int pokerBetAmount = event.getOption("amount").getAsInt();
+                
+                pokerGame = pokerGames.indexOf(new PokerGame(event.getChannel));
+
+                if(pokerGame == -1){
+                    event.reply("There's no game in here!").setEphemeral(true).queue();
+                } else{
+                    int player;
+
+                    player = pokerGames.get(pokerGame).getPlayers().indexOf(new PokerPlayer(event.getUser().getAsTag()));
+                    if(player == -1){
+                        event.reply("You're not in the game, type /join to join it.").setEphemeral(true).queue();
+                    } else{ //TODO: add a check to make sure it is the player's turn to bet
+                        //pass the option pokerBet into the specific instance of PokerGame in the event channel
+                        pokerGames.get(pokerGame).setChoice(pokerBetAmount + "");
+                    }
+                }
 
             
 
@@ -125,12 +144,16 @@ public class CommandManager extends ListenerAdapter {
         //OptionData numBlackJackPlayers = new OptionData(OptionType.INTEGER, "amount", "The amount of players.", true);
         commandData.add(Commands.slash("playblackjack", "Play BlackJack"));
 
-        //bet command, hopefully
+        //blackjackbet command
         OptionData blackJackBet = new OptionData(OptionType.INTEGER, "amount", "The amount you want to bet", true);
         commandData.add(Commands.slash("blackjackbet", "Place a bet (BlackJack)").addOptions(blackJackBet));
 
         //playpoker command
         commandData.add(Commands.slash("playpoker", "I sure can't wait to do some poker"));
+
+        //pokerbet command
+        OptionData pokerBet = new OptionData(OpionType.INTEGER, "amount", "the amount you want to bet");
+        commandData.add(Commands.slash("pokerbet", "Place a bet (Poker)").addOptions(pokerBet));
 
         //diceroller command
         OptionData diceRollerBet = new OptionData(OptionType.INTEGER, "amount", "The amoumnt you want to bet", true);

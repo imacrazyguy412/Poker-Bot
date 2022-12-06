@@ -6,6 +6,8 @@ import we.arefarmers.DiscordBot;
 
 import java.util.ArrayList;
 
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+
 public class PokerGame {
   private static final int STARTCHIPS = 500, SMALLBLIND = 10;
   private int dealer = 0;

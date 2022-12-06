@@ -24,7 +24,7 @@ import we.games.*;
 
 public class CommandManager extends ListenerAdapter {
 
-    private static ArrayList<BlackJackGame> blackJackGames = new ArrayList<BlackJackGame>;
+    public static ArrayList<BlackJackGame> blackJackGames = new ArrayList<BlackJackGame>();
     //no idea if this is a good idea, but it would let us play accross channels/servers as long
     //as we can associate each game with a channel, which we already do.
 
@@ -48,6 +48,8 @@ public class CommandManager extends ListenerAdapter {
                 }
                 break;
 
+
+            //blackjack commands
             case "playblackjack":
                 //event.reply("Currently unavailable because we are incompetent").setEphemeral(true).queue();
                 
@@ -61,30 +63,49 @@ public class CommandManager extends ListenerAdapter {
                 break;
 
             case "blackjackbet":
-                int blackJackGame = -1;
+                int blackJackGame;
                 int blackJackBetAmount = event.getOption("amount").getAsInt();
 
-                //check if there is a game being played. If so:
-                for(int i = 0; i < blackJackGames.size()); i++){
-                    if(blackJackGames.get(i).getChannel().equals(event.getChannel())){
-                        //get the specific instance of BlackJackGame that is associated with the channel
-                        blackJackGame = i;
-                        //then break convention out of a loop
-                        break;
+                //get the instance of the game being played
+                blackJackGame = blackJackGames.indexOf(new BlackJackGame(event.getChannel()));
+
+                //check if there is a game being played
+                if(blackJackGame == -1){
+                    event.reply("There's no game in here!").setEphemeral(true).queue();
+                } else{
+                    int player;
+
+                    //checks if the person is a player in the game
+                    player = blackJackGames.get(blackJackGame).getPlayers().indexOf(new BlackJackPlayer(event.getUser().getAsTag()));
+                    if(player == -1){
+                        event.reply("You're not in the game, type /join to join it.").setEphemeral(true).queue();
+                    } else{ //TODO: add a check to make sure it is the player's turn to bet
+                        //pass the option blackJackBet into the specific instance of BlackJackGame in the event channel
+                        blackJackGames.get(blackJackGame).setChoice(blackJackBetAmount + "");
                     }
+
                 }
-
-                //pass the option blackJackBet into the specific instance of BlackJackGame in the event channel
-                blackJackGames.get(i).setChoice(blackJackBetAmount + "");
-
                 break;
 
+
+            //poker commands
             case "playpoker":
                 event.reply("Currently Testing").queue();
                 new PokerGame(event.getUser().getAsTag(), event.getChannel());
                 //I just thought: should we keep an arraylist of blackjack and poker games?
                 //I have no idea if we would need to keep track of them like that, but idk
+                break;
 
+            
+
+            //diceroller command
+            case "diceroller":
+                //TODO: finish this
+
+                //int diceRollerBet = event.getOption("amount").getAsInt();
+                //String diceRollerChoice = event.getOption("choice").getAsString();
+
+                //DiceRollerGame diceRollerGame = new DiceRollerGame(diceRollerChoice, event.getUser().getAsTag());
         }
         
         
@@ -102,14 +123,19 @@ public class CommandManager extends ListenerAdapter {
 
         //playblackjack command
         //OptionData numBlackJackPlayers = new OptionData(OptionType.INTEGER, "amount", "The amount of players.", true);
-        commandData.add(Commands.slash("playblackjack", "Play BlackJack").addOptions(numBlackJackPlayers));
+        commandData.add(Commands.slash("playblackjack", "Play BlackJack"));
 
         //bet command, hopefully
-        OptionData blackJackBet = new OptionData(OptionType.INTEGER, "amount", "The amount you want to bet", true)
+        OptionData blackJackBet = new OptionData(OptionType.INTEGER, "amount", "The amount you want to bet", true);
         commandData.add(Commands.slash("blackjackbet", "Place a bet (BlackJack)").addOptions(blackJackBet));
 
         //playpoker command
         commandData.add(Commands.slash("playpoker", "I sure can't wait to do some poker"));
+
+        //diceroller command
+        OptionData diceRollerBet = new OptionData(OptionType.INTEGER, "amount", "The amoumnt you want to bet", true);
+        OptionData diceRollerChoice = new OptionData(OptionType.STRING, "choice", "Enter \"higher\" or \"lower\"", true);
+        commandData.add(Commands.slash("diceroller", "Gamble if 2d6 will roll above or below 7").addOptions(diceRollerBet, diceRollerChoice));
 
         event.getGuild().updateCommands().addCommands(commandData).queue();
     }

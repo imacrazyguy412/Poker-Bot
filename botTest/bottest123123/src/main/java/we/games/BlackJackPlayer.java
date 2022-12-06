@@ -188,5 +188,13 @@ public class BlackJackPlayer{
     hasJustJoined = j;
   }
 
+  @Override
+  public boolean equals(Object obj){
+    BlackJackPlayer p = (BlackJackPlayer)obj;
 
+    if(p.getName().equals(this.getName())){
+      return true;
+    }
+    return false;
+  }
 }

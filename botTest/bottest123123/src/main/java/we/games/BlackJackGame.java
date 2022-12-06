@@ -7,6 +7,8 @@ import we.arefarmers.DiscordBot;
 
 import java.util.ArrayList;
 
+import we.arefarmers.commands.CommandManager;
+
 
 public class BlackJackGame{
   //private Scanner input = new Scanner(System.in);
@@ -18,15 +20,19 @@ public class BlackJackGame{
   private MessageChannel channel;
   private String choice;
 
-  public BlackJackGame(MessageChannel channel, String startingPlayerNameMention){
-    players.add(new BlackJackPlayer(startingPlayerName))
-    playBlackJack(numPlayers);
+  public BlackJackGame(MessageChannel c){
+    channel = c;
+  }
+
+  public BlackJackGame(MessageChannel channel, String startingPlayerName){
+    players.add(new BlackJackPlayer(startingPlayerName));
+    playBlackJack();
     this.channel = channel; //might work, not sure.
   }
   
-  public void playBlackJack(int numPlayers) {
+  private void playBlackJack() {
     deck = new Deck();
-    String choice;
+    //String choice;
 
     //for(int i = 0; i < numPlayers; i++){
       //System.out.print("Player " + (i+1) + ", what is your name? ");
@@ -45,7 +51,7 @@ public class BlackJackGame{
       betting();
 
       for(int i = 0; i < players.size(); i++){
-        if(!players.get(i).hasJustJoined){
+        if(!players.get(i).hasJustJoined()){
           playerTurn(players.get(i));
         }
       }
@@ -177,10 +183,12 @@ public class BlackJackGame{
       */
     
     } while(playersArePlaying());
-    input.close();
+    //input.close();
 
-    DiscordBot.message("Ending BlackJack Game", channel); //no idea if this is right
-    //ok cool it is right
+    DiscordBot.message("Ending BlackJack Game", channel);
+
+    CommandManager.blackJackGames.remove(CommandManager.blackJackGames.indexOf(this));
+    //should remove itself from the arrayList in CommandManager
   }
 
   private void playerTurn(BlackJackPlayer p){
@@ -285,7 +293,7 @@ public class BlackJackGame{
     //try{
       while(dealer.getScore() < 17){
         //System.out.println("Dealers hand");
-        DiscordBot.message("Dealer's hand:");
+        DiscordBot.message("Dealer's hand:", channel);
         printHand(dealer.getHand());
         //System.out.println(dealer.getScore());
         dealer.addCard(deck.dealTopCard());
@@ -524,14 +532,14 @@ public class BlackJackGame{
     }
   }
 
-  private void join(String n){
-    players.add(new BlackJackPlayer(n, true););
-  }
-
   private void clearHasJoinedStatus(){
     for(int i = 0; i < players.size(); i++){
       players.get(i).setJoined(false);
     }
+  }
+
+  public void join(String n){
+    players.add(new BlackJackPlayer(n, true));
   }
 
   public MessageChannel getChannel(){
@@ -542,11 +550,15 @@ public class BlackJackGame{
     choice = s.toLowerCase().replaceAll(" ", "");
   }
 
-  @Override
-  public boolean equals(Object object){
-    object = (BlackJackGame)object;
+  public ArrayList<BlackJackPlayer> getPlayers(){
+    return players;
+  }
 
-    if(object.getChannel().equals(channel)){
+  @Override
+  public boolean equals(Object obj){
+    BlackJackGame b = (BlackJackGame)(obj);
+
+    if(b.getChannel().equals(this.getChannel())){
       return true;
     }
     return false;

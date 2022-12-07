@@ -121,10 +121,35 @@ public class CommandManager extends ListenerAdapter {
             case "diceroller":
                 //TODO: finish this
 
-                //int diceRollerBet = event.getOption("amount").getAsInt();
-                //String diceRollerChoice = event.getOption("choice").getAsString();
+                String choice = event.getOption("choice").getAsString();
+                int bet = event.getOption("amount").getAsInt();
 
-                //DiceRollerGame diceRollerGame = new DiceRollerGame(diceRollerChoice, event.getUser().getAsTag());
+                //TODO: convert choice to either higher or lower based on what it is.
+
+                Random rand = new Random();
+
+                int roll = (rand.nextInt(6) + 1) + (rand.nextInt(6) + 1);
+
+                String response = "You rolled a " + roll + ", and guessed it would be " + choice + " than 7.";
+
+                //TODO: make the player winning or losing affect their coins or whatever they are betting
+                if(roll > 7){
+                    if(choice.equals("higher")){
+                        response += "\nYou win your bet of " + bet;
+                    } else{
+                        response += "\nYou lose your bet of " + bet;
+                    }
+                } else if(roll < 7){
+                    if(choice.equals("lower")){
+                        response += "\nYou win your bet of " + bet;
+                    } else{
+                        response += "\nYou lose your bet of " + bet;
+                    }
+                } else{
+                    response += "\nYou lose your bet of " + bet + ", damn sevens.";
+                }
+
+                event.reply(response).queue();
         }
         
         

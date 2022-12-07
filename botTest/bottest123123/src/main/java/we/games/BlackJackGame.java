@@ -24,10 +24,10 @@ public class BlackJackGame{
     channel = c;
   }
 
-  public BlackJackGame(MessageChannel channel, String startingPlayerName){
+  public BlackJackGame(MessageChannel c, String startingPlayerName){
     players.add(new BlackJackPlayer(startingPlayerName));
+    channel = c; //might work, not sure.
     playBlackJack();
-    this.channel = channel; //might work, not sure.
   }
   
   private void playBlackJack() {
@@ -43,12 +43,13 @@ public class BlackJackGame{
     //}
 
     do{
-
       setTable();
+      
+      betting();
+      
+ 
 
       showAllHands();
-
-      betting();
 
       for(int i = 0; i < players.size(); i++){
         if(!players.get(i).hasJustJoined()){
@@ -57,130 +58,6 @@ public class BlackJackGame{
       }
 
       dealerTurn();
-      /*
-      Old Code, rewriting
-      deck = new Deck();
-      deck.shuffle();
-      
-      dealer.addCard(deck.dealTopCard());
-      dealer.addCard(deck.dealTopCard());
-      //deals the dealer's two cards
-  
-      for(int i = 0; i < players.size(); i++){
-        System.out.print(players.get(i).getName() + ", you have " + players.get(i).getPoints() + " points, make your bet: ");
-  
-        do{
-          choice = input.nextLine();
-          try{
-            if(Integer.parseInt(choice) < MINBET || Integer.parseInt(choice) > players.get(i).getPoints() || Integer.parseInt(choice) > MAXBET){
-              System.out.print("Minumum bet is 2, maximum bet is 500. Don't bet more than you have!\nPlease reenter response: ");
-            } else{
-              players.get(i).bet(Integer.parseInt(choice));
-            }
-          } catch(Exception e){
-            System.out.print("Invalid Response.\nPlease reenter response: ");
-          }
-        } while(players.get(i).getBet() == 0);
-      }
-  
-      System.out.println("Dealers's cards:");
-      System.out.println("Unknown\n" + dealer.getCard(1));
-      System.out.println();
-
-      for(int i = 0; i < players.size(); i++){
-        //try{
-          //Thread.sleep(1400);
-        //}catch(Exception e){
-          //System.out.print("Error");
-        //}
-        
-        players.get(i).addCard(deck.dealTopCard());
-        players.get(i).addCard(deck.dealTopCard());
-        
-        System.out.println(players.get(i).getName() + "'s hand:");
-        printHand(players.get(i).getHand());
-
-        
-      }
-        //try{
-          //Thread.sleep(1700);
-        //} catch(Exception e){
-          //System.out.println("Error");
-        //}
-  
-      if(dealer.getCard(1).getFace() == 1){
-        System.out.println("The dealer is showing an ace.");
-        for(int i = 0; i < players.size(); i++){
-          do{
-            System.out.print(players.get(i).getName() + ", would you like to make an insurence bet? (Y/N) ");
-            choice = input.nextLine();
-            if(choice.equalsIgnoreCase("Y")){
-              players.get(i).bet((int)(players.get(i).getBet()/2));
-              if(dealer.getScore() == 21){
-                players.get(i).payBet();
-              } else{
-                players.get(i).loseBet();
-              }
-              players.get(i).bet(players.get(i).getBet()*2);
-              //rounding might be annoying here, but hopefully ill remember to fix it 
-            }
-          }while(!(choice.equalsIgnoreCase("Y") || choice.equalsIgnoreCase("N")));
-        }
-        if(dealer.getScore() != 21){
-          System.out.println("Dealer does not have black jack.\n");
-          //try{
-            //Thread.sleep(1700);
-          //} catch(Exception e){
-            //System.out.println("I don't even know how this one happened");
-          //}
-        }
-      }
-  
-      for(int i = 0; i < players.size(); i++){
-        
-       
-        
-        if(dealer.getScore() == 21){
-          System.out.println("Dealer has blackjack!");
-          if(players.get(i).getScore() == 21){
-            
-            System.out.println(players.get(i).getName() + "'s bet of " + players.get(i).getBet() + " has been pushed.");
-            players.get(i).resetBet();
-          } else{
-            System.out.println(players.get(i).getName() + " has lost their bet of " + players.get(i).getBet());
-            players.get(i).loseBet();
-          }
-          
-        } else{        
-          if(players.get(i).getScore() == 21){
-            System.out.println("Blackjack! " + players.get(i).getName() + "'s bet is payed 3:2");
-            players.get(i).blackJack();
-            //try{
-              //Thread.sleep(4000);
-            //} catch(Exception e){
-              //System.out.println("The door's righ- wait this is a console of text.");
-            //}
-          } else{
-            playerTurn(players.get(i));
-          }
-        }
-      }
-      dealerTurn();
-      
-      for(int i = 0; i < players.size(); i++){
-        calcBet(players.get(i));
-        players.get(i).clearHand();
-      }
-      dealer.clearHand();
-      //clears every player's hand, including the dealer's
-
-      //try{
-        //Thread.sleep(7777);
-        //There is absolutly nothing significant with this number
-      //} catch(Exception e){
-        //System.out.println("Error");
-      //}
-      */
     
     } while(playersArePlaying());
     //input.close();
@@ -204,7 +81,7 @@ public class BlackJackGame{
       
       if(p.isPlaying()){
         //System.out.println("Your hand:");
-        DiscordBot.message("p.getName()"
+        DiscordBot.message(p.getName()
         + "'s turn with "
         + p.getScore()
         + " and "
@@ -309,8 +186,9 @@ public class BlackJackGame{
       System.out.println("Error");
     }
     */
-    //DEFINITLY re-add a wait between the dealer drawing cards. It is increadible anticlimatic otherwise
-    System.out.println("Dealers hand:");
+    //TODO: DEFINITLY re-add a wait between the dealer drawing cards. It is increadible anticlimatic otherwise
+    //System.out.println("Dealers hand:");
+    DiscordBot.message("dealer's hand: ", channel);
     printHand(dealer.getHand());
     if(dealer.getScore() > 21){
       System.out.println("Dealer busts with " + dealer.getScore());
@@ -474,10 +352,12 @@ public class BlackJackGame{
 
   private void showAllHands(){
     for(int i = 0; i < players.size(); i++){
-      System.out.println(players.get(i).getName() + "'s hand:");
+      //System.out.println(players.get(i).getName() + "'s hand:");
+      DiscordBot.message(players.get(i).getName() + "'s hand:", channel);
       printHand(players.get(i).getHand());
       if(!players.get(i).getSplitHand().isEmpty()){
-        System.out.println(players.get(i).getName() + "'s split hand:");
+        //System.out.println(players.get(i).getName() + "'s split hand:");
+        DiscordBot.message(players.get(i).getName() + "'s split hand:", channel);
         printHand(players.get(i).getSplitHand());
       }
     }
@@ -526,9 +406,10 @@ public class BlackJackGame{
       name = players.get(i).getName();
 
       DiscordBot.message(name + ", make your bet.", channel);
-      //don't know how we will get the bot to listen to massages in here.
-      //we could have a /bet command in CommandManaager maybe?
-      //idk
+      //TODO: get bets
+
+      //choice = "";
+      //while(choice.equals("")){}
     }
   }
 

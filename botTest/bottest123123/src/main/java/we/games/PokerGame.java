@@ -1,8 +1,8 @@
 package we.games;
 
-import java.util.Scanner;
-
 import we.arefarmers.DiscordBot;
+
+import java.util.Scanner;
 
 import java.util.ArrayList;
 
@@ -39,14 +39,14 @@ public class PokerGame {
   }
 
   public PokerGame(String startingPlayerName, MessageChannel channel){
-    setTable(startingPlayerName);
+    createTable(startingPlayerName);
     this.channel = channel;
   }
 
   private void createTable(String startingPlayerName){
     players.add(new PokerPlayer(STARTCHIPS, startingPlayerName));
 
-    DiscordBot.message("waiting for player to join...\nType /join to join " + startingPlayerName);
+    DiscordBot.message("waiting for player to join...\nType /join to join " + startingPlayerName, channel);
     //TODO: make the bot wait for another player to join
   }
 
@@ -482,5 +482,11 @@ public class PokerGame {
       return true;
     }
     return false;
+  }
+  public MessageChannel getChannel(){
+    return channel;
+  }
+  public ArrayList<PokerPlayer> getPlayers(){
+    return players;
   }
 }

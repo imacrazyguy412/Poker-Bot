@@ -1,6 +1,5 @@
 package we.arefarmers.commands;
 
-import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 //import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
@@ -11,15 +10,17 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import we.games.*;
+
 
 import java.util.List;
+import java.util.Random;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import we.games.*;
 
+//import we.arefarmers.DiscordBot;
+import we.games.*;
 
 
 public class CommandManager extends ListenerAdapter {
@@ -57,8 +58,12 @@ public class CommandManager extends ListenerAdapter {
                 String blackJackStartingPlayerTag = event.getUser().getAsTag();
                 //changed to getAsTag() because it works better with the code
                 event.reply("Starting BlackJack").queue();
-                MessageChannel blackJackChannel = event.getChannel();
-                blackJackGames.add(new BlackJackGame(blackJackChannel, blackJackStartingPlayerTag));
+                //MessageChannel blackJackChannel = event.getChannel();
+                blackJackGames.add(new BlackJackGame(event.getChannel(), blackJackStartingPlayerTag));
+
+                
+
+                //DiscordBot.message("ur mom", event.getChannel());
                 break;
 
             case "blackjackbet":
@@ -99,7 +104,7 @@ public class CommandManager extends ListenerAdapter {
                 int pokerGame;
                 int pokerBetAmount = event.getOption("amount").getAsInt();
                 
-                pokerGame = pokerGames.indexOf(new PokerGame(event.getChannel));
+                pokerGame = pokerGames.indexOf(new PokerGame(event.getChannel()));
 
                 if(pokerGame == -1){
                     event.reply("There's no game in here!").setEphemeral(true).queue();
@@ -177,7 +182,7 @@ public class CommandManager extends ListenerAdapter {
         commandData.add(Commands.slash("playpoker", "I sure can't wait to do some poker"));
 
         //pokerbet command
-        OptionData pokerBet = new OptionData(OpionType.INTEGER, "amount", "the amount you want to bet");
+        OptionData pokerBet = new OptionData(OptionType.INTEGER, "amount", "the amount you want to bet");
         commandData.add(Commands.slash("pokerbet", "Place a bet (Poker)").addOptions(pokerBet));
 
         //diceroller command

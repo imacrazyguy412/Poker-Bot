@@ -1,6 +1,6 @@
 package we.arefarmers.commands;
 
-import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+//import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 //import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -30,6 +30,8 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
+        int gameInstance;
+
         String command = event.getName();
         switch (command){
             case "welcome":
@@ -67,25 +69,24 @@ public class CommandManager extends ListenerAdapter {
                 break;
 
             case "blackjackbet":
-                int blackJackGame;
                 int blackJackBetAmount = event.getOption("amount").getAsInt();
 
                 //get the instance of the game being played
-                blackJackGame = blackJackGames.indexOf(new BlackJackGame(event.getChannel()));
+                gameInstance = blackJackGames.indexOf(new BlackJackGame(event.getChannel()));
 
                 //check if there is a game being played
-                if(blackJackGame == -1){
+                if(gameInstance == -1){
                     event.reply("There's no game in here!").setEphemeral(true).queue();
                 } else{
                     int player;
 
                     //checks if the person is a player in the game
-                    player = blackJackGames.get(blackJackGame).getPlayers().indexOf(new BlackJackPlayer(event.getUser().getAsTag()));
+                    player = blackJackGames.get(gameInstance).getPlayers().indexOf(new BlackJackPlayer(event.getUser().getAsTag()));
                     if(player == -1){
                         event.reply("You're not in the game, type /join to join it.").setEphemeral(true).queue();
                     } else{ //TODO: add a check to make sure it is the player's turn to bet
                         //pass the option blackJackBet into the specific instance of BlackJackGame in the event channel
-                        blackJackGames.get(blackJackGame).setChoice(blackJackBetAmount + "");
+                        blackJackGames.get(gameInstance).setChoice(blackJackBetAmount + "");
                     }
 
                 }
@@ -100,25 +101,49 @@ public class CommandManager extends ListenerAdapter {
 
             case "pokerbet":
                 event.reply("Currently Testing").setEphemeral(true).queue();
-
-                int pokerGame;
                 int pokerBetAmount = event.getOption("amount").getAsInt();
                 
-                pokerGame = pokerGames.indexOf(new PokerGame(event.getChannel()));
+                gameInstance = pokerGames.indexOf(new PokerGame(event.getChannel()));
 
-                if(pokerGame == -1){
+                if(gameInstance == -1){
                     event.reply("There's no game in here!").setEphemeral(true).queue();
                 } else{
                     int player;
 
-                    player = pokerGames.get(pokerGame).getPlayers().indexOf(new PokerPlayer(event.getUser().getAsTag()));
+                    player = pokerGames.get(gameInstance).getPlayers().indexOf(new PokerPlayer(event.getUser().getAsTag()));
                     if(player == -1){
                         event.reply("You're not in the game, type /join to join it.").setEphemeral(true).queue();
                     } else{ //TODO: add a check to make sure it is the player's turn to bet
                         //pass the option pokerBet into the specific instance of PokerGame in the event channel
-                        pokerGames.get(pokerGame).setChoice(pokerBetAmount + "");
+                        pokerGames.get(gameInstance).setChoice(pokerBetAmount + "");
                     }
                 }
+                break;
+
+            case "showhand":
+                gameInstance = pokerGames.indexOf(new PokerGame(event.getChannel()));
+
+                if(gameInstance == -1){
+                    event.reply("There's no game in here!").setEphemeral(true).queue();
+                } else{
+                    int player;
+
+                    player = pokerGames.get(gameInstance).getPlayers().indexOf(new PokerPlayer(event.getUser().getAsTag()));
+                    if(player == -1){
+                        event.reply("You're not in the game, type /join to join it.").setEphemeral(true).queue();
+                    } else{
+                        String hand = "";
+
+                        //for(Card card : pokerGames.get(gameInstance).getPlayers().get(player).getHand()){
+                            //hand += card.toString() + "\n";
+                        //}
+                        hand += pokerGames.get(gameInstance).getPlayers().get(player).getHand().get(0).toString() + "\n";
+
+
+                        event.reply(hand).setEphemeral(true).queue();
+                    }
+                }
+                break;
 
             
 
@@ -184,6 +209,9 @@ public class CommandManager extends ListenerAdapter {
         //pokerbet command
         OptionData pokerBet = new OptionData(OptionType.INTEGER, "amount", "the amount you want to bet");
         commandData.add(Commands.slash("pokerbet", "Place a bet (Poker)").addOptions(pokerBet));
+
+        //showhand command
+        commandData.add(Commands.slash("showhand", "Look at your hand in poker (don't worry, only you can see it)"));
 
         //diceroller command
         OptionData diceRollerBet = new OptionData(OptionType.INTEGER, "amount", "The amoumnt you want to bet", true);

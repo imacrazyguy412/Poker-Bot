@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import we.arefarmers.commands.CommandManager;
 
 
-public class BlackJackGame{
+public class BlackJackGame implements Runnable{
   //private Scanner input = new Scanner(System.in);
   private ArrayList<BlackJackPlayer> players = new ArrayList<BlackJackPlayer>();
   //private BlackJackPlayer tempPlayer;
@@ -27,10 +27,10 @@ public class BlackJackGame{
   public BlackJackGame(MessageChannel c, String startingPlayerName){
     players.add(new BlackJackPlayer(startingPlayerName));
     channel = c; //might work, not sure.
-    playBlackJack();
+    //playBlackJack();
   }
   
-  private void playBlackJack() {
+  public void run(){
     deck = new Deck();
     //String choice;
 

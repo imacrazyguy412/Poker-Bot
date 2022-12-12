@@ -100,7 +100,13 @@ public class CommandManager extends ListenerAdapter {
             //poker commands
             case "playpoker":
                 event.reply("Currently Testing").setEphemeral(true).queue();
-                new PokerGame(event.getUser().getAsTag(), event.getChannel());
+                PokerGame tempPokerGame = new PokerGame(event.getChannel(), event.getUser().getAsTag());
+
+                Thread pokerGame = new Thread(tempPokerGame);
+
+                pokerGames.add(tempPokerGame);
+
+                pokerGame.start();
                 break;
 
             case "pokerbet":

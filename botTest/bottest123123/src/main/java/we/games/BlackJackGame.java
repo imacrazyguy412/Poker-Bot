@@ -68,6 +68,10 @@ public class BlackJackGame{
     //should remove itself from the arrayList in CommandManager
   }
 
+  /**
+   * 
+   * @param p
+   */
   private void playerTurn(BlackJackPlayer p){
 
     do{

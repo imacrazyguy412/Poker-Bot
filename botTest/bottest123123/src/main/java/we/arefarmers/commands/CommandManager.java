@@ -10,7 +10,10 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
 import java.util.List;
 import java.util.Random;
@@ -180,6 +183,21 @@ public class CommandManager extends ListenerAdapter {
                 }
 
                 event.reply(response).queue();
+                break;
+            
+
+            case "buttontest":
+            MessageCreateData message = new MessageCreateBuilder()
+            .addContent("Here is ur button, stupid.")
+            .addComponents(
+                ActionRow.of(Button.danger("blow-up", "Blow thyself into smithereens"), Button.success("nut", "Nut.")))
+                .build();
+
+                System.out.println("ur mom");
+                event.getChannel().sendMessage(message).queue();
+                
+            break;
+                
         }
         
         
@@ -217,6 +235,9 @@ public class CommandManager extends ListenerAdapter {
         OptionData diceRollerBet = new OptionData(OptionType.INTEGER, "amount", "The amoumnt you want to bet", true);
         OptionData diceRollerChoice = new OptionData(OptionType.STRING, "choice", "Enter \"higher\" or \"lower\"", true);
         commandData.add(Commands.slash("diceroller", "Gamble if 2d6 will roll above or below 7").addOptions(diceRollerBet, diceRollerChoice));
+
+        //button test command
+        commandData.add(Commands.slash("buttontest", "test the button"));
 
         event.getGuild().updateCommands().addCommands(commandData).queue();
     }

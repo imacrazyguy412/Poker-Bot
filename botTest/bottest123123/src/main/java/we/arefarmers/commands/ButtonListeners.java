@@ -34,12 +34,11 @@ public class ButtonListeners extends ListenerAdapter{
         String id = e.getButton().getId();
 
         if(id.equals("blow-up")){
-
-            e.getChannel().sendMessage(e.getUser().getAsTag() + " Blew themself up! :coolpepe::emoji_502:").queue();
-        } else if(id.equals("nut")){
-            e.getChannel().sendMessage("uuhhhh").queue();
-        } else{
-            e.getChannel().sendMessage("how").queue();
+            e.reply(e.getUser().getAsMention() + " Blew themself up! :clown::clown::clown:").queue();
+        } else if(id.equals("easy")){
+            e.reply("That was easy.").queue();
+        } else {
+            e.reply("this button no longer exists idiot");
         }
     }
 }

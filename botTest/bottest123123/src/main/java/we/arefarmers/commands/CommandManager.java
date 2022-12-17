@@ -187,15 +187,15 @@ public class CommandManager extends ListenerAdapter {
             
 
             case "buttontest":
+            System.out.println("button tested");
             MessageCreateData message = new MessageCreateBuilder()
             .addContent("Here is ur button, stupid.")
             .addComponents(
-                ActionRow.of(Button.danger("blow-up", "Blow thyself into smithereens"), Button.success("nut", "Nut.")))
+                ActionRow.of(Button.danger("blow-up", "Blow thyself into smithereens"), Button.success("easy", "EZ")))
                 .build();
 
                 System.out.println("ur mom");
-                event.getChannel().sendMessage(message).queue();
-                
+                event.reply(message).queue();
             break;
                 
         }

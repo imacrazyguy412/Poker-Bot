@@ -64,10 +64,18 @@ public class Card {
   }
 
   /**
-    Gives the suit of the card
-
-    Returns: an integer
-  */
+   * Returns the suit of the card
+   * <p>
+   * <pre>
+   * The suit is stored as in integer where 
+   * 1: Clubs
+   * 2: Diamonds
+   * 3: Hearts
+   * 4: Spades
+   * </pre>
+   * 
+   * @return suit -- the suit of the card as an int
+   */
   public int getSuit(){
     return suit;
   }

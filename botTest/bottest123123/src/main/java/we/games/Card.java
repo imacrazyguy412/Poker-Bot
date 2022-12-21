@@ -5,18 +5,21 @@ public class Card {
   private int face = -1;
 
   /**
-    Creates a card with a suit stored 1-4 from the 1st perameter and a face value of the 2nd perameter
-  */
+   * Creates a card with a suit s and face value f
+   * 
+   * @param s -- the suit of the card. 1 is Clubs, 2 is Diamonds, 3 is Hearts, and 4 is Spades
+   * @param f -- the face value of the card
+   */
   public Card(int s, int f){
     suit = s;
     face = f;
   }
 
   /**
-    Gives a string in the format of "Face of Suit"
-
-    Returns: a String 
-  */
+   * Gives a string in the format of "Face of Suit"
+   *
+   * @return String -- the card as a String 
+   */
   @Override
   public String toString(){
     String suitStr = "Error";
@@ -52,19 +55,27 @@ public class Card {
   }
 
   /**
-    Gives the face of the card
-
-    Returns: an integer
-  */
+   * Returns the face value of the card
+   * 
+   * @return face -- the face value of the card
+   */
   public int getFace(){
     return face;
   }
 
   /**
-    Gives the suit of the card
-
-    Returns: an integer
-  */
+   * Returns the suit of the card
+   * <p>
+   * <pre>
+   * The suit is stored as in integer where 
+   * 1: Clubs
+   * 2: Diamonds
+   * 3: Hearts
+   * 4: Spades
+   * </pre>
+   * 
+   * @return suit -- the suit of the card as an int
+   */
   public int getSuit(){
     return suit;
   }

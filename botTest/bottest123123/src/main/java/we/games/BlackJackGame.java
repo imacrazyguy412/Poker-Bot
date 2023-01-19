@@ -15,6 +15,7 @@ import java.util.TimerTask;
 
 public class BlackJackGame implements Runnable{
   public static final int MAXBET = 500, MINBET = 2;
+  private Thread thread;
   private Timer clock;
   //private Scanner input = new Scanner(System.in);
   private ArrayList<BlackJackPlayer> players = new ArrayList<BlackJackPlayer>();
@@ -34,6 +35,11 @@ public class BlackJackGame implements Runnable{
     players.add(new BlackJackPlayer(startingPlayerName));
     channel = c; //might work, not sure.
     //playBlackJack();
+  }
+
+  public void start(){
+    thread = new Thread(this);
+    thread.start();
   }
 
   public void run(){

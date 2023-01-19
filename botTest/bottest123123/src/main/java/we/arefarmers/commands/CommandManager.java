@@ -60,13 +60,17 @@ public class CommandManager extends ListenerAdapter {
                 
                 //OptionMapping numBlackJackPlayers = event.getOption("amount");
                 //int numPlayers = numBlackJackPlayers.getAsInt();
-                String blackJackStartingPlayerTag = event.getUser().getAsTag();
+                //String blackJackStartingPlayerTag = event.getUser().getAsTag();
                 //changed to getAsTag() because it works better with the code
                 event.reply("Starting BlackJack").queue();
                 //MessageChannel blackJackChannel = event.getChannel();
-                blackJackGames.add(new BlackJackGame(event.getChannel(), blackJackStartingPlayerTag));
+                BlackJackGame tempBlackJackGame = new BlackJackGame(event.getChannel(), event.getUser().getAsTag());
 
-                
+                Thread blackJackGame = new Thread(tempBlackJackGame);
+
+                blackJackGames.add(tempBlackJackGame);
+
+                blackJackGame.start();
 
                 //DiscordBot.message("ur mom", event.getChannel());
                 break;
@@ -99,7 +103,13 @@ public class CommandManager extends ListenerAdapter {
             //poker commands
             case "playpoker":
                 event.reply("Currently Testing").setEphemeral(true).queue();
-                new PokerGame(event.getUser().getAsTag(), event.getChannel());
+                PokerGame tempPokerGame = new PokerGame( event.getUser().getAsTag(), event.getChannel());
+
+                Thread pokerGame = new Thread(tempPokerGame);
+
+                pokerGames.add(tempPokerGame);
+
+                pokerGame.start();
                 break;
 
             case "pokerbet":
@@ -141,6 +151,7 @@ public class CommandManager extends ListenerAdapter {
                             //hand += card.toString() + "\n";
                         //}
                         hand += pokerGames.get(gameInstance).getPlayers().get(player).getHand().get(0).toString() + "\n";
+                        hand += pokerGames.get(gameInstance).getPlayers().get(player).getHand().get(1).toString() + "\n";
 
 
                         event.reply(hand).setEphemeral(true).queue();

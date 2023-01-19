@@ -10,13 +10,14 @@ import java.util.ArrayList;
 import we.arefarmers.commands.CommandManager;
 
 
-public class BlackJackGame{
+public class BlackJackGame implements Runnable{
+  public static final int MAXBET = 500, MINBET = 2;
   //private Scanner input = new Scanner(System.in);
   private ArrayList<BlackJackPlayer> players = new ArrayList<BlackJackPlayer>();
   //private BlackJackPlayer tempPlayer;
   private BlackJackPlayer dealer = new BlackJackPlayer();
   private Deck deck;
-  private static final int MAXBET = 500, MINBET = 2;
+  
   private MessageChannel channel;
   private String choice;
 
@@ -27,10 +28,14 @@ public class BlackJackGame{
   public BlackJackGame(MessageChannel c, String startingPlayerName){
     players.add(new BlackJackPlayer(startingPlayerName));
     channel = c; //might work, not sure.
+    //playBlackJack();
+  }
+
+  public void run(){
     playBlackJack();
   }
   
-  private void playBlackJack() {
+  public void playBlackJack(){
     deck = new Deck();
     //String choice;
 
@@ -154,35 +159,23 @@ public class BlackJackGame{
         default:
           System.out.println("You really fd this didnt ya");
       }
-      
-
-      //if the player stands, the program will wait a bit?
-      //idk I wrote this code when I was dumb and Im still dumb
-      //if(!(choice.equals("stand") || choice.equals("s"))){
-        //try{
-          //Thread.sleep(3000);
-        //} catch(Exception e){
-          //System.out.println("whatever you did, don't");
-        //}
-      //}
-      //except also im removing this until we do the multi threading thing
   }
 
-  //rewrite this
   private void dealerTurn(){
     
-    //try{
-      while(dealer.getScore() < 17){
+    try{
+      do{
         //System.out.println("Dealers hand");
         DiscordBot.message("Dealer's hand:", channel);
+        //TODO: delete previous message with the dealer's hand for cleanliness
         printHand(dealer.getHand());
         //System.out.println(dealer.getScore());
         dealer.addCard(deck.dealTopCard());
-        //Thread.sleep(1700);
-      }
-    //} catch(Exception e){
+        Thread.sleep(1700);
+      }while(dealer.getScore() < 17);
+    } catch(Exception e){
       //System.out.println("Geor- I mean Sean");
-    //}
+    }
     /*
     try{
       Thread.sleep(1700);
@@ -190,13 +183,14 @@ public class BlackJackGame{
       System.out.println("Error");
     }
     */
-    //TODO: DEFINITLY re-add a wait between the dealer drawing cards. It is increadible anticlimatic otherwise
+    //DONE: DEFINITLY re-add a wait between the dealer drawing cards. It is increadible anticlimatic otherwise
     //System.out.println("Dealers hand:");
-    DiscordBot.message("dealer's hand: ", channel);
-    printHand(dealer.getHand());
+    //DiscordBot.message("dealer's hand: ", channel);
+    //printHand(dealer.getHand());
     if(dealer.getScore() > 21){
-      System.out.println("Dealer busts with " + dealer.getScore());
-      System.out.println();
+      DiscordBot.message("Dealer buusts with " + dealer.getScore(), channel);
+      //System.out.println("Dealer busts with " + dealer.getScore());
+      //System.out.println();
     }
   }
 

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 
-public class PokerGame {
+public class PokerGame implements Runnable{
   private static final int STARTCHIPS = 500, SMALLBLIND = 10;
   private int dealer = 0;
 
@@ -41,6 +41,14 @@ public class PokerGame {
   public PokerGame(String startingPlayerName, MessageChannel channel){
     createTable(startingPlayerName);
     this.channel = channel;
+  }
+
+  public void run(){
+    playPoker();
+  }
+
+  public void playPoker(){
+
   }
 
   private void createTable(String startingPlayerName){

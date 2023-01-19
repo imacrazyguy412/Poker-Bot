@@ -449,7 +449,6 @@ public class BlackJackGame{
     return channel;
   }
 
-<<<<<<< Updated upstream
   private void waitForChoice(){
     clock = new Timer();
 
@@ -466,12 +465,11 @@ public class BlackJackGame{
     }
   }
 
-=======
+
   /**
    * passes a {@code String} to {@link #choice}
    * @param s -- {@code String} the string to pass
    */
->>>>>>> Stashed changes
   public void setChoice(String s){
     choice = s.toLowerCase().replaceAll(" ", "");
   }

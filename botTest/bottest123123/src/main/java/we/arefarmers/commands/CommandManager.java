@@ -87,9 +87,16 @@ public class CommandManager extends ListenerAdapter {
                     player = blackJackGames.get(gameInstance).getPlayers().indexOf(new BlackJackPlayer(event.getUser().getAsTag()));
                     if(player == -1){
                         event.reply("You're not in the game, type /join to join it.").setEphemeral(true).queue();
-                    } else{ //TODO: add a check to make sure it is the player's turn to bet
-                        //pass the option blackJackBet into the specific instance of BlackJackGame in the event channel
-                        blackJackGames.get(gameInstance).setChoice(blackJackBetAmount + "");
+                    } else{
+                        int temp = blackJackGames.get(gameInstance).getPlayerToBet();
+
+                        if(temp == -1){
+                            event.reply("It's not time to bet yet.").setEphemeral(true).queue();
+                        } else if(temp == player){
+                            //pass the option blackJackBet into the specific instance of BlackJackGame in the event channel
+                            blackJackGames.get(gameInstance).setChoice(blackJackBetAmount + "");
+                        }
+                        
                     }
 
                 }

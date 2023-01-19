@@ -23,6 +23,7 @@ public class BlackJackGame{
   private static final int MAXBET = 500, MINBET = 2;
   private MessageChannel channel;
   private String choice;
+  private int playerToBet = -1;
 
   public BlackJackGame(MessageChannel c){
     channel = c;
@@ -53,8 +54,8 @@ public class BlackJackGame{
       setTable();
       
       betting();
-      
- 
+
+      dealTable();
 
       showAllHands();
 
@@ -72,6 +73,13 @@ public class BlackJackGame{
     DiscordBot.message("Ending BlackJack Game", channel);
 
     stop();
+  }
+
+  private void dealTable(){
+    for (BlackJackPlayer p : players) {
+      p.addCard(deck.dealRandomCard());
+      p.addCard(deck.dealRandomCard());
+    }
   }
 
   /**
@@ -414,13 +422,17 @@ public class BlackJackGame{
     String name;
     for(int i = 0; i < players.size(); i++){
       name = players.get(i).getName();
+      playerToBet = i;
 
-      DiscordBot.message(name + ", make your bet.", channel);
-      //TODO: get bets
-
-      //choice = "";
-      //while(choice.equals("")){}
+      DiscordBot.message(name + ", make your bet with /bet.", channel);
+      input();
+      DiscordBot.message(name + ", you have bet " + choice + " chips", channel);
     }
+    playerToBet = -1;
+  }
+
+  public int getPlayerToBet(){
+    return playerToBet;
   }
 
   private void clearHasJoinedStatus(){
@@ -437,6 +449,7 @@ public class BlackJackGame{
     return channel;
   }
 
+<<<<<<< Updated upstream
   private void waitForChoice(){
     clock = new Timer();
 
@@ -453,8 +466,25 @@ public class BlackJackGame{
     }
   }
 
+=======
+  /**
+   * passes a {@code String} to {@link #choice}
+   * @param s -- {@code String} the string to pass
+   */
+>>>>>>> Stashed changes
   public void setChoice(String s){
     choice = s.toLowerCase().replaceAll(" ", "");
+  }
+
+  /**
+   * Waits until {@link #setChoice(String)} is called from a seperate {@code Thread}
+   * @see #setChoice(String)
+   */
+  private void input(){
+    choice = "";
+    while(choice.equals("")){
+      //now, we wait
+    }
   }
 
   public ArrayList<BlackJackPlayer> getPlayers(){

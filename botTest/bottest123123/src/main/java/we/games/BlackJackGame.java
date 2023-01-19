@@ -140,7 +140,7 @@ public class BlackJackGame implements Runnable{
       //choice = choice.toLowerCase().replaceAll(" ", "");
       //sets the users choice to lower case so that their choice is registered regardless of capitalization
       //also clears spaces
-
+      input();
       playerChoice(p, choice);
       
     } while(p.isPlaying() || p.splitHandIsPlaying());

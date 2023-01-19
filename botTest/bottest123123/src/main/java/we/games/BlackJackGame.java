@@ -9,8 +9,12 @@ import java.util.ArrayList;
 
 import we.arefarmers.commands.CommandManager;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 public class BlackJackGame{
+  private Timer clock;
   //private Scanner input = new Scanner(System.in);
   private ArrayList<BlackJackPlayer> players = new ArrayList<BlackJackPlayer>();
   //private BlackJackPlayer tempPlayer;
@@ -27,6 +31,9 @@ public class BlackJackGame{
   public BlackJackGame(MessageChannel c, String startingPlayerName){
     players.add(new BlackJackPlayer(startingPlayerName));
     channel = c; //might work, not sure.
+
+    clock = new Timer();
+
     playBlackJack();
   }
   
@@ -64,8 +71,7 @@ public class BlackJackGame{
 
     DiscordBot.message("Ending BlackJack Game", channel);
 
-    CommandManager.blackJackGames.remove(CommandManager.blackJackGames.indexOf(this));
-    //should remove itself from the arrayList in CommandManager
+    stop();
   }
 
   /**
@@ -431,6 +437,22 @@ public class BlackJackGame{
     return channel;
   }
 
+  private void waitForChoice(){
+    clock = new Timer();
+
+    clock.schedule(new TimerTask() {
+      @Override
+      public void run(){
+        stop();
+      }
+    }, 5*60*1000);
+
+    choice = "";
+    while(choice.equals("")){
+      //now, we wait
+    }
+  }
+
   public void setChoice(String s){
     choice = s.toLowerCase().replaceAll(" ", "");
   }
@@ -447,5 +469,11 @@ public class BlackJackGame{
       return true;
     }
     return false;
+  }
+
+  public void stop(){
+    CommandManager.blackJackGames.remove(this);
+
+    //removes itself from the stored games
   }
 }

@@ -9,9 +9,13 @@ import java.util.ArrayList;
 
 import we.arefarmers.commands.CommandManager;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 public class BlackJackGame implements Runnable{
   public static final int MAXBET = 500, MINBET = 2;
+  private Timer clock;
   //private Scanner input = new Scanner(System.in);
   private ArrayList<BlackJackPlayer> players = new ArrayList<BlackJackPlayer>();
   //private BlackJackPlayer tempPlayer;
@@ -20,6 +24,7 @@ public class BlackJackGame implements Runnable{
   
   private MessageChannel channel;
   private String choice;
+  private int playerToBet = -1;
 
   public BlackJackGame(MessageChannel c){
     channel = c;
@@ -32,6 +37,9 @@ public class BlackJackGame implements Runnable{
   }
 
   public void run(){
+
+    clock = new Timer();
+
     playBlackJack();
   }
   
@@ -51,8 +59,8 @@ public class BlackJackGame implements Runnable{
       setTable();
       
       betting();
-      
- 
+
+      dealTable();
 
       showAllHands();
 
@@ -69,8 +77,14 @@ public class BlackJackGame implements Runnable{
 
     DiscordBot.message("Ending BlackJack Game", channel);
 
-    CommandManager.blackJackGames.remove(CommandManager.blackJackGames.indexOf(this));
-    //should remove itself from the arrayList in CommandManager
+    stop();
+  }
+
+  private void dealTable(){
+    for (BlackJackPlayer p : players) {
+      p.addCard(deck.dealRandomCard());
+      p.addCard(deck.dealRandomCard());
+    }
   }
 
   /**
@@ -402,13 +416,17 @@ public class BlackJackGame implements Runnable{
     String name;
     for(int i = 0; i < players.size(); i++){
       name = players.get(i).getName();
+      playerToBet = i;
 
-      DiscordBot.message(name + ", make your bet.", channel);
-      //TODO: get bets
-
-      //choice = "";
-      //while(choice.equals("")){}
+      DiscordBot.message(name + ", make your bet with /bet.", channel);
+      input();
+      DiscordBot.message(name + ", you have bet " + choice + " chips", channel);
     }
+    playerToBet = -1;
+  }
+
+  public int getPlayerToBet(){
+    return playerToBet;
   }
 
   private void clearHasJoinedStatus(){
@@ -425,8 +443,40 @@ public class BlackJackGame implements Runnable{
     return channel;
   }
 
+  private void waitForChoice(){
+    clock = new Timer();
+
+    clock.schedule(new TimerTask() {
+      @Override
+      public void run(){
+        stop();
+      }
+    }, 5*60*1000);
+
+    choice = "";
+    while(choice.equals("")){
+      //now, we wait
+    }
+  }
+
+
+  /**
+   * passes a {@code String} to {@link #choice}
+   * @param s -- {@code String} the string to pass
+   */
   public void setChoice(String s){
     choice = s.toLowerCase().replaceAll(" ", "");
+  }
+
+  /**
+   * Waits until {@link #setChoice(String)} is called from a seperate {@code Thread}
+   * @see #setChoice(String)
+   */
+  private void input(){
+    choice = "";
+    while(choice.equals("")){
+      //now, we wait
+    }
   }
 
   public ArrayList<BlackJackPlayer> getPlayers(){
@@ -441,5 +491,11 @@ public class BlackJackGame implements Runnable{
       return true;
     }
     return false;
+  }
+
+  public void stop(){
+    CommandManager.blackJackGames.remove(this);
+
+    //removes itself from the stored games
   }
 }

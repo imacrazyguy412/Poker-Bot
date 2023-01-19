@@ -9,9 +9,8 @@ import javax.security.auth.login.LoginException;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
-import we.arefarmers.commands.ButtonListeners;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import we.arefarmers.commands.CommandManager;
 import we.arefarmers.listeners.Listeners;
 
@@ -23,9 +22,10 @@ public class DiscordBot
     public static void main( String[] args ) throws LoginException, InterruptedException
     {
 
-        bot = JDABuilder.createDefault(Poop.id)
+        bot = JDABuilder.createDefault("MTAzODg2MzI4MDIzMzUxMzAyMQ.GEPqfT.xmBzKgL6tVkjb3xJ1ItrLeEbYQnVF-E5fm0zvE")
+        .enableIntents(GatewayIntent.MESSAGE_CONTENT)
         .setActivity(Activity.playing("with your mom"))
-        .addEventListeners(new Listeners(), new CommandManager(), new ButtonListeners())
+        .addEventListeners(new Listeners(), new CommandManager())
         .build();
     }
 

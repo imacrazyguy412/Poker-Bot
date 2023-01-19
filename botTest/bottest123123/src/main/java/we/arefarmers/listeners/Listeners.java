@@ -8,7 +8,8 @@ public class Listeners extends ListenerAdapter {
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent e) {
         if(!e.getAuthor().isBot()){
-            
+            String message = e.getMessage().getContentRaw();
+            System.out.println(message);
         }
 
     }

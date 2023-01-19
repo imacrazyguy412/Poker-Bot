@@ -184,7 +184,7 @@ public class BlackJackGame implements Runnable{
     //DiscordBot.message("dealer's hand: ", channel);
     //printHand(dealer.getHand());
     if(dealer.getScore() > 21){
-      DiscordBot.message("Dealer buusts with " + dealer.getScore());
+      DiscordBot.message("Dealer buusts with " + dealer.getScore(), channel);
       //System.out.println("Dealer busts with " + dealer.getScore());
       //System.out.println();
     }

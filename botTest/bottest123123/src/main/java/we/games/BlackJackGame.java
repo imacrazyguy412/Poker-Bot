@@ -9,14 +9,10 @@ import java.util.ArrayList;
 
 import we.arefarmers.commands.CommandManager;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 
 public class BlackJackGame implements Runnable{
   public static final int MAXBET = 500, MINBET = 2;
   private Thread thread;
-  private Timer clock;
   //private Scanner input = new Scanner(System.in);
   private ArrayList<BlackJackPlayer> players = new ArrayList<BlackJackPlayer>();
   //private BlackJackPlayer tempPlayer;
@@ -43,9 +39,6 @@ public class BlackJackGame implements Runnable{
   }
 
   public void run(){
-
-    clock = new Timer();
-
     playBlackJack();
   }
   

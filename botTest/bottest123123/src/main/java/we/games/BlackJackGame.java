@@ -44,32 +44,25 @@ public class BlackJackGame implements Runnable{
   
   public void playBlackJack(){
     deck = new Deck();
-    //String choice;
-
-    //for(int i = 0; i < numPlayers; i++){
-      //System.out.print("Player " + (i+1) + ", what is your name? ");
-      //DiscordBot.message("Player" + (i + 1) + ", type /join to join");
-      //might change
-      //tempPlayer = new BlackJackPlayer(input.nextLine());
-      //players.add(tempPlayer);
-    //}
 
     do{
       setTable();
       
       betting();
 
-      dealTable();
+      //showAllHands();
 
-      showAllHands();
-
-      for(int i = 0; i < players.size(); i++){
-        if(!players.get(i).hasJustJoined()){
-          playerTurn(players.get(i));
+      DiscordBot.message("Dealer's cards: \nUnknown\n" + dealer.getCard(1).toString(), channel);
+      for (BlackJackPlayer p : players) {
+        if(!p.hasJustJoined()){
+          playerTurn(p);
         }
       }
 
       dealerTurn();
+
+
+      break; //temp
     
     } while(playersArePlaying());
     //input.close();
@@ -77,13 +70,6 @@ public class BlackJackGame implements Runnable{
     DiscordBot.message("Ending BlackJack Game", channel);
 
     stop();
-  }
-
-  private void dealTable(){
-    for (BlackJackPlayer p : players) {
-      p.addCard(deck.dealRandomCard());
-      p.addCard(deck.dealRandomCard());
-    }
   }
 
   /**
@@ -97,7 +83,6 @@ public class BlackJackGame implements Runnable{
       //System.out.println("Dealers's cards:");
       //System.out.println("Unknown\n" + dealer.getCard(1));
       //System.out.println();
-      DiscordBot.message("Dealer's cards: \nUnknown\n" + dealer.getCard(1).toString(), channel);
 
       showAllHands();
       
@@ -131,17 +116,11 @@ public class BlackJackGame implements Runnable{
 
         printHand(p.getSplitHand());
       }
-      
-      //choice = input.nextLine();
-      //add someway for the user to choose
-      //this is gonna involve the command listeners
-      
-      //choice = choice.toLowerCase().replaceAll(" ", "");
-      //sets the users choice to lower case so that their choice is registered regardless of capitalization
-      //also clears spaces
+    
       input();
       playerChoice(p, choice);
       
+
     } while(p.isPlaying() || p.splitHandIsPlaying());
   }
 
@@ -170,41 +149,13 @@ public class BlackJackGame implements Runnable{
           break;
 
         default:
-          System.out.println("You really fd this didnt ya");
+          System.out.println("BlackJackGame.playerChoice() called without proper choice");
       }
   }
 
   private void dealerTurn(){
     
-    try{
-      do{
-        //System.out.println("Dealers hand");
-        DiscordBot.message("Dealer's hand:", channel);
-        //TODO: delete previous message with the dealer's hand for cleanliness
-        printHand(dealer.getHand());
-        //System.out.println(dealer.getScore());
-        dealer.addCard(deck.dealTopCard());
-        Thread.sleep(1700);
-      }while(dealer.getScore() < 17);
-    } catch(Exception e){
-      //System.out.println("Geor- I mean Sean");
-    }
-    /*
-    try{
-      Thread.sleep(1700);
-    } catch(Exception e){
-      System.out.println("Error");
-    }
-    */
-    //DONE: DEFINITLY re-add a wait between the dealer drawing cards. It is increadible anticlimatic otherwise
-    //System.out.println("Dealers hand:");
-    //DiscordBot.message("dealer's hand: ", channel);
-    //printHand(dealer.getHand());
-    if(dealer.getScore() > 21){
-      DiscordBot.message("Dealer buusts with " + dealer.getScore(), channel);
-      //System.out.println("Dealer busts with " + dealer.getScore());
-      //System.out.println();
-    }
+    //TODO: rewrite
   }
 
   private void calcBet(BlackJackPlayer p){
@@ -257,19 +208,22 @@ public class BlackJackGame implements Runnable{
   }
 
   private void printHand(ArrayList<Card> hand){
+    String message = "";
+
     for(int i = 0; i < hand.size(); i++){
       if(players.get(0).getName().equalsIgnoreCase("CarrotCakeツ#8734")){
-        //System.out.println("James of James");
         //easter egg for a friend :)
-        DiscordBot.message("J A M E S", channel);
+        message += "J A M E S\n";
         //still an easter egg lmao
+        //and no, it's not thier real name, dumbass
       } else{
         //System.out.println(hand.get(i));
-        DiscordBot.message(hand.get(i).toString(), channel);
+        message += hand.get(i).toString() + "\n";
       }
       
     }
     //System.out.println();
+    DiscordBot.message(message, channel);
   }
 
   private boolean playersArePlaying(){
@@ -362,18 +316,14 @@ public class BlackJackGame implements Runnable{
   }
 
   private void showAllHands(){
-    for(int i = 0; i < players.size(); i++){
-      //System.out.println(players.get(i).getName() + "'s hand:");
-      DiscordBot.message(players.get(i).getName() + "'s hand:", channel);
-      printHand(players.get(i).getHand());
-      if(!players.get(i).getSplitHand().isEmpty()){
-        //System.out.println(players.get(i).getName() + "'s split hand:");
-        DiscordBot.message(players.get(i).getName() + "'s split hand:", channel);
-        printHand(players.get(i).getSplitHand());
+    for(BlackJackPlayer p : players){
+      DiscordBot.message(p.getName() + "'s hand:", channel);
+      printHand(p.getHand());
+      if(!p.getSplitHand().isEmpty()){
+        DiscordBot.message(p.getName() + "'s split hand:", channel);
+        printHand(p.getSplitHand());
       }
     }
-    //Clears the console and prints all players current hands. Just here for cleanliness
-    //doesnt clear the console anymore, just for ugliness (and also because its a discord bot)
   }
 
   private void setTable(){

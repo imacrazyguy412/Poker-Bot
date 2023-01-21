@@ -75,7 +75,7 @@ public class CommandManager extends ListenerAdapter {
 
             case "blackjackbet":
                 int blackJackBetAmount = event.getOption("amount").getAsInt();
-
+                event.deferReply();
                 //get the instance of the game being played
                 gameInstance = blackJackGames.indexOf(new BlackJackGame(event.getChannel()));
                 System.out.println("gameInstance: " + gameInstance);
@@ -88,6 +88,9 @@ public class CommandManager extends ListenerAdapter {
 
                     //checks if the person is a player in the game
                     player = blackJackGames.get(gameInstance).getPlayers().indexOf(new BlackJackPlayer(event.getUser().getAsTag()));
+
+                    System.out.println("Player: " + player);
+
                     if(player == -1){
                         event.reply("You're not in the game, type /join to join it.").setEphemeral(true).queue();
                     } else{
@@ -98,6 +101,7 @@ public class CommandManager extends ListenerAdapter {
                         } else if(temp == player){
                             //pass the option blackJackBet into the specific instance of BlackJackGame in the event channel
                             blackJackGames.get(gameInstance).setChoice(blackJackBetAmount + "");
+                            event.reply("you bet " + blackJackBetAmount).queue();
                         }
                         
                     }

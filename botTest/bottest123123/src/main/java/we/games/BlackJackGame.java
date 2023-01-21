@@ -425,7 +425,10 @@ public class BlackJackGame implements Runnable{
       playerToBet = i;
 
       DiscordBot.message(name + ", make your bet with /bet.", channel);
+      System.out.println("pretest");
+      choice = "";
       input();
+      System.out.println("test");
       DiscordBot.message(name + ", you have bet " + choice + " chips", channel);
     }
     playerToBet = -1;
@@ -449,21 +452,6 @@ public class BlackJackGame implements Runnable{
     return channel;
   }
 
-  private void waitForChoice(){
-    clock = new Timer();
-
-    clock.schedule(new TimerTask() {
-      @Override
-      public void run(){
-        stop();
-      }
-    }, 5*60*1000);
-
-    choice = "";
-    while(choice.equals("")){
-      //now, we wait
-    }
-  }
 
 
   /**
@@ -472,6 +460,7 @@ public class BlackJackGame implements Runnable{
    */
   public void setChoice(String s){
     choice = s.toLowerCase().replaceAll(" ", "");
+    System.out.println("chosen: " + choice);
   }
 
   /**
@@ -479,10 +468,18 @@ public class BlackJackGame implements Runnable{
    * @see #setChoice(String)
    */
   private void input(){
-    choice = "";
-    while(choice.equals("")){
-      //now, we wait
+    while(true){
+    try {
+      thread.wait();
+      System.out.println("choice: " + choice);
+    } catch (Exception e) {
+      // TODO: handle exception
     }
+    if(!choice.equals(""))
+    break;
+  }
+
+
   }
 
   public ArrayList<BlackJackPlayer> getPlayers(){

@@ -30,6 +30,7 @@ public class CommandManager extends ListenerAdapter {
 
     public static ArrayList<BlackJackGame> blackJackGames = new ArrayList<BlackJackGame>();
     public static ArrayList<PokerGame> pokerGames = new ArrayList<PokerGame>();
+    public static ArrayList<Spammer> spammers = new ArrayList<Spammer>();
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
@@ -204,6 +205,31 @@ public class CommandManager extends ListenerAdapter {
                 System.out.println("ur mom");
                 event.reply(message).queue();
             break;
+            
+
+            case "spam":
+                String mToSpam = event.getOption("message").getAsString();
+
+                Spammer spammer = new Spammer(mToSpam, event.getChannel());
+                spammers.add(spammer);
+                spammer.start();
+                event.reply("spamming...").setEphemeral(true).queue();
+                break;
+
+            case "relieve":
+                int spIndex = spammers.indexOf(new Spammer(event.getChannel()));
+                
+
+                if(spIndex == -1){
+                    event.reply("no spams in this channel").setEphemeral(true).queue();
+                } else{
+                    spammers.get(spIndex).stop();
+                    spammers.remove(spIndex);
+                    
+                    event.reply("everyone thanks you").queue();
+                }
+                break;
+
                 
         }
         
@@ -245,6 +271,12 @@ public class CommandManager extends ListenerAdapter {
 
         //button test command
         commandData.add(Commands.slash("buttontest", "test the button"));
+
+        //spammer commands
+        OptionData messageToSpam = new OptionData(OptionType.STRING, "message", "the message you want to spam", true);
+        commandData.add(Commands.slash("spam", "spam that one guy").addOptions(messageToSpam));
+
+        commandData.add(Commands.slash("relieve", "everyone will thank you"));
 
         event.getGuild().updateCommands().addCommands(commandData).queue();
     }

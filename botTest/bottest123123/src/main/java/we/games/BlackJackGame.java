@@ -21,7 +21,8 @@ public class BlackJackGame implements Runnable{
   
   private MessageChannel channel;
   private String choice;
-  private int playerToBet = -1;
+
+  private int playerToBet = -1, playerToTurn = -1;
 
   public BlackJackGame(MessageChannel c){
     channel = c;
@@ -53,11 +54,14 @@ public class BlackJackGame implements Runnable{
       //showAllHands();
 
       DiscordBot.message("Dealer's cards: \nUnknown\n" + dealer.getCard(1).toString(), channel);
-      for (BlackJackPlayer p : players) {
+      for (int i = 0; i < players.size(); i++) {
+        BlackJackPlayer p = players.get(i);
+        playerToTurn = i;
         if(!p.hasJustJoined()){
           playerTurn(p);
         }
       }
+      playerToTurn = -1;
 
       dealerTurn();
 
@@ -100,7 +104,6 @@ public class BlackJackGame implements Runnable{
         + "\nEnter /split to split", channel); //also change
         //very long string
 
-        printHand(p.getHand());
       } else if(p.splitHandIsPlaying()){
         //System.out.println("Your hand:");
 
@@ -116,7 +119,8 @@ public class BlackJackGame implements Runnable{
 
         printHand(p.getSplitHand());
       }
-    
+
+      choice = "";
       input();
       playerChoice(p, choice);
       
@@ -125,6 +129,8 @@ public class BlackJackGame implements Runnable{
   }
 
   private void playerChoice(BlackJackPlayer p, String s){
+    System.out.println(s);
+
     switch(s){
         case "w":
         case "hit":
@@ -379,6 +385,10 @@ public class BlackJackGame implements Runnable{
 
   public int getPlayerToBet(){
     return playerToBet;
+  }
+
+  public int getPlayerToTurn(){
+    return playerToTurn;
   }
 
   private void clearHasJoinedStatus(){

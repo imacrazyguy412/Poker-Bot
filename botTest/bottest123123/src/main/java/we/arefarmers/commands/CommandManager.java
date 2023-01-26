@@ -101,7 +101,9 @@ public class CommandManager extends ListenerAdapter {
                         } else if(temp == player){
                             //pass the option blackJackBet into the specific instance of BlackJackGame in the event channel
                             blackJackGames.get(gameInstance).setChoice(blackJackBetAmount + "");
-                            event.reply("you bet " + blackJackBetAmount).queue();
+                            event.reply(event.getUser().getAsMention() + ", you bet " + blackJackBetAmount).queue();
+                        } else{
+                            event.reply("It's not your turn to bet").setEphemeral(true).queue();
                         }
                         
                     }
@@ -109,6 +111,38 @@ public class CommandManager extends ListenerAdapter {
                 }
                 break;
 
+            case "hit":
+                event.deferReply();
+
+                gameInstance = blackJackGames.indexOf(new BlackJackGame(event.getChannel()));
+                System.out.println("gameInstance: " + gameInstance);
+
+                //check if there is a game being played
+                if(gameInstance == -1){
+                    event.reply("There's no game in here!").setEphemeral(true).queue();
+                } else{
+                    int player;
+
+                    //checks if the person is a player in the game
+                    player = blackJackGames.get(gameInstance).getPlayers().indexOf(new BlackJackPlayer(event.getUser().getAsTag()));
+
+                    System.out.println("Player: " + player);
+
+                    if(player == -1){
+                        event.reply("You're not in the game, type /join to join it.").setEphemeral(true).queue();
+                    } else{
+                        int temp = blackJackGames.get(gameInstance).getPlayerToTurn();
+
+                        if(temp == -1){
+                            event.reply("It's not time to hit yet.").setEphemeral(true).queue();
+                        } else if(temp == player){
+                            blackJackGames.get(gameInstance).setChoice("hit");
+                        }
+                        
+                    }
+
+                }
+                break;
 
             //poker commands
             case "playpoker":
@@ -234,6 +268,8 @@ public class CommandManager extends ListenerAdapter {
         //blackjackbet command
         OptionData blackJackBet = new OptionData(OptionType.INTEGER, "amount", "The amount you want to bet", true);
         commandData.add(Commands.slash("blackjackbet", "Place a bet (BlackJack)").addOptions(blackJackBet));
+
+        commandData.add(Commands.slash("hit", "Take a card (Blackjack)"));
 
         //playpoker command
         commandData.add(Commands.slash("playpoker", "I sure can't wait to do some poker"));

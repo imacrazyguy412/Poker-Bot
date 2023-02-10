@@ -1,3 +1,4 @@
 # Poker-Bot
-poker bot we doing except is also plays blackjack
+poker bot we doing except it also plays blackjack
+
 literally nothing works becuase i am lazy

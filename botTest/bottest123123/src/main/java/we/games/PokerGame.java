@@ -6,10 +6,8 @@ import java.util.Scanner;
 
 import java.util.ArrayList;
 
-import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
-
-public class PokerGame implements Runnable{
-  private static final int STARTCHIPS = 500, SMALLBLIND = 10;
+public class PokerGame extends Game{
+  private static final int START_CHIPS = 500, SMALL_BLIND = 10;
   private int dealer = 0;
 
   //private int[] pots;
@@ -30,29 +28,21 @@ public class PokerGame implements Runnable{
   //private PokerPlayer tempPlayer; //IM FKUKING DUMB. its much simpler to not
   //take up space with a temp player
 
-  private MessageChannel channel;
-
-  private String choice;
-
-  public PokerGame(MessageChannel channel){
-    this.channel = channel;
+  public PokerGame(net.dv8tion.jda.api.entities.channel.middleman.MessageChannel channel){
+    super(channel);
   }
 
-  public PokerGame(String startingPlayerName, MessageChannel channel){
+  public PokerGame(String startingPlayerName, net.dv8tion.jda.api.entities.channel.middleman.MessageChannel channel){
+    super(channel);
     createTable(startingPlayerName);
-    this.channel = channel;
   }
 
-  public void run(){
-    playPoker();
-  }
-
-  public void playPoker(){
+  public void play(){
 
   }
 
   private void createTable(String startingPlayerName){
-    players.add(new PokerPlayer(STARTCHIPS, startingPlayerName));
+    players.add(new PokerPlayer(START_CHIPS, startingPlayerName));
 
     DiscordBot.message("waiting for player to join...\nType /join to join " + startingPlayerName, channel);
     //TODO: make the bot wait for another player to join
@@ -478,22 +468,6 @@ public class PokerGame implements Runnable{
   }
   //end of handstrength methods---------------------
 
-  public void setChoice(String str){
-    choice = str;
-  }
-
-  @Override
-  public boolean equals(Object obj){
-    PokerGame p = (PokerGame)(obj);
-
-    if(p.getChannel().equals(this.getChannel())){
-      return true;
-    }
-    return false;
-  }
-  public MessageChannel getChannel(){
-    return channel;
-  }
   public ArrayList<PokerPlayer> getPlayers(){
     return players;
   }

@@ -2,8 +2,7 @@ package we.games;
 
 import java.util.ArrayList;
 
-public class BlackJackPlayer{
-  private int points;
+public class BlackJackPlayer extends Player{
   private int bet;
   private int score;
   private boolean isBust, isStood, hasJustJoined;
@@ -11,12 +10,13 @@ public class BlackJackPlayer{
   private ArrayList<Card> splitHand = new ArrayList<Card>();
   private int splitHandScore;
   private boolean splitHandIsBust, splitHandIsStood;
-  private String name;
 
   /**
    * Constructs an emtpy BlackJackPlayer. Used to make the dealer
    */
-  public BlackJackPlayer(){}
+  public BlackJackPlayer(){
+    super(0, null);
+  }
 
   /**
    * Creats a BlackJackPlayer with the name n
@@ -24,8 +24,7 @@ public class BlackJackPlayer{
    * @param n -- the name of the player as a String
    */
   public BlackJackPlayer(String n){
-    points = 1000;
-    name = n;
+    super(1000, n);
   }
 
   /**
@@ -34,8 +33,7 @@ public class BlackJackPlayer{
    * @param j -- whether or not the player hasJustJoined
    */
   public BlackJackPlayer(String n, boolean j){
-    points = 1000;
-    name = n;
+    super(1000, n);
     hasJustJoined = j;
   }
 
@@ -181,15 +179,6 @@ public class BlackJackPlayer{
   }
 
   /**
-   * Returns the points a player has
-   * 
-   * @return {@code points} -- the amount of points the player has
-   */
-  public int getPoints(){
-    return points;
-  }
-
-  /**
    * Returns the player's hand
    * 
    * @return {@code hand} -- the player's hand as an ArrayList of Cards
@@ -212,14 +201,6 @@ public class BlackJackPlayer{
   public ArrayList<Card> getSplitHand(){
     return splitHand;
   }
-  /**
-   * Returns the name of the player
-   * 
-   * @return {@code name} -- the player's name
-   */
-  public String getName(){
-    return name;
-  }
 
   /**
    * Returns the player's bet
@@ -231,21 +212,21 @@ public class BlackJackPlayer{
   }
 
   /**
-   * Increases the player's points by their bet
+   * Increases the player's chips by their bet
    */
   public void payBet(){
-    points += bet;
+    chips += bet;
   }
 
   /**
-   * Decreases the player's points by their bet
+   * Decreases the player's chips by their bet
    */
   public void loseBet(){
-    points -= bet;
+    chips -= bet;
   }
 
   /**
-   * Resets bet without changing points
+   * Resets bet without changing chips
    */
   public void resetBet(){
     bet = 0;
@@ -255,7 +236,7 @@ public class BlackJackPlayer{
    * Pays the blackjack 1.5 times the bet amount to the player
    */
   public void blackJack(){
-    points += (int)(bet*1.5);
+    chips += (int)(bet*1.5);
   }
 
   /**
@@ -321,15 +302,5 @@ public class BlackJackPlayer{
    */
   public void setJoined(boolean j){
     hasJustJoined = j;
-  }
-
-  @Override
-  public boolean equals(Object obj){
-    BlackJackPlayer p = (BlackJackPlayer)obj;
-
-    if(p.getName().equals(this.getName())){
-      return true;
-    }
-    return false;
   }
 }

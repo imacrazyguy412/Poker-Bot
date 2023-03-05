@@ -3,12 +3,7 @@ package we.games;
 import java.util.ArrayList;
 
 
-public class PokerPlayer{
-
-  /**
-   * the amount of chips the player has
-   */
-  private int chips;
+public class PokerPlayer extends Player{
   //private int blind;
   /**
    * the bet the player has posted this round of betting
@@ -19,16 +14,11 @@ public class PokerPlayer{
    * keeps track of if a player is playing
    */
   private boolean isPlaying;
-  
-  /**
-   * the player's name as a string
-   */
-  String name;
 
   /**
    * the player's hand as an ArrayList of Cards
    */
-  ArrayList<Card> hand;
+  private ArrayList<Card> hand;
 
   /**
    * Creates a player with chips chips and a name of name
@@ -36,8 +26,7 @@ public class PokerPlayer{
    * @param name -- the name of the player
    */
     public PokerPlayer(int chips, String name){
-      this.chips = chips;
-      this.name = name;
+      super(chips, name);
       hand = new ArrayList<Card>();
     }
 
@@ -48,7 +37,7 @@ public class PokerPlayer{
      * @see #equals(Object)
      */
     public PokerPlayer(String name){
-      this.name = name;
+      super(0, name);
     }
 
     /**
@@ -59,25 +48,6 @@ public class PokerPlayer{
      */
     public void placeBet (int bet) {
       chips -= bet;
-    }
-
-    /**
-     * Returns the number of chips a player has
-     * 
-     * @return {@code chips} -- the number of chips the player has
-     */
-    public int getChips(){
-      return chips;
-    }
-
-    /**
-     * Sets a player's chips to c
-     * 
-     * @param c -- the number of chips to set the player's chips to
-     * @see #placeBet(Integer)
-     */
-    public void setChips(int c){
-      chips = c;
     }
 
     /**
@@ -96,15 +66,6 @@ public class PokerPlayer{
      */
     public void setPlayerBet(int b){
       playerBet = b;
-    }
-
-    /**
-     * Returns the name of the player
-     * 
-     * @return {@code name} -- the name of the player
-     */
-    public String getName(){
-      return name;
     }
 
     /**
@@ -148,17 +109,6 @@ public class PokerPlayer{
         //hand.set(j+1, currentValue);
         hand.set(j+1, hand.get(currentValue)); //is this what its meant to be?
       }
-    }
-    
-    
-    @Override
-    public boolean equals(Object obj){
-      PokerPlayer p = (PokerPlayer)obj;
-
-      if(p.getName().equals(this.getName())){
-        return true;
-      }
-      return false;
     }
 
 }

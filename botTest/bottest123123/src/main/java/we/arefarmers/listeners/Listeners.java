@@ -10,7 +10,7 @@ public class Listeners extends ListenerAdapter {
     public void onMessageReceived(@NotNull MessageReceivedEvent e) {
         if(!e.getAuthor().isBot()){
           String message = e.getMessage().getContentRaw();
-          DiscordBot.message(message + ":clown:", e.getChannel());  
+          DiscordBot.message(message + " :clown:", e.getChannel());  
         }
 
     }

@@ -199,7 +199,7 @@ public class BlackJackGame extends Game{
     p.resetBet();
   }
 
-  private void printHand(ArrayList<Card> hand){
+  private void printHand(Hand hand){
     String message = "";
 
     for(int i = 0; i < hand.size(); i++){

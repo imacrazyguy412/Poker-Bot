@@ -6,8 +6,8 @@ public class BlackJackPlayer extends Player{
   private int bet;
   private int score;
   private boolean isBust, isStood, hasJustJoined;
-  private ArrayList<Card> hand = new ArrayList<Card>();
-  private ArrayList<Card> splitHand = new ArrayList<Card>();
+  private Hand hand = new Hand();
+  private Hand splitHand = new Hand();
   private int splitHandScore;
   private boolean splitHandIsBust, splitHandIsStood;
 
@@ -183,7 +183,7 @@ public class BlackJackPlayer extends Player{
    * 
    * @return {@code hand} -- the player's hand as an ArrayList of Cards
    */
-  public ArrayList<Card> getHand(){
+  public Hand getHand(){
     return hand;
   }
 
@@ -198,7 +198,7 @@ public class BlackJackPlayer extends Player{
    * @see #getSplitHand()
    * @see #getSplitScore()
    */
-  public ArrayList<Card> getSplitHand(){
+  public Hand getSplitHand(){
     return splitHand;
   }
 
@@ -245,7 +245,7 @@ public class BlackJackPlayer extends Player{
    * @param hand -- the hand to be calculated
    * @return the value of the hand
    */
-  private static int calcScore(ArrayList<Card> hand){
+  private static int calcScore(Hand hand){
     int aces = 0;
     int handScore = 0;
 

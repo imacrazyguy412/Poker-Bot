@@ -1,8 +1,10 @@
 package we.games;
 
-public class Card {
-  private int suit = -1;
-  private int face = -1;
+public class Card implements Comparable<Card>{
+  public static final String[] suits = {"Clubs", "Diamonds", "Hearts", "Spades"};
+
+  private final int suit;
+  private final int face;
 
   /**
    * Creates a card with a suit s and face value f
@@ -25,22 +27,7 @@ public class Card {
     String suitStr = "Error";
     //if something goes wrong and the card strings are messed up, it will say error
     
-    switch(suit){
-      case 4:
-        suitStr = "Spades";
-        break;
-
-      case 3:
-        suitStr = "Hearts";
-        break;
-
-      case 2:
-        suitStr = "Diamonds";
-        break;
-
-      case 1:
-        suitStr = "Clubs";
-    }
+    suitStr = suits[suit + 1]; //index starts at 0
 
     if(face < 11 && face != 1 && face != 14){
       return face + " of " + suitStr;
@@ -78,5 +65,12 @@ public class Card {
    */
   public int getSuit(){
     return suit;
+  }
+
+  @Override
+  public int compareTo(Card o) {
+    final int thisValue = this.face * 4 + this.suit;
+    final int oValue = o.face * 4 + o.suit;
+    return thisValue - oValue;
   }
 }

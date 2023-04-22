@@ -2,7 +2,6 @@ package we.games;
 
 //import java.util.Scanner;
 
-import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import we.arefarmers.DiscordBot;
 
 import java.util.ArrayList;
@@ -10,40 +9,27 @@ import java.util.ArrayList;
 import we.arefarmers.commands.CommandManager;
 
 
-public class BlackJackGame implements Runnable{
+public class BlackJackGame extends Game{
   public static final int MAXBET = 500, MINBET = 2;
-  private Thread thread;
   //private Scanner input = new Scanner(System.in);
   private ArrayList<BlackJackPlayer> players = new ArrayList<BlackJackPlayer>();
   //private BlackJackPlayer tempPlayer;
   private BlackJackPlayer dealer = new BlackJackPlayer();
   private Deck deck;
   
-  private MessageChannel channel;
-  private String choice;
 
   private int playerToBet = -1, playerToTurn = -1;
 
-  public BlackJackGame(MessageChannel c){
-    channel = c;
+  public BlackJackGame(net.dv8tion.jda.api.entities.channel.middleman.MessageChannel c){
+    super(c);
   }
 
-  public BlackJackGame(MessageChannel c, String startingPlayerName){
+  public BlackJackGame(net.dv8tion.jda.api.entities.channel.middleman.MessageChannel c, String startingPlayerName){
+    super(c);
     players.add(new BlackJackPlayer(startingPlayerName));
-    channel = c; //might work, not sure.
-    //playBlackJack();
-  }
-
-  public void start(){
-    thread = new Thread(this);
-    thread.start();
-  }
-
-  public void run(){
-    playBlackJack();
   }
   
-  public void playBlackJack(){
+  public void play(){
     deck = new Deck();
 
     do{
@@ -53,7 +39,7 @@ public class BlackJackGame implements Runnable{
 
       //showAllHands();
 
-      DiscordBot.message("Dealer's cards: \nUnknown\n" + dealer.getCard(1).toString(), channel);
+      message("Dealer's cards: \nUnknown\n" + dealer.getCard(1).toString());
       for (int i = 0; i < players.size(); i++) {
         BlackJackPlayer p = players.get(i);
         playerToTurn = i;
@@ -71,7 +57,7 @@ public class BlackJackGame implements Runnable{
     } while(playersArePlaying());
     //input.close();
 
-    DiscordBot.message("Ending BlackJack Game", channel);
+    message("Ending BlackJack Game");
 
     stop();
   }
@@ -92,29 +78,29 @@ public class BlackJackGame implements Runnable{
       
       if(p.isPlaying()){
         //System.out.println("Your hand:");
-        DiscordBot.message(p.getName()
+        message(p.getName()
         + "'s turn with "
         + p.getScore()
         + " and "
-        + p.getPoints()
+        + p.getChips()
         + " points. What would you like to do?"
         + "\nEnter /hit to hit" //change to /hit or whatever the command for hitting is
         + "\nEnter /stand to stand" //also change
         + "\nEnter /double to double down" //also change
-        + "\nEnter /split to split", channel); //also change
+        + "\nEnter /split to split"); //also change
         //very long string
 
       } else if(p.splitHandIsPlaying()){
         //System.out.println("Your hand:");
 
-        DiscordBot.message(p.getName()
+        message(p.getName()
         + "'s split hand with "
         + p.getSplitScore()
         + " and "
-        + p.getPoints()
+        + p.getChips()
         + " points. What would you like to do?"
         + "\nEnter /hit to hit" //change to /hit
-        + "\nEnter /stand to stand", channel); //also change
+        + "\nEnter /stand to stand"); //also change
         //long string
 
         printHand(p.getSplitHand());
@@ -229,12 +215,12 @@ public class BlackJackGame implements Runnable{
       
     }
     //System.out.println();
-    DiscordBot.message(message, channel);
+    message(message);
   }
 
   private boolean playersArePlaying(){
     for(int i = 0; i < players.size(); i++){
-      if(players.get(i).getPoints() <= 0){
+      if(players.get(i).getChips() <= 0){
           System.out.println(players.get(i).getName() + " has bust out!");
         players.remove(i);
       }
@@ -280,7 +266,7 @@ public class BlackJackGame implements Runnable{
     } else{
       if(p.getHand().size() != 2){
         System.out.println("You can only split on the first turn.");
-      } else if(p.getPoints() < 2*p.getBet()){
+      } else if(p.getChips() < 2*p.getBet()){
         System.out.println("Not enough points to split.");
       } else if(p.getCard(0).getFace() == p.getCard(1).getFace()){
         p.split();
@@ -303,7 +289,7 @@ public class BlackJackGame implements Runnable{
     } else{
       if(p.getHand().size() != 2){
         System.out.println("You can only double down on the first turn.");
-      } else if(p.getPoints() < 2*p.getBet()){
+      } else if(p.getChips() < 2*p.getBet()){
         System.out.println("Not enough points to double bet");
       } else{
         p.bet(2*p.getBet());
@@ -323,10 +309,10 @@ public class BlackJackGame implements Runnable{
 
   private void showAllHands(){
     for(BlackJackPlayer p : players){
-      DiscordBot.message(p.getName() + "'s hand:", channel);
+      message(p.getName() + "'s hand:");
       printHand(p.getHand());
       if(!p.getSplitHand().isEmpty()){
-        DiscordBot.message(p.getName() + "'s split hand:", channel);
+        message(p.getName() + "'s split hand:");
         printHand(p.getSplitHand());
       }
     }
@@ -373,12 +359,12 @@ public class BlackJackGame implements Runnable{
       name = players.get(i).getName();
       playerToBet = i;
 
-      DiscordBot.message(name + ", make your bet with /bet.", channel);
+      message(name + ", make your bet with /bet.");
       System.out.println("pretest");
       choice = "";
       input();
       System.out.println("test");
-      DiscordBot.message(name + ", you have bet " + choice + " chips", channel);
+      message(name + ", you have bet " + choice + " chips");
     }
     playerToBet = -1;
   }
@@ -401,52 +387,8 @@ public class BlackJackGame implements Runnable{
     players.add(new BlackJackPlayer(n, true));
   }
 
-  public MessageChannel getChannel(){
-    return channel;
-  }
-
-
-
-  /**
-   * passes a {@code String} to {@link #choice}
-   * @param s -- {@code String} the string to pass
-   */
-  public void setChoice(String s){
-    choice = s.toLowerCase().replaceAll(" ", "");
-    System.out.println("chosen: " + choice);
-  }
-
-  /**
-   * Waits until {@link #setChoice(String)} is called from a seperate {@code Thread}
-   * @see #setChoice(String)
-   */
-  private void input(){
-    while(true){
-    try {
-      thread.wait();
-      System.out.println("choice: " + choice);
-    } catch (Exception e) {
-      // TODO: handle exception
-    }
-    if(!choice.equals(""))
-    break;
-  }
-
-
-  }
-
   public ArrayList<BlackJackPlayer> getPlayers(){
     return players;
-  }
-
-  @Override
-  public boolean equals(Object obj){
-    BlackJackGame b = (BlackJackGame)(obj);
-
-    if(b.getChannel().equals(this.getChannel())){
-      return true;
-    }
-    return false;
   }
 
   public void stop(){

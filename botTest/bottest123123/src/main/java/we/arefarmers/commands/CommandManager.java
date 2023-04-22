@@ -73,7 +73,7 @@ public class CommandManager extends ListenerAdapter {
                 //DiscordBot.message("ur mom", event.getChannel());
                 break;
 
-            case "blackjackbet":
+            case "blackjackbet": //TODO: make one bet command that will detect the game in the channel
                 int blackJackBetAmount = event.getOption("amount").getAsInt();
                 event.deferReply();
                 //get the instance of the game being played
@@ -112,7 +112,7 @@ public class CommandManager extends ListenerAdapter {
                 break;
 
             case "hit":
-                event.deferReply();
+                //event.deferReply();
 
                 gameInstance = blackJackGames.indexOf(new BlackJackGame(event.getChannel()));
                 System.out.println("gameInstance: " + gameInstance);
@@ -136,11 +136,13 @@ public class CommandManager extends ListenerAdapter {
                         if(temp == -1){
                             event.reply("It's not time to hit yet.").setEphemeral(true).queue();
                         } else if(temp == player){
+                            event.reply("Here's your card").queue();
                             blackJackGames.get(gameInstance).setChoice("hit");
+                            
+                        } else{
+                            event.reply("It's not your turn").setEphemeral(true).queue();
                         }
-                        
                     }
-
                 }
                 break;
 

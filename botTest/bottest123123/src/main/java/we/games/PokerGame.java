@@ -38,6 +38,45 @@ public class PokerGame extends Game{
   }
 
   public void play(){
+    while(players.size() < 2); //wait until there are enough players
+
+    pokerDeck.shuffle();
+
+    //TODO: blinds
+
+    //The players bet
+    betting();
+
+    //The flop
+    communityCards.add(pokerDeck.dealTopCard());
+    communityCards.add(pokerDeck.dealTopCard());
+    communityCards.add(pokerDeck.dealTopCard());
+
+    //Display the community cards
+    message(communityCards);
+
+    //The players bet again
+    betting();
+
+    //The turn
+    communityCards.add(pokerDeck.dealTopCard());
+
+    //Display the community cards
+    message(communityCards);
+
+    //More betting
+    betting();
+
+    //The river
+    communityCards.add(pokerDeck.dealTopCard());
+
+    //Display the community cards
+    message(communityCards);
+
+    //Final betting
+    betting();
+
+    //TODO: showdown
 
   }
 
@@ -215,7 +254,7 @@ public class PokerGame extends Game{
   private int getWinnerIndex(){
     int winner = 0, winningStrength = 0, currentStrength = 0;
 
-    for(int i = 0; i < players.size(); i++){
+    for(PokerPlayer player : players){
       player.sortHand();
       //sorts the hand first thing
       //mainly for straights, but other checks could use it

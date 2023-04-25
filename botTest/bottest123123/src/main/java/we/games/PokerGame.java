@@ -65,25 +65,27 @@ public class PokerGame extends Game{
     int i = start;
     int bet = 0;
     do{
+      PokerPlayer player = playes.get(i);
       //checks if the player is playing
-      if(players.get(i).isPlaying()){
+      if(player.isPlaying()){
         //if so, it goes through with the player betting
 
-        DiscordBot.message(players.get(i).getName() + ", it is your turn to bet", channel);
+        message(player.getName() + ", it is your turn to bet");
         //TODO: make the bot wait for the player to bet
+        input();
 
-        int playerBet = 0; //temporary
+        int playerBet = Integer.parseUnsignedInt(choice);
 
-        players.get(i).setPlayerBet(playerBet); //TODO: get and set the player's bet
+        player.setPlayerBet(playerBet); //TODO: get and set the player's bet
 
         //makes the player lose the chips
-        players.get(i).placeBet(playerBet);
+        player.placeBet(playerBet);
 
         //checks if the player is betting above what is needed to call
-        if(playerBet - players.get(i).getPlayerBet() > bet){ //this might change
+        if(playerBet - player.getPlayerBet() > bet){ //this might change
           //if they did raise, the last player to bet is adjusted
           if(i > 0){
-            last = i + 1;
+            last = i - 1;
           } else{
             last = players.size() - 1;
           }
@@ -100,9 +102,7 @@ public class PokerGame extends Game{
     } while(i != last);
   }
 
-  //handStrength methods below---------------
-
-  //I fucked a bit with the tab formatting of this comment, so oops
+  //SECTION - hand strength calculation
   /**
    * the method getWinnerIndex() returns the index of the player with the best hand strength.
    * In the event of a tie, idk we'll work that out later
@@ -216,11 +216,11 @@ public class PokerGame extends Game{
     int winner = 0, winningStrength = 0, currentStrength = 0;
 
     for(int i = 0; i < players.size(); i++){
-      players.get(i).sortHand();
+      player.sortHand();
       //sorts the hand first thing
       //mainly for straights, but other checks could use it
 
-      currentStrength = getHandStrength(players.get(i).getHand());
+      currentStrength = getHandStrength(player.getHand());
 
       if(currentStrength > winningStrength){
         winningStrength = currentStrength;
@@ -518,9 +518,20 @@ public class PokerGame extends Game{
 
     return royalFlush;
   }
-  //end of handstrength methods---------------------
+  //!SECTION
 
   public ArrayList<PokerPlayer> getPlayers(){
     return players;
+  }
+
+  /**
+   * Add a player to the game
+   * @param player -- the player to add
+   * @return {@code true} if the addition was needed to start the game, false otherwise
+   */
+  public boolean addPlayer(PokerPlayer player){
+    players.add(player);
+
+    return players.size() == 2;
   }
 }

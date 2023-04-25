@@ -91,7 +91,7 @@ public class PokerPlayer extends Player{
      * 
      * @param b -- whether or not the player is playing
      */
-    public void setIfPlaying(boolean b){
+    public void setIsPlaying(boolean b){
       isPlaying = b;
     }
 

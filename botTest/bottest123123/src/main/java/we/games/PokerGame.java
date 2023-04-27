@@ -2,7 +2,7 @@ package we.games;
 
 import we.arefarmers.DiscordBot;
 
-import java.util.Scanner;
+//import java.util.Scanner;
 
 import java.util.ArrayList;
 
@@ -104,7 +104,7 @@ public class PokerGame extends Game{
     int i = start;
     int bet = 0;
     do{
-      PokerPlayer player = playes.get(i);
+      PokerPlayer player = players.get(i);
       //checks if the player is playing
       if(player.isPlaying()){
         //if so, it goes through with the player betting
@@ -254,7 +254,8 @@ public class PokerGame extends Game{
   private int getWinnerIndex(){
     int winner = 0, winningStrength = 0, currentStrength = 0;
 
-    for(PokerPlayer player : players){
+    for(int i = 0; i < players.size(); i++){
+      PokerPlayer player = players.get(i);
       player.sortHand();
       //sorts the hand first thing
       //mainly for straights, but other checks could use it

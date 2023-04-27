@@ -27,7 +27,7 @@ public class Card implements Comparable<Card>{
     String suitStr = "Error";
     //if something goes wrong and the card strings are messed up, it will say error
     
-    suitStr = suits[suit + 1]; //index starts at 0
+    suitStr = suits[suit - 1]; //index starts at 0
 
     if(face < 11 && face != 1 && face != 14){
       return face + " of " + suitStr;

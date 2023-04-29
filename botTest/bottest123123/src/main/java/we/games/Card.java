@@ -1,5 +1,21 @@
 package we.games;
 
+/**
+ * The {@code Card} class represents a single playing card per instance.
+ * <p>
+ * Each card stores its own suit and face as integers. The cards are displayed as the 
+ * <a href="https://en.wikipedia.org/wiki/French-suited_playing_cards">French Suited</a>,
+ * <a href="https://en.wikipedia.org/wiki/Standard_52-card_deck">Standerd 52-card deck</a>
+ * using the 
+ * <a href=https://en.wikipedia.org/wiki/French-suited_playing_cards#English_pattern>English Pattern</a>.
+ * 
+ * 
+ * @see #getFace()
+ * @see #getSuit()
+ * @see Deck
+ * @see https://en.wikipedia.org/wiki/Playing_card
+ * @apiNote {@link #suit} and {@link #face} are {@code private}. Use their respective get methods to access them
+ */
 public class Card implements Comparable<Card>{
   public static final String[] suits = {"Clubs", "Diamonds", "Hearts", "Spades"};
 
@@ -44,7 +60,7 @@ public class Card implements Comparable<Card>{
   /**
    * Returns the face value of the card
    * 
-   * @return face -- the face value of the card
+   * @return the face value of the card
    */
   public int getFace(){
     return face;
@@ -53,15 +69,16 @@ public class Card implements Comparable<Card>{
   /**
    * Returns the suit of the card
    * <p>
-   * <pre>
-   * The suit is stored as in integer where 
-   * 1: Clubs
-   * 2: Diamonds
-   * 3: Hearts
-   * 4: Spades
-   * </pre>
+   * Gives the suit of the card as an {@code int}. The corrosponding 
+   * suit for the given return value is as follows:
+   * <ol>
+   *  <li>Clubs</li>
+   *  <li>Diamonds</li>
+   *  <li>Hearts</li>
+   *  <li>Spades</li>
+   * </ol>
    * 
-   * @return suit -- the suit of the card as an int
+   * @return the suit of the card
    */
   public int getSuit(){
     return suit;

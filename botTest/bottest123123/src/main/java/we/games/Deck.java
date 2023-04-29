@@ -4,6 +4,13 @@ package we.games;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * Represents a deck of 52 {@link Card} object instances. Jokers are not included.
+ * 
+ * @see Card
+ * @see https://en.wikipedia.org/wiki/Playing_card
+ * @see https://en.wikipedia.org/wiki/Standard_52-card_deck
+ */
 public class Deck{
   private ArrayList<Card> cards = new ArrayList<Card>();
 
@@ -12,7 +19,7 @@ public class Deck{
    */
   public Deck(){
     for(int i = 1; i <= 4; i++){
-      for(int j = 2; j <= 14; j++){ //comment this to store an ace as a 14
+      for(int j = 2; j <= 14; j++){ //uncomment this to store an ace as a 14
       //for(int j = 1; j <= 13; j++){ //uncomment this to store an ace as a 1
         Card tempCard = new Card(i, j);
         cards.add(tempCard);
@@ -27,7 +34,7 @@ public class Deck{
   public Card dealRandomCard(){
     int index = (int)(cards.size()*Math.random());
     Card tempCard = cards.get(index);
-    cards.remove(cards.get(index));
+    cards.remove(index);
 
     return tempCard;
   }

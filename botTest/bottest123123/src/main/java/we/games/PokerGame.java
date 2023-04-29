@@ -10,13 +10,8 @@ public class PokerGame extends Game{
   private static final int START_CHIPS = 500, SMALL_BLIND = 10;
   private int dealer = 0;
 
-  //private int[] pots;
-  //private int currentSidePot = 0;
-  //there will be multiple possible pots. pots[0] will always be the main pot
-  //while other pots in the array will be side pots
-  private ArrayList<Integer> pots = new ArrayList<Integer>();
-  //changed to an arraylist for dynamic size
-  //pots.get(0) should still be the main pot
+  //TODO - side pots
+  private int mainPot;
 
   //this probably isnt gonna work btw, we might need to store pots on the
   //player or as an object
@@ -84,7 +79,13 @@ public class PokerGame extends Game{
     players.add(new PokerPlayer(START_CHIPS, startingPlayerName));
 
     DiscordBot.message("waiting for player to join...\nType /join to join " + startingPlayerName, channel);
-    //TODO: make the bot wait for another player to join
+    while(players.size() < 2){
+      try {
+        thread.wait();
+      } catch (Exception e) {
+        break;
+      }
+    } //wait until there are enough players
   }
 
   private void betting(){
@@ -109,19 +110,25 @@ public class PokerGame extends Game{
       if(player.isPlaying()){
         //if so, it goes through with the player betting
 
-        message(player.getName() + ", it is your turn to bet");
-        //TODO: make the bot wait for the player to bet
+        message(player.getName() + ", it is your turn to bet. The current bet is " + bet + ".\nUse -1 to fold or 0 to call");
         input();
 
-        int playerBet = Integer.parseUnsignedInt(choice);
+        int playerBet = Integer.parseInt(choice);
 
-        player.setPlayerBet(playerBet); //TODO: get and set the player's bet
+        if(playerBet < 0){
+          player.setIsPlaying(false);
+          continue;
+        }
+
+        int totalPlayerBet = playerBet + player.getPlayerBet();
+        player.setPlayerBet(totalPlayerBet); //increases the player's bet by the given amount
 
         //makes the player lose the chips
-        player.placeBet(playerBet);
+        player.placeBet(totalPlayerBet);
 
-        //checks if the player is betting above what is needed to call
-        if(playerBet - player.getPlayerBet() > bet){ //this might change
+        //checks if the player is not calling
+        if(playerBet != 0){
+          bet = totalPlayerBet;
           //if they did raise, the last player to bet is adjusted
           if(i > 0){
             last = i - 1;
@@ -129,14 +136,12 @@ public class PokerGame extends Game{
             last = players.size() - 1;
           }
         }
-
-
-        //loops through
-        if(i < players.size() - 1){
-          i++;
-        } else{
-          i = 0;
-        }
+      }
+      //loops through
+      if(i < players.size() - 1){
+        i++;
+      } else{
+        i = 0;
       }  
     } while(i != last);
   }
@@ -241,8 +246,10 @@ public class PokerGame extends Game{
    * 
    * <hr>
    * 
-   * <b>royal flush:</b> doesnt matter, a player cant get a better royal flush
-   *  than another, so just set to an absurdly high number like 31415926535
+   * <b>royal flush:</b> The suit of the royal flush + 1500000000
+   * <p>
+   * <b>royal flush range:</b> [1500000001, 1500000004]
+   * <p>
    * {@link #checkRoyalFlush(Hand)}
    * 
    * <hr>
@@ -301,13 +308,14 @@ public class PokerGame extends Game{
   }
 
   private static int checkHighCard(Hand h){
-    int highCard = -1;
-    for(int i = 0; i < h.size(); i++){
-      if(h.get(i).getFace() > highCard){
-        //checks through the hand for the highest card
-        highCard = h.get(i).getFace();
-      }
-    }
+    //int highCard = -1;
+    //for(int i = 0; i < h.size(); i++){
+    //  if(h.get(i).getFace() > highCard){
+    //    //checks through the hand for the highest card
+    //    highCard = h.get(i).getFace();
+    //  }
+    //}
+    int highCard = h.get(0).getFace(); //assuming the hand is sorted
     return highCard;
   }
 
@@ -572,6 +580,11 @@ public class PokerGame extends Game{
   public boolean addPlayer(PokerPlayer player){
     players.add(player);
 
-    return players.size() == 2;
+    boolean justStarted = players.size() == 2;
+    if(justStarted){
+      thread.notify();
+    }
+
+    return justStarted;
   }
 }

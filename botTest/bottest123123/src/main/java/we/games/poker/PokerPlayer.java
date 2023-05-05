@@ -1,4 +1,4 @@
-package we.games;
+package we.games.poker;
 
 public class PokerPlayer extends Player{
   //private int blind;

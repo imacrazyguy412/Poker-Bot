@@ -1,5 +1,17 @@
-package we.games;
+package we.games.util;
 
+/**
+ * An instance of a {@link Player} that plays in a {@link Game}
+ * <p>
+ * The {@link Player} class is used as a base for other player
+ * classes that play in games.
+ * <p>
+ * Each player has a name that is used to identify them with
+ * {@link Object#equals(Object)}. The name should be unique, so
+ * discord tags as {@link String}s may be used.
+ * @author That "Inconspicuous" guy
+ * @see Game
+ */
 public abstract class Player {
     /** The amount of chips the player has. Can be left unused */
     protected int chips;

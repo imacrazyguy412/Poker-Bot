@@ -1,4 +1,4 @@
-package we.games;
+package we.games.util;
 
 /**
  * The {@code Card} class represents a single playing card per instance.

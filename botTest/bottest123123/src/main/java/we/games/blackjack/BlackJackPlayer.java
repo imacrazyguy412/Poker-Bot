@@ -1,6 +1,6 @@
-package we.games;
+package we.games.blackjack;
 
-import java.util.ArrayList;
+import we.games.util.*;
 
 public class BlackJackPlayer extends Player{
   private int bet;

@@ -1,5 +1,5 @@
 
-package we.games;
+package we.games.util;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,5 +1,7 @@
 package we.games.poker;
 
+import we.games.util.*;
+
 /**
  * Represents an evaluation of a poker hand
  * <p>
@@ -24,7 +26,7 @@ public class PokerHandEvaluation implements Comparable<PokerHandEvaluation> {
   }
 
   public PokerHandEvaluation(Hand hand){
-    giveHand(hand);
+    
   }
 
   public PokerHandEvaluation(int value){

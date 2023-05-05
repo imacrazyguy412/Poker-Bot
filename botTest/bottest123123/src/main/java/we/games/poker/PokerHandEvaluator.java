@@ -1,9 +1,9 @@
 package we.games.poker;
 
-import we.games.Card;
-import we.games.Hand;
-
 import java.util.ArrayList;
+
+import we.games.util.Card;
+import we.games.util.Hand;
 
 /**
  * PokerHandEvaluator
@@ -179,7 +179,7 @@ public class PokerHandEvaluator {
    */
   public static PokerHandEvaluation sets(Hand hand){
 
-    ArrayList<Hand> sets = new Hand();
+    ArrayList<Hand> sets = new ArrayList<Hand>();
 
     Hand highSet = new Hand(); // the highest set present
 
@@ -196,8 +196,7 @@ public class PokerHandEvaluator {
     
           if(!addedFirst){
             ArrayList<Hand> set = new ArrayList<Hand>();
-            set.add();
-            sets.add();
+            set.add(null);
             addedFirst = true;
           }
 
@@ -220,7 +219,7 @@ public class PokerHandEvaluator {
    * @param h the hand
    * @return the highest card
    */
-  @Depreicated
+  @Deprecated
   private static int checkHighCard(Hand h) {
     // int highCard = -1;
     // for(int i = 0; i < h.size(); i++){
@@ -239,7 +238,7 @@ public class PokerHandEvaluator {
    * @param h the hand
    * @return the evaluation
    */
-  @Depreicated
+  @Deprecated
   private static int checkPair(Hand h) {
     int pair = -1;
 
@@ -261,7 +260,7 @@ public class PokerHandEvaluator {
    * @param h the hand
    * @return the evaluation
    */
-  @Depreicated
+  @Deprecated
   private static int check2Pair(Hand h) {
     int tPair = -1;
     int firstFirst = -1, secFirst = -1;
@@ -302,7 +301,7 @@ public class PokerHandEvaluator {
    * @param h the hand
    * @return the evaluation
    */
-  @Depreicated
+  @Deprecated
   private static int checkTrips(Hand h) {
     int trips = -1;
 
@@ -326,7 +325,7 @@ public class PokerHandEvaluator {
    * @param h the hand
    * @return the evaluation
    */
-  @Depreicated
+  @Deprecated
   private static int checkStraight(Hand h) {
     int straight = -1;
 
@@ -358,7 +357,7 @@ public class PokerHandEvaluator {
    * @param h the hand
    * @return the evaluation
    */
-  @Depreicated
+  @Deprecated
   private static int checkFlush(Hand h) {
     int flush = -1;
     int suit = -1;
@@ -403,7 +402,7 @@ public class PokerHandEvaluator {
    * @param h the hand
    * @return the evaluation
    */
-  @Depreicated
+  @Deprecated
   private static int checkFullHouse(Hand h) {
     int fullHouse = -1;
     int p = -1, q = -1, r = -1, pair = -1, trips = -1;
@@ -461,7 +460,7 @@ public class PokerHandEvaluator {
    * @param h the hand
    * @return the evaluation
    */
-  @Depreicated
+  @Deprecated
   private static int checkFourOfAKind(Hand h) {
     int fours = -1;
 
@@ -495,7 +494,7 @@ public class PokerHandEvaluator {
    * @param h the hand
    * @return the evaluation
    */
-  @Depreicated
+  @Deprecated
   private static int checkStraightFlush(Hand h) {
     int straightFlush = -1;
 
@@ -510,7 +509,7 @@ public class PokerHandEvaluator {
    * @param h the hand
    * @return the evaluation
    */
-  @Depreicated
+  @Deprecated
   private static int checkRoyalFlush(Hand h) {
     int royalFlush = -1;
 

@@ -1,4 +1,4 @@
-package we.games;
+package we.games.blackjack;
 
 //import java.util.Scanner;
 
@@ -7,6 +7,7 @@ import we.arefarmers.DiscordBot;
 import java.util.ArrayList;
 
 import we.arefarmers.commands.CommandManager;
+import we.games.util.*;
 
 
 public class BlackJackGame extends Game{

@@ -1,21 +1,45 @@
-package we.games;
+package we.games.util;
 
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import we.arefarmers.DiscordBot;
 
+/**
+ * An instance of a {@link Game} running on its own {@link Thread}.
+ * <p>
+ * The {@link Game} class is used as a base for other games that
+ * need to run on their own {@link Thread}. The game also has a 
+ * dedicated {@link MessageChannel}, which is also what is used
+ * to identify them by {@link Object#equals(Object)}.
+ * <p>
+ * No more than one {@link Game} should be active in a single
+ * {@link MessageChannel}.
+ * <p>
+ * Other {@link Game} classes will be able to message their
+ * respective {@link MessageChannel} with the
+ * {@link #message(Object)} method for output, and can use the
+ * {@link #input()} method to wait for an input given via the
+ * {@link #setChoice(String)} method. The {@link #choice} field
+ * will hold the resulting input.
+ * <p>
+ * In order to start a {@link Game}, the {@link #start()}
+ * method can be used to start the {@link Thread} and will
+ * call the {@link #play()} method, which should be implemented
+ * by the extending class.
+ * @author That "Inconspicuous" guy
+ */
 public abstract class Game implements Runnable{
     protected Thread thread;
     protected MessageChannel channel;
     protected String choice;
 
-    Game(MessageChannel channel){
+    public Game(MessageChannel channel){
         this.channel = channel;
     }
 
     /**
      * gets called by the implemented {@link #run()} method
      */
-    abstract void play();
+    public abstract void play();
 
     public final void run(){
         play();

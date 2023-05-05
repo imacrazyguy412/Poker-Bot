@@ -23,7 +23,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 //import we.arefarmers.DiscordBot;
-import we.games.*;
+import we.games.blackjack.BlackJackGame;
+import we.games.blackjack.BlackJackPlayer;
+import we.games.poker.PokerGame;
+import we.games.poker.PokerPlayer;
 
 
 public class CommandManager extends ListenerAdapter {

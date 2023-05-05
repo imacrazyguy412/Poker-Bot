@@ -1,9 +1,7 @@
 package we.games.poker;
 
 import we.arefarmers.DiscordBot;
-
-//import java.util.Scanner;
-
+import we.games.util.*;
 import java.util.ArrayList;
 
 public class PokerGame extends Game{
@@ -268,7 +266,7 @@ public class PokerGame extends Game{
       //sorts the hand first thing
       //mainly for straights, but other checks could use it
 
-      currentStrength = getHandStrength(player.getHand());
+      currentStrength = PokerHandEvaluator.getHandStrength(player.getHand());
 
       if(currentStrength > winningStrength){
         winningStrength = currentStrength;

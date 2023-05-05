@@ -1,6 +1,6 @@
 // Damn I miss typedef
 
-package we.games;
+package we.games.util;
 
 import java.util.ArrayList;
 

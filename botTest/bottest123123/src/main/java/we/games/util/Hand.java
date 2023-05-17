@@ -13,6 +13,17 @@ import java.util.ArrayList;
 public class Hand extends ArrayList<Card>{
 
   /**
+   * Constructs a Hand that contains all of the given cards.
+   * @param cards
+   */
+  public Hand(Card... cards){
+    super(cards.length);
+    for(Card card : cards){
+      add(card);
+    }
+  }
+
+  /**
    * Sorts in descending order using {@link #sort(java.util.Comparator)}
    * 
    * @see #sort(java.util.Comparator)

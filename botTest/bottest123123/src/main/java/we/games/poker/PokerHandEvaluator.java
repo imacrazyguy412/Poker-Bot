@@ -152,9 +152,9 @@ public class PokerHandEvaluator {
     int highCard = 0;
     int max = -1;
     for(int i = 0; i < hand.size(); i++){
-      if(hand.get(i).getFace() > max){
+      if(hand.get(i).face > max){
         highCard = i;
-        max = hand.get(i).getFace();
+        max = hand.get(i).face;
       }
     }
     return highCard;
@@ -192,7 +192,7 @@ public class PokerHandEvaluator {
       for(int sec = first + 1; sec < hand.size(); sec++){
         Card secCard = hand.get(sec);
 
-        if(firstCard.getFace() == secCard.getFace()){
+        if(firstCard.face == secCard.face){
     
           if(!addedFirst){
             ArrayList<Hand> set = new ArrayList<Hand>();
@@ -200,8 +200,8 @@ public class PokerHandEvaluator {
             addedFirst = true;
           }
 
-          if(firstCard.getFace() > highSetFace){
-            highSetFace = firstCard.getFace();
+          if(firstCard.face > highSetFace){
+            highSetFace = firstCard.face;
 
             highSet.clear();
             highSet.add(firstCard); highSet.add(secCard);
@@ -228,7 +228,7 @@ public class PokerHandEvaluator {
     // highCard = h.get(i).getFace();
     // }
     // }
-    int highCard = h.get(0).getFace(); // assuming the hand is sorted
+    int highCard = h.get(0).face; // assuming the hand is sorted
     return highCard;
   }
 
@@ -245,8 +245,8 @@ public class PokerHandEvaluator {
     for (int first = 0; first < h.size() - 1; first++) {
       for (int sec = first + 1; sec < h.size(); sec++) {
         // check if it is a pair
-        if (h.get(first).getFace() == h.get(sec).getFace()) {
-          pair = Math.max(h.get(first).getFace(), pair); // always get the highest pair
+        if (h.get(first).face == h.get(sec).face) {
+          pair = Math.max(h.get(first).face, pair); // always get the highest pair
         }
       }
     }
@@ -268,9 +268,9 @@ public class PokerHandEvaluator {
     // high pair
     for (int first = 0; first < h.size(); first++) {
       for (int sec = first + 1; sec < h.size(); sec++) {
-        if (h.get(first).getFace() == h.get(sec).getFace()
+        if (h.get(first).face == h.get(sec).face
             && firstFirst != -1
-            && h.get(first).getFace() > h.get(firstFirst).getFace()) {
+            && h.get(first).face > h.get(firstFirst).face) {
           firstFirst = first;
           secFirst = sec;
         }
@@ -285,9 +285,9 @@ public class PokerHandEvaluator {
         if (sec == secFirst)
           continue; // go to next iteration of sec
 
-        if (h.get(first).getFace() == h.get(sec).getFace()) {
-          tPair = Math.max(100 * h.get(firstFirst).getFace() + h.get(first).getFace(),
-              100 * h.get(first).getFace() + h.get(firstFirst).getFace());
+        if (h.get(first).face == h.get(sec).face) {
+          tPair = Math.max(100 * h.get(firstFirst).face + h.get(first).face,
+              100 * h.get(first).face + h.get(firstFirst).face);
         }
       }
     }
@@ -308,9 +308,9 @@ public class PokerHandEvaluator {
     for (int first = 0; first < h.size() - 2; first++) {
       for (int sec = first + 1; sec < h.size() - 1; sec++) {
         for (int third = sec + 1; third < h.size(); third++) {
-          if (h.get(first).getFace() == h.get(sec).getFace()
-              && h.get(first).getFace() == h.get(third).getFace()) {
-            trips = Math.max(trips, h.get(first).getFace());
+          if (h.get(first).face == h.get(sec).face
+              && h.get(first).face == h.get(third).face) {
+            trips = Math.max(trips, h.get(first).face);
           }
         }
       }
@@ -329,18 +329,18 @@ public class PokerHandEvaluator {
   private static int checkStraight(Hand h) {
     int straight = -1;
 
-    if (h.get(0).getFace() == 14) {
+    if (h.get(0).face == 14) {
 
     }
 
     int count = 1;
     for (int i = 1; i < h.size(); i++) {
-      if (h.get(i).getFace() == h.get(i - 1).getFace() - 1) {
+      if (h.get(i).face == h.get(i - 1).face - 1) {
         count++;
         if (count >= 5) {
-          straight = Math.max(straight, h.get(i - 4).getFace() * 1000 + 14000);
+          straight = Math.max(straight, h.get(i - 4).face * 1000 + 14000);
         }
-      } else if (h.get(i).getFace() == h.get(i - 1).getFace()) {
+      } else if (h.get(i).face == h.get(i - 1).face) {
         // nothing I guess
         continue;
       } else {
@@ -365,7 +365,7 @@ public class PokerHandEvaluator {
     // 0 is clubs, 1 is diamonds, 2 is hearts, 3 is spades
 
     for (int i = 0; i < h.size(); i++) {
-      numSuit[h.get(i).getSuit() - 1]++;
+      numSuit[h.get(i).suit - 1]++;
       // System.out.println(h.get(i).getSuit()-1);
     }
     // checks through the hand to check if there even are five cards of the
@@ -383,8 +383,8 @@ public class PokerHandEvaluator {
     // stores the suit of which cards have the same suit
 
     for (int i = 0; i < h.size(); i++) {
-      if (h.get(i).getSuit() == suit && h.get(i).getFace() > flush) {
-        flush = h.get(i).getFace();
+      if (h.get(i).suit == suit && h.get(i).face > flush) {
+        flush = h.get(i).face;
       }
     }
     // checks through the cards for the highest card of the suit of the flush
@@ -412,12 +412,12 @@ public class PokerHandEvaluator {
         for (int k = 0; k < h.size(); k++) {
           if (i != j && i != k && j != k
           // checks to make sure all cards are unique
-              && h.get(i).getFace() == h.get(j).getFace() &&
-              h.get(i).getFace() == h.get(k).getFace()
+              && h.get(i).face == h.get(j).face &&
+              h.get(i).face == h.get(k).face
           // checks if both of the other cards have the same value as
           ) {
-            if (h.get(i).getFace() > trips) {
-              trips = h.get(i).getFace();
+            if (h.get(i).face > trips) {
+              trips = h.get(i).face;
               p = i;
               q = j;
               r = k;
@@ -435,11 +435,11 @@ public class PokerHandEvaluator {
         if (i != j && i != p && i != q && i != r && j != p && j != q && j != r
         // checks to make sure that all of the cards are different
         // indexes in the hand
-            && h.get(i).getFace() == h.get(j).getFace()
+            && h.get(i).face == h.get(j).face
         // checks the cards have the same face value
         ) {
-          if (h.get(i).getFace() > pair) {
-            pair = h.get(i).getFace();
+          if (h.get(i).face > pair) {
+            pair = h.get(i).face;
           }
         }
       }
@@ -473,12 +473,12 @@ public class PokerHandEvaluator {
                 k != l
             // checks that all of the cards are unique
             ) {
-              if (h.get(i).getFace() == h.get(j).getFace() &&
-                  h.get(i).getFace() == h.get(k).getFace() &&
-                  h.get(i).getFace() == h.get(l).getFace()
+              if (h.get(i).face == h.get(j).face &&
+                  h.get(i).face == h.get(k).face &&
+                  h.get(i).face == h.get(l).face
               // checks that all of the cards are the same face
               ) {
-                fours = h.get(i).getFace() * 1000000;
+                fours = h.get(i).face * 1000000;
               }
             }
           }

@@ -250,13 +250,13 @@ public class BlackJackPlayer extends Player{
     int handScore = 0;
 
     for(int i = 0; i < hand.size(); i++){
-      if(hand.get(i).getFace() == 14 || hand.get(i).getFace() == 1){
+      if(hand.get(i).face == 14 || hand.get(i).face == 1){
         aces++;
         handScore += 1;
-      } else if(hand.get(i).getFace() >= 10){
+      } else if(hand.get(i).face >= 10){
         handScore += 10;
       } else{
-        handScore += hand.get(i).getFace();
+        handScore += hand.get(i).face;
       }
     }
     

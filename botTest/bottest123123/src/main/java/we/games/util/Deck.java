@@ -32,11 +32,7 @@ public class Deck{
    * @return Card -- a random card
    */
   public Card dealRandomCard(){
-    int index = (int)(cards.size()*Math.random());
-    Card tempCard = cards.get(index);
-    cards.remove(index);
-
-    return tempCard;
+    return cards.remove((int)(cards.size()*Math.random()));
   }
 
   /**
@@ -44,10 +40,7 @@ public class Deck{
    * @return Card -- the top card
    */
   public Card dealTopCard(){
-    Card tempCard = cards.get(0);
-    cards.remove(0);
-
-    return tempCard;
+    return cards.remove(0);
   }
 
   /**

@@ -269,7 +269,7 @@ public class BlackJackGame extends Game{
         System.out.println("You can only split on the first turn.");
       } else if(p.getChips() < 2*p.getBet()){
         System.out.println("Not enough points to split.");
-      } else if(p.getCard(0).getFace() == p.getCard(1).getFace()){
+      } else if(p.getCard(0).face == p.getCard(1).face){
         p.split();
         p.addCard(deck.dealTopCard());
         p.addCardSplit(deck.dealTopCard());

@@ -10,27 +10,55 @@ package we.games.util;
  * <a href=https://en.wikipedia.org/wiki/French-suited_playing_cards#English_pattern>English Pattern</a>.
  * 
  * 
- * @see #getFace()
- * @see #getSuit()
+ * @see #face()
+ * @see #suit()
  * @see Deck
  * @see https://en.wikipedia.org/wiki/Playing_card
- * @apiNote {@link #suit} and {@link #face} are {@code private}. Use their respective get methods to access them
  */
 public class Card implements Comparable<Card>{
-  public static final String[] suits = {"Clubs", "Diamonds", "Hearts", "Spades"};
+  public static final String[] suits = {"Null", "Clubs", "Diamonds", "Hearts", "Spades"};
+  public static final String[] faces = {
+    "Null", "Ace", "Two", "Three", "Four", "Five",
+    "Six", "Seven", "Eight", "Nine", "Ten", "Jack",
+    "Queen", "King", "Ace"
+  };
 
-  private final int suit;
-  private final int face;
+  public static final int NONE      = 0;
+
+  public static final int CLUBS     = 1;
+  public static final int DIAMONDS  = 2;
+  public static final int HEARTS    = 3;
+  public static final int SPADES    = 4;
+
+  public static final int ACE       = 14; // ace is currently high
+  public static final int TWO       = 2;
+  public static final int THREE     = 3;
+  public static final int FOUR      = 4;
+  public static final int FIVE      = 5;
+  public static final int SIX       = 6;
+  public static final int SEVEN     = 7;
+  public static final int EIGHT     = 8;
+  public static final int NINE      = 9;
+  public static final int TEN       = 10;
+  public static final int JACK      = 11;
+  public static final int QUEEN     = 12;
+  public static final int KING      = 13;
+
+  /**
+   * The suit of the card. Readonly
+   */
+  public final int suit;
+  public final int face;
 
   /**
    * Creates a card with a suit s and face value f
    * 
-   * @param s -- the suit of the card. 1 is Clubs, 2 is Diamonds, 3 is Hearts, and 4 is Spades
-   * @param f -- the face value of the card
+   * @param suit -- the suit of the card. 1 is Clubs, 2 is Diamonds, 3 is Hearts, and 4 is Spades
+   * @param face -- the face value of the card
    */
-  public Card(int s, int f){
-    suit = s;
-    face = f;
+  public Card(int suit, int face){
+    this.suit = suit;
+    this.face = face;
   }
 
   /**
@@ -40,48 +68,7 @@ public class Card implements Comparable<Card>{
    */
   @Override
   public String toString(){
-    String suitStr = "Error";
-    //if something goes wrong and the card strings are messed up, it will say error
-    
-    suitStr = suits[suit - 1]; //index starts at 0
-
-    if(face < 11 && face != 1 && face != 14){
-      return face + " of " + suitStr;
-    } else if(face == 11){
-      return "Jack of " + suitStr;
-    } else if(face == 12){
-      return "Queen of " + suitStr;
-    } else if(face == 13){
-      return "King of " + suitStr;
-    }
-    return "Ace of " + suitStr;
-  }
-
-  /**
-   * Returns the face value of the card
-   * 
-   * @return the face value of the card
-   */
-  public int getFace(){
-    return face;
-  }
-
-  /**
-   * Returns the suit of the card
-   * <p>
-   * Gives the suit of the card as an {@code int}. The corrosponding 
-   * suit for the given return value is as follows:
-   * <ol>
-   *  <li>Clubs</li>
-   *  <li>Diamonds</li>
-   *  <li>Hearts</li>
-   *  <li>Spades</li>
-   * </ol>
-   * 
-   * @return the suit of the card
-   */
-  public int getSuit(){
-    return suit;
+    return faces[face] + " of " + suits[suit];
   }
 
   @Override

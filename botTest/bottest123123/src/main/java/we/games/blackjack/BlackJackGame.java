@@ -1,16 +1,15 @@
 package we.games.blackjack;
 
-//import java.util.Scanner;
-
-import we.arefarmers.DiscordBot;
-
 import java.util.ArrayList;
 
 import we.arefarmers.commands.CommandManager;
-import we.games.util.*;
+import we.games.util.Deck;
+import we.games.util.Game;
+import we.games.util.Joinable;
+import we.games.util.Player;
 
 
-public class BlackJackGame extends Game{
+public class BlackJackGame extends Game implements Joinable {
   public static final int MAXBET = 500, MINBET = 2;
   //private Scanner input = new Scanner(System.in);
   private ArrayList<BlackJackPlayer> players = new ArrayList<BlackJackPlayer>();
@@ -31,27 +30,28 @@ public class BlackJackGame extends Game{
   }
   
   public void play(){
-    deck = new Deck();
-
     do{
       setTable();
       
-      betting();
+      betting(); //ANCHOR - betting
+      System.out.println("Betting Finished.");
 
       //showAllHands();
 
       message("Dealer's cards: \nUnknown\n" + dealer.getCard(1).toString());
       for (int i = 0; i < players.size(); i++) {
-        BlackJackPlayer p = players.get(i);
         playerToTurn = i;
-        if(!p.hasJustJoined()){
-          playerTurn(p);
+        if(!players.get(i).hasJustJoined()){
+          playerTurn(players.get(i));
         }
       }
       playerToTurn = -1;
 
       dealerTurn();
 
+      for(BlackJackPlayer p : players){
+        calcBet(p);
+      }
 
       break; //temp
     
@@ -78,38 +78,20 @@ public class BlackJackGame extends Game{
       showAllHands();
       
       if(p.isPlaying()){
-        //System.out.println("Your hand:");
-        message(p.getName()
-        + "'s turn with "
-        + p.getScore()
-        + " and "
-        + p.getChips()
-        + " points. What would you like to do?"
-        + "\nEnter /hit to hit" //change to /hit or whatever the command for hitting is
-        + "\nEnter /stand to stand" //also change
-        + "\nEnter /double to double down" //also change
-        + "\nEnter /split to split"); //also change
-        //very long string
+        message("%s's turn with %d and %d chips. What would you like to do?"
+        + "\nEnter /hit to hit\nEnter /stand to stand\nEnter /double to double down\nEnter /split to split",
+        p.getName(), p.getSplitScore(), p.getChips());
 
       } else if(p.splitHandIsPlaying()){
-        //System.out.println("Your hand:");
 
-        message(p.getName()
-        + "'s split hand with "
-        + p.getSplitScore()
-        + " and "
-        + p.getChips()
-        + " points. What would you like to do?"
-        + "\nEnter /hit to hit" //change to /hit
-        + "\nEnter /stand to stand"); //also change
-        //long string
+        message("%s's split hand with %d and %d chips. What would you like to do?"        
+        + "\nEnter /hit to hit\nEnter /stand to stand",
+        p.getName(), p.getSplitScore(), p.getChips());
 
-        printHand(p.getSplitHand());
+        message(p.getSplitHand());
       }
 
-      choice = "";
-      input();
-      playerChoice(p, choice);
+      playerChoice(p, input());
       
 
     } while(p.isPlaying() || p.splitHandIsPlaying());
@@ -147,13 +129,17 @@ public class BlackJackGame extends Game{
   }
 
   private void dealerTurn(){
-    
     //TODO: rewrite
+    while(dealer.getScore() < 17){
+      dealer.addCard(deck.dealTopCard());
+    }
   }
 
+  //TODO - rewrite
   private void calcBet(BlackJackPlayer p){
     if(p.getScore() == 21 && p.getHand().size() == 2){
-      System.out.println(p.getName() + " won their bet of " + p.getBet() + " with blackjack");
+      message(p.getName() + " won their bet of " + p.getBet() + " with blackjack");
+      p.payBet(1.5);
     } else{
       if(p.getScore() > 21){
         System.out.println(p.getName() + " has lost their bet of " + p.getBet());
@@ -200,25 +186,6 @@ public class BlackJackGame extends Game{
     p.resetBet();
   }
 
-  private void printHand(Hand hand){
-    String message = "";
-
-    for(int i = 0; i < hand.size(); i++){
-      if(players.get(0).getName().equalsIgnoreCase("CarrotCakeツ#8734")){
-        //easter egg for a friend :)
-        message += "J A M E S\n";
-        //still an easter egg lmao
-        //and no, it's not thier real name, dumbass
-      } else{
-        //System.out.println(hand.get(i));
-        message += hand.get(i).toString() + "\n";
-      }
-      
-    }
-    //System.out.println();
-    message(message);
-  }
-
   private boolean playersArePlaying(){
     for(int i = 0; i < players.size(); i++){
       if(players.get(i).getChips() <= 0){
@@ -237,7 +204,7 @@ public class BlackJackGame extends Game{
     if(p.isPlaying()){
       p.addCard(deck.dealTopCard());
       //System.out.println("Your cards:");
-      printHand(p.getHand());
+      message(p.getHand());
       
       if(p.getScore() > 21){
         //System.out.println("Bust with " + p.getScore());
@@ -245,7 +212,7 @@ public class BlackJackGame extends Game{
     } else if(p.splitHandIsPlaying()){
       p.addCardSplit(deck.dealTopCard());
       //System.out.println("Your cards:");
-      printHand(p.getSplitHand());
+      message(p.getSplitHand());
 
       if(p.getSplitScore() > 21){
         //System.out.println("Bust with " + p.getSplitScore());
@@ -275,9 +242,9 @@ public class BlackJackGame extends Game{
         p.addCardSplit(deck.dealTopCard());
 
         System.out.println("Your new cards:");
-        printHand(p.getHand());
+        message(p.getHand());
         System.out.println("Hand 2:");
-        printHand(p.getSplitHand());
+        message(p.getSplitHand());
       } else{
         System.out.println("Your two cards have to have the same face.");
       }
@@ -297,7 +264,7 @@ public class BlackJackGame extends Game{
         p.addCard(deck.dealTopCard());
 
         System.out.println("Your new hand is:");
-        printHand(p.getHand());
+        message(p.getHand());
         
         if(p.getScore() > 21){
           System.out.println("Bust with " + p.getScore());
@@ -311,10 +278,10 @@ public class BlackJackGame extends Game{
   private void showAllHands(){
     for(BlackJackPlayer p : players){
       message(p.getName() + "'s hand:");
-      printHand(p.getHand());
+      message(p.getHand());
       if(!p.getSplitHand().isEmpty()){
         message(p.getName() + "'s split hand:");
-        printHand(p.getSplitHand());
+        message(p.getSplitHand());
       }
     }
   }
@@ -346,6 +313,7 @@ public class BlackJackGame extends Game{
     for(int i = 0; i < players.size(); i++){
       players.get(i).clearHand();
     }
+    dealer.clearHand();
   }
 
   private void clearPlayersBets(){
@@ -362,10 +330,10 @@ public class BlackJackGame extends Game{
 
       message(name + ", make your bet with /bet.");
       System.out.println("pretest");
-      choice = "";
-      input();
-      System.out.println("test");
-      message(name + ", you have bet " + choice + " chips");
+      final int playerBet = inputAsInt();
+      
+      message(name + ", you have bet " + playerBet + " chips");
+      players.get(i).bet(playerBet);
     }
     playerToBet = -1;
   }
@@ -384,17 +352,27 @@ public class BlackJackGame extends Game{
     }
   }
 
-  public void join(String n){
-    players.add(new BlackJackPlayer(n, true));
-  }
-
   public ArrayList<BlackJackPlayer> getPlayers(){
     return players;
+
   }
 
+  /**
+   * removes itself from the stored games
+   */
   public void stop(){
     CommandManager.blackJackGames.remove(this);
+  }
 
-    //removes itself from the stored games
+  @Override
+  public Player addPlayer(Player player) {
+    // STUB Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'join'");
+  }
+
+  @Override
+  public Player removePlayer(Player player) {
+    // STUB Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'leave'");
   }
 }

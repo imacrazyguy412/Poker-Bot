@@ -3,6 +3,7 @@
 package we.games.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * {@code ArrayList<Card>}
@@ -14,13 +15,10 @@ public class Hand extends ArrayList<Card>{
 
   /**
    * Constructs a Hand that contains all of the given cards.
-   * @param cards
+   * @param cards the cards to give
    */
   public Hand(Card... cards){
-    super(cards.length);
-    for(Card card : cards){
-      add(card);
-    }
+    super(Arrays.asList(cards));
   }
 
   /**
@@ -49,7 +47,7 @@ public class Hand extends ArrayList<Card>{
     //nevermind lol
 
     StringBuilder str = new StringBuilder();
-    for(Card card : this){
+    for(final Card card : this){
       str.append(card).append('\n');
     }
     str.setLength(str.length() - 1); //remove last end line

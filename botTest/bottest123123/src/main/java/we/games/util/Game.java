@@ -28,9 +28,10 @@ import we.arefarmers.DiscordBot;
  * @author That "Inconspicuous" guy
  */
 public abstract class Game implements Runnable{
-    protected Thread thread;
     protected MessageChannel channel;
-    protected String choice;
+    private String choice;
+    private Integer choiceInt;
+    private Thread thread;
 
     public Game(MessageChannel channel){
         this.channel = channel;
@@ -92,22 +93,43 @@ public abstract class Game implements Runnable{
         DiscordBot.message(String.valueOf(obj), channel);
     }
 
+    protected final void message(String msg, Object... args){
+        DiscordBot.message(String.format(msg, args), channel);
+    }
+
     //!SECTION
 
     /**
-     * Waits until {@link #setChoice(String)} is called from a seperate {@code Thread}
+     * Waits until {@link #setChoice(String)} is called from a seperate {@code Thread}, and returns the set value
+     * 
+     * @return The set choice, A.K.A. the input
      * @see #setChoice(String)
      */
-    protected final void input(){
+    protected final String input(){
         while(true){
             try {
-                thread.wait();
-                //System.out.println("choice: " + choice);
+                wait();
             } catch (Exception e) {
-                break;
+                return choice;
             }
-            if(!choice.equals(""))
-                break;
+        }
+        
+    }
+
+    /**
+     * Waits until {@link #setChoice(int)} is called from a seperate {@code Thread}, and returns the given value
+     * 
+     * @return The given int, A.K.A. the input
+     * @see #setChoice(int)
+     */
+    protected final int inputAsInt(){
+        while(true){
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                return choiceInt.intValue();
+            }
+            
         }
     }
 
@@ -115,17 +137,26 @@ public abstract class Game implements Runnable{
      * passes a {@code String} to {@link #choice}
      * <p>
      * Gives {@link #choice} a value. The given value will be given with all spaces removed to choice
-     * @param s -- {@code String} the string to pass
+     * @param s -- the string to pass
      */
     public final void setChoice(String s){
         choice = s.toLowerCase().replaceAll(" ", "");
-        if(!thread.isInterrupted()){
-            thread.interrupt();
-        }
+        thread.interrupt();
+    }
+
+    /**
+     * passes a {@code int} to {@link #choiceInt}
+     * @param i -- the int to pass
+     */
+    public final void setChoice(int i){
+        choiceInt = Integer.valueOf(i);
+        thread.interrupt();
     }
 
     @Override
     public final boolean equals(Object obj){
+        if(!(obj instanceof Game)) return false;
+        
         Game g = (Game)obj;
         return g.getChannel().equals(channel);
     }

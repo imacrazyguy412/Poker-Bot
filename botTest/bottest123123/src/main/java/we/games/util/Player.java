@@ -56,6 +56,8 @@ public abstract class Player {
 
     @Override
     public final boolean equals(Object obj) {
+        if(!(obj instanceof Player)) return false;
+
         Player p = (Player)obj;
         return name.equals(p.getName());
     }

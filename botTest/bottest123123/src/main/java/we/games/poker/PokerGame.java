@@ -4,7 +4,7 @@ import we.arefarmers.DiscordBot;
 import we.games.util.*;
 import java.util.ArrayList;
 
-public class PokerGame extends Game{
+public class PokerGame extends Game implements Joinable {
   private static final int START_CHIPS = 500, SMALL_BLIND = 10;
   private int dealer = 0;
 
@@ -79,9 +79,8 @@ public class PokerGame extends Game{
     message("waiting for player to join...\nType /join to join " + startingPlayerName);
     while(players.size() < 2){
       try {
-        thread.wait();
-        
-      } catch (Exception e) {
+        wait();
+      } catch (InterruptedException e) {
         break;
       }
     } //wait until there are enough players
@@ -110,9 +109,8 @@ public class PokerGame extends Game{
         //if so, it goes through with the player betting
 
         message(player.getName() + ", it is your turn to bet. The current bet is " + bet + ".\nUse -1 to fold or 0 to call");
-        input();
 
-        int playerBet = Integer.parseInt(choice);
+        int playerBet = Integer.parseInt(input());
 
         if(playerBet < 0){
           player.setIsPlaying(false);
@@ -295,9 +293,21 @@ public class PokerGame extends Game{
 
     boolean justStarted = players.size() == 2;
     if(justStarted){
-      thread.notify();
+      Thread.currentThread().notify();
     }
 
     return justStarted;
+  }
+
+  @Override
+  public Player addPlayer(Player player) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'join'");
+  }
+
+  @Override
+  public Player removePlayer(Player player) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'leave'");
   }
 }

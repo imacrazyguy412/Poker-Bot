@@ -37,21 +37,20 @@ public class PokerHandEvaluation implements Comparable<PokerHandEvaluation> {
     return bestHand;
   }
 
-  public int value(){
-    return 0;
-  }
-
+  @Override
   public int compareTo(PokerHandEvaluation other){
-    return this.value() - other.value();
+    return this.value - other.value;
   }
 
+  @Override
   public String toString(){
     return null;
   }
 
+  @Override
   public boolean equals(Object other){
-    if(other.getClass() != this.getClass()) return false;
+    if(!(other instanceof PokerHandEvaluation)) return false;
 
-    return ((PokerHandEvaluation)other).value() == this.value();
+    return ((PokerHandEvaluation)other).value == this.value;
   }
 }

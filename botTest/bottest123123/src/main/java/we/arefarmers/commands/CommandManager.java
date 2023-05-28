@@ -103,8 +103,8 @@ public class CommandManager extends ListenerAdapter {
                             event.reply("It's not time to bet yet.").setEphemeral(true).queue();
                         } else if(temp == player){
                             //pass the option blackJackBet into the specific instance of BlackJackGame in the event channel
-                            blackJackGames.get(gameInstance).setChoice(blackJackBetAmount + "");
-                            event.reply(event.getUser().getAsMention() + ", you bet " + blackJackBetAmount).queue();
+                            blackJackGames.get(gameInstance).setChoice(blackJackBetAmount);
+                            event.reply(event.getUser().getAsMention() + ", you bet " + blackJackBetAmount + " chips").queue();
                         } else{
                             event.reply("It's not your turn to bet").setEphemeral(true).queue();
                         }

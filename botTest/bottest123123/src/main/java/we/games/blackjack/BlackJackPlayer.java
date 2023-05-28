@@ -219,6 +219,22 @@ public class BlackJackPlayer extends Player{
   }
 
   /**
+   * Increases the player's chips by their bet multiplied by a given multipier
+   * @param mult the multiplier to influence the payout by
+   */
+  public void payBet(float mult){
+    chips += (int)(bet * mult);
+  }
+
+  /**
+   * Increases the player's chips by their bet multiplied by a given multipier
+   * @param mult the multiplier to influence the payout by
+   */
+  public void payBet(double mult){
+    chips += (int)(bet * mult);
+  }
+
+  /**
    * Decreases the player's chips by their bet
    */
   public void loseBet(){
@@ -230,13 +246,6 @@ public class BlackJackPlayer extends Player{
    */
   public void resetBet(){
     bet = 0;
-  }
-
-  /**
-   * Pays the blackjack 1.5 times the bet amount to the player
-   */
-  public void blackJack(){
-    chips += (int)(bet*1.5);
   }
 
   /**
@@ -273,12 +282,8 @@ public class BlackJackPlayer extends Player{
    * Removes all cards from the player's hand
    */
   public void clearHand(){
-    while(!hand.isEmpty()){
-      hand.remove(0);
-    }
-    while(!splitHand.isEmpty()){
-      splitHand.remove(0);
-    }
+    hand.clear();
+    splitHand.clear();
 
     isBust = false;
     isStood = false;

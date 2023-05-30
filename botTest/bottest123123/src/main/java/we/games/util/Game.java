@@ -35,7 +35,7 @@ public abstract class Game implements Runnable{
 
     public Game(MessageChannel channel){
         this.channel = channel;
-    }
+    }   
 
     /**
      * gets called by the implemented {@link #run()} method
@@ -46,9 +46,14 @@ public abstract class Game implements Runnable{
         play();
     }
     
-    public final void start(){
+    /**
+     * Start the game on its own thread.
+     * @return {@code this}
+     */
+    public final Game start(){
         thread = new Thread(this);
         thread.start();
+        return this;
     }
 
     public final MessageChannel getChannel(){
@@ -105,11 +110,11 @@ public abstract class Game implements Runnable{
      * @return The set choice, A.K.A. the input
      * @see #setChoice(String)
      */
-    protected final String input(){
+    protected synchronized final String input(){
         while(true){
             try {
                 wait();
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
                 return choice;
             }
         }
@@ -122,7 +127,7 @@ public abstract class Game implements Runnable{
      * @return The given int, A.K.A. the input
      * @see #setChoice(int)
      */
-    protected final int inputAsInt(){
+    protected synchronized final int inputAsInt(){ //NOTE - synchronized IS required for these to work
         while(true){
             try {
                 wait();
@@ -139,7 +144,7 @@ public abstract class Game implements Runnable{
      * Gives {@link #choice} a value. The given value will be given with all spaces removed to choice
      * @param s -- the string to pass
      */
-    public final void setChoice(String s){
+    public synchronized final void setChoice(String s){
         choice = s.toLowerCase().replaceAll(" ", "");
         thread.interrupt();
     }
@@ -157,7 +162,6 @@ public abstract class Game implements Runnable{
     public final boolean equals(Object obj){
         if(!(obj instanceof Game)) return false;
         
-        Game g = (Game)obj;
-        return g.getChannel().equals(channel);
+        return ((Game)obj).channel.equals(channel);
     }
 }

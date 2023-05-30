@@ -1,5 +1,7 @@
 package we.games.util;
 
+import java.util.ArrayList;
+
 public interface Joinable {
     /**
      * Allows the given player to join the game
@@ -16,4 +18,6 @@ public interface Joinable {
      * @return the player that was removed
      */
     public Player removePlayer(Player player);
+
+    public ArrayList<? extends Player> getPlayers();
 }

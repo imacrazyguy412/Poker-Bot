@@ -3,13 +3,14 @@ package we.games.blackjack;
 import java.util.ArrayList;
 
 import we.arefarmers.commands.CommandManager;
+import we.games.util.Betting;
 import we.games.util.Deck;
 import we.games.util.Game;
 import we.games.util.Joinable;
 import we.games.util.Player;
 
 
-public class BlackJackGame extends Game implements Joinable {
+public class BlackJackGame extends Game implements Joinable, Betting {
   public static final int MAXBET = 500, MINBET = 2;
   //private Scanner input = new Scanner(System.in);
   private ArrayList<BlackJackPlayer> players = new ArrayList<BlackJackPlayer>();
@@ -80,7 +81,7 @@ public class BlackJackGame extends Game implements Joinable {
       if(p.isPlaying()){
         message("%s's turn with %d and %d chips. What would you like to do?"
         + "\nEnter /hit to hit\nEnter /stand to stand\nEnter /double to double down\nEnter /split to split",
-        p.getName(), p.getSplitScore(), p.getChips());
+        p.getName(), p.getScore(), p.getChips());
 
       } else if(p.splitHandIsPlaying()){
 
@@ -338,6 +339,7 @@ public class BlackJackGame extends Game implements Joinable {
     playerToBet = -1;
   }
 
+  @Override
   public int getPlayerToBet(){
     return playerToBet;
   }
@@ -366,13 +368,15 @@ public class BlackJackGame extends Game implements Joinable {
 
   @Override
   public Player addPlayer(Player player) {
-    // STUB Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'join'");
+    BlackJackPlayer bjp = new BlackJackPlayer(player.getName(), true);
+    players.add(bjp);
+    return bjp;
   }
 
   @Override
   public Player removePlayer(Player player) {
-    // STUB Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'leave'");
+    int i = players.indexOf(new BlackJackPlayer(player.getName()));
+    if(i < 0) return null;
+    return players.remove(i);
   }
 }

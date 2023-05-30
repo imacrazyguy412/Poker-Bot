@@ -4,7 +4,7 @@ import we.arefarmers.DiscordBot;
 import we.games.util.*;
 import java.util.ArrayList;
 
-public class PokerGame extends Game implements Joinable {
+public class PokerGame extends Game implements Joinable, Betting {
   private static final int START_CHIPS = 500, SMALL_BLIND = 10;
   private int dealer = 0;
 

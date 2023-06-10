@@ -1,6 +1,6 @@
-package we.games.blackjack;
+package io.github.imacrazyguy412.we.games.blackjack;
 
-import we.games.util.*;
+import io.github.imacrazyguy412.we.games.util.*;
 
 public class BlackJackPlayer extends Player{
   private int bet;

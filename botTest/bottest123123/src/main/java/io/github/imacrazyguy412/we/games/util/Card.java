@@ -1,4 +1,4 @@
-package we.games.util;
+package io.github.imacrazyguy412.we.games.util;
 
 /**
  * The {@code Card} class represents a single playing card per instance.

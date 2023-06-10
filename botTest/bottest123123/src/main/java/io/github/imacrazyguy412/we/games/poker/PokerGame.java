@@ -1,8 +1,9 @@
-package we.games.poker;
+package io.github.imacrazyguy412.we.games.poker;
 
-import we.arefarmers.DiscordBot;
-import we.games.util.*;
 import java.util.ArrayList;
+
+import io.github.imacrazyguy412.we.arefarmers.DiscordBot;
+import io.github.imacrazyguy412.we.games.util.*;
 
 public class PokerGame extends Game implements Joinable, Betting {
   private static final int START_CHIPS = 500, SMALL_BLIND = 10;

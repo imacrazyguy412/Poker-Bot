@@ -1,9 +1,9 @@
-package we.games.poker;
+package io.github.imacrazyguy412.we.games.poker;
 
 import java.util.ArrayList;
 
-import we.games.util.Card;
-import we.games.util.Hand;
+import io.github.imacrazyguy412.we.games.util.Card;
+import io.github.imacrazyguy412.we.games.util.Hand;
 
 /**
  * PokerHandEvaluator

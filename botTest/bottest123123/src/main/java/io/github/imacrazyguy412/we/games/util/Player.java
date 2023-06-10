@@ -1,4 +1,4 @@
-package we.games.util;
+package io.github.imacrazyguy412.we.games.util;
 
 /**
  * An instance of a {@link Player} that plays in a {@link Game}

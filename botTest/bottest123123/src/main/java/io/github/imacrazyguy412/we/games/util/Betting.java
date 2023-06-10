@@ -1,4 +1,4 @@
-package we.games.util;
+package io.github.imacrazyguy412.we.games.util;
 
 public interface Betting {
     /**

@@ -1,7 +1,9 @@
-package we.arefarmers;
+package io.github.imacrazyguy412.we.arefarmers;
 
 import javax.security.auth.login.LoginException;
 
+import io.github.imacrazyguy412.we.arefarmers.commands.CommandManager;
+import io.github.imacrazyguy412.we.arefarmers.listeners.Listeners;
 /**
  * Hello world!
  *
@@ -11,8 +13,6 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import we.arefarmers.commands.CommandManager;
-import we.arefarmers.listeners.Listeners;
 
 public class DiscordBot 
 {

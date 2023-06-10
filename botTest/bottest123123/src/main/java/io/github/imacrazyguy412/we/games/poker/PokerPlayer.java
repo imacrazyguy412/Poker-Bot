@@ -1,6 +1,6 @@
-package we.games.poker;
+package io.github.imacrazyguy412.we.games.poker;
 
-import we.games.util.*;
+import io.github.imacrazyguy412.we.games.util.*;
 
 public class PokerPlayer extends Player{
   //private int blind;

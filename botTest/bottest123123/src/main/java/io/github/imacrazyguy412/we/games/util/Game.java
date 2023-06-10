@@ -1,7 +1,7 @@
-package we.games.util;
+package io.github.imacrazyguy412.we.games.util;
 
+import io.github.imacrazyguy412.we.arefarmers.DiscordBot;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
-import we.arefarmers.DiscordBot;
 
 /**
  * An instance of a {@link Game} running on its own {@link Thread}.

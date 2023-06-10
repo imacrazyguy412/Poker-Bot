@@ -1,13 +1,13 @@
-package we.games.blackjack;
+package io.github.imacrazyguy412.we.games.blackjack;
 
 import java.util.ArrayList;
 
-import we.arefarmers.commands.CommandManager;
-import we.games.util.Betting;
-import we.games.util.Deck;
-import we.games.util.Game;
-import we.games.util.Joinable;
-import we.games.util.Player;
+import io.github.imacrazyguy412.we.arefarmers.commands.CommandManager;
+import io.github.imacrazyguy412.we.games.util.Betting;
+import io.github.imacrazyguy412.we.games.util.Deck;
+import io.github.imacrazyguy412.we.games.util.Game;
+import io.github.imacrazyguy412.we.games.util.Joinable;
+import io.github.imacrazyguy412.we.games.util.Player;
 
 
 public class BlackJackGame extends Game implements Joinable, Betting {

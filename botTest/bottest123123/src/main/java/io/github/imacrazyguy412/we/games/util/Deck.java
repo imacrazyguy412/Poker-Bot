@@ -1,5 +1,5 @@
 
-package we.games.util;
+package io.github.imacrazyguy412.we.games.util;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package we.arefarmers.commands;
+package io.github.imacrazyguy412.we.arefarmers.commands;
 
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 
@@ -22,17 +22,16 @@ import java.util.Random;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import io.github.imacrazyguy412.we.games.blackjack.BlackJackGame;
+import io.github.imacrazyguy412.we.games.blackjack.BlackJackPlayer;
+import io.github.imacrazyguy412.we.games.poker.PokerGame;
+import io.github.imacrazyguy412.we.games.poker.PokerPlayer;
+import io.github.imacrazyguy412.we.games.util.Betting;
+import io.github.imacrazyguy412.we.games.util.Game;
+import io.github.imacrazyguy412.we.games.util.Joinable;
+import io.github.imacrazyguy412.we.games.util.Player;
 
-//import we.arefarmers.DiscordBot;
-import we.games.util.Game;
-import we.games.util.Player;
-import we.games.util.Joinable;
-import we.games.util.Betting;
-import we.games.blackjack.BlackJackGame;
-import we.games.blackjack.BlackJackPlayer;
-import we.games.poker.PokerGame;
-import we.games.poker.PokerPlayer;
+import java.util.ArrayList;
 
 
 public class CommandManager extends ListenerAdapter {

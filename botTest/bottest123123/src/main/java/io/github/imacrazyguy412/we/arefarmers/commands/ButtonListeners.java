@@ -1,4 +1,4 @@
-package we.arefarmers.commands;
+package io.github.imacrazyguy412.we.arefarmers.commands;
 
 
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;

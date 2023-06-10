@@ -1,7 +1,6 @@
-package we.games;
+package we.games.poker;
 
-import java.util.ArrayList;
-
+import we.games.util.*;
 
 public class PokerPlayer extends Player{
   //private int blind;
@@ -18,7 +17,7 @@ public class PokerPlayer extends Player{
   /**
    * the player's hand as an ArrayList of Cards
    */
-  private ArrayList<Card> hand;
+  private Hand hand;
 
   /**
    * Creates a player with chips chips and a name of name
@@ -27,7 +26,7 @@ public class PokerPlayer extends Player{
    */
     public PokerPlayer(int chips, String name){
       super(chips, name);
-      hand = new ArrayList<Card>();
+      hand = new Hand();
     }
 
     /**
@@ -73,7 +72,7 @@ public class PokerPlayer extends Player{
      * 
      * @return {@code hand} -- the player's hand
      */
-    public ArrayList<Card> getHand(){
+    public Hand getHand(){
       return hand;
     }
 
@@ -91,7 +90,7 @@ public class PokerPlayer extends Player{
      * 
      * @param b -- whether or not the player is playing
      */
-    public void setIfPlaying(boolean b){
+    public void setIsPlaying(boolean b){
       isPlaying = b;
     }
 
@@ -99,16 +98,17 @@ public class PokerPlayer extends Player{
      * Sorts the player's hand from highest to lowest by face value
      */
     public void sortHand(){
-      for(int i = 1; i<hand.size(); i++){
-        int currentValue = hand.get(i).getFace();
-        int j = i-1;
-        while(j>=0 && hand.get(j).getFace() > currentValue){ //I added a .getFace() in this line
-          hand.set(j+1, hand.get(j));
-          j--;
-        }
-        //hand.set(j+1, currentValue);
-        hand.set(j+1, hand.get(currentValue)); //is this what its meant to be?
-      }
+      //for(int i = 1; i<hand.size(); i++){
+      //  int currentValue = hand.get(i).getFace();
+      //  int j = i-1;
+      //  while(j>=0 && hand.get(j).getFace() > currentValue){ //I added a .getFace() in this line
+      //    hand.set(j+1, hand.get(j));
+      //    j--;
+      //  }
+      //  //hand.set(j+1, currentValue);
+      //  hand.set(j+1, hand.get(j)); //is this what its meant to be?
+      //}
+      hand.sort();
     }
 
 }

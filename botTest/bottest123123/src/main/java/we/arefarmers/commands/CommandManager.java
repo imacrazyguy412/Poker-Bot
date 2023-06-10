@@ -1,5 +1,7 @@
 package we.arefarmers.commands;
 
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+
 //import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 //import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
@@ -23,13 +25,21 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 //import we.arefarmers.DiscordBot;
-import we.games.*;
+import we.games.util.Game;
+import we.games.util.Player;
+import we.games.util.Joinable;
+import we.games.util.Betting;
+import we.games.blackjack.BlackJackGame;
+import we.games.blackjack.BlackJackPlayer;
+import we.games.poker.PokerGame;
+import we.games.poker.PokerPlayer;
 
 
 public class CommandManager extends ListenerAdapter {
 
     public static ArrayList<BlackJackGame> blackJackGames = new ArrayList<BlackJackGame>();
     public static ArrayList<PokerGame> pokerGames = new ArrayList<PokerGame>();
+    public static ArrayList<Game> games = new ArrayList<Game>();
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
@@ -53,22 +63,21 @@ public class CommandManager extends ListenerAdapter {
                 }
                 break;
 
+            case "bet": //ANCHOR - betting command
+                bettingCommand(event);
+                break;
+
 
             //blackjack commands
             case "playblackjack":
-                //event.reply("Currently unavailable because we are incompetent").setEphemeral(true).queue();
-                
-                //OptionMapping numBlackJackPlayers = event.getOption("amount");
-                //int numPlayers = numBlackJackPlayers.getAsInt();
-                String blackJackStartingPlayerTag = event.getUser().getAsTag();
-                //changed to getAsTag() because it works better with the code
+
+                if(findGameIn(event.getChannel()) != -1){
+                    event.reply("There is already a game in this channel.").setEphemeral(true).queue();
+                    break;
+                }
+
                 event.reply("Starting BlackJack").queue();
-                //MessageChannel blackJackChannel = event.getChannel();
-                BlackJackGame tempBlackJackGame = new BlackJackGame(event.getChannel(), blackJackStartingPlayerTag);
-                blackJackGames.add(tempBlackJackGame);
-
-
-                tempBlackJackGame.start();
+                games.add(new BlackJackGame(event.getChannel(), event.getUser().getAsTag()).start());
 
                 //DiscordBot.message("ur mom", event.getChannel());
                 break;
@@ -100,8 +109,8 @@ public class CommandManager extends ListenerAdapter {
                             event.reply("It's not time to bet yet.").setEphemeral(true).queue();
                         } else if(temp == player){
                             //pass the option blackJackBet into the specific instance of BlackJackGame in the event channel
-                            blackJackGames.get(gameInstance).setChoice(blackJackBetAmount + "");
-                            event.reply(event.getUser().getAsMention() + ", you bet " + blackJackBetAmount).queue();
+                            blackJackGames.get(gameInstance).setChoice(blackJackBetAmount);
+                            event.reply(event.getUser().getAsMention() + ", you bet " + blackJackBetAmount + " chips").queue();
                         } else{
                             event.reply("It's not your turn to bet").setEphemeral(true).queue();
                         }
@@ -149,7 +158,11 @@ public class CommandManager extends ListenerAdapter {
             //poker commands
             case "playpoker":
                 event.reply("Currently Testing").setEphemeral(true).queue();
-                new PokerGame(event.getUser().getAsTag(), event.getChannel());
+                PokerGame tempPokerGame = new PokerGame(event.getUser().getAsTag(), event.getChannel());
+                pokerGames.add(tempPokerGame);
+                games.add(tempPokerGame);
+
+                //tempPokerGame.start();
                 break;
 
             case "pokerbet":
@@ -168,7 +181,7 @@ public class CommandManager extends ListenerAdapter {
                         event.reply("You're not in the game, type /join to join it.").setEphemeral(true).queue();
                     } else{ //TODO: add a check to make sure it is the player's turn to bet
                         //pass the option pokerBet into the specific instance of PokerGame in the event channel
-                        pokerGames.get(gameInstance).setChoice(pokerBetAmount + "");
+                        pokerGames.get(gameInstance).setChoice(pokerBetAmount);
                     }
                 }
                 break;
@@ -263,6 +276,10 @@ public class CommandManager extends ListenerAdapter {
         OptionData option1 = new OptionData(OptionType.STRING, "mom", "The name of ur mom");
         commandData.add(Commands.slash("urmom", "tf bro").addOptions(option1));
 
+        //bet command
+        OptionData betAmountData = new OptionData(OptionType.INTEGER, "amount", "The amount you want to bet", true);
+        commandData.add(Commands.slash("bet", "make a bet").addOptions(betAmountData));
+
         //playblackjack command
         //OptionData numBlackJackPlayers = new OptionData(OptionType.INTEGER, "amount", "The amount of players.", true);
         commandData.add(Commands.slash("playblackjack", "Play BlackJack"));
@@ -293,4 +310,73 @@ public class CommandManager extends ListenerAdapter {
 
         event.getGuild().updateCommands().addCommands(commandData).queue();
     }
+
+    /**
+     * Finds the game happening in the given channel among {@link #games}
+     * @param channel the channel the game you want to find is in
+     * @return the index in {@link #games} that the given channel's game can be found,
+     * or -1 if the game does not exist
+     * @see ArrayList#indexOf(Object)
+     */
+    private static int findGameIn(MessageChannel channel){
+        return games.indexOf(new Game(channel) {
+            @Override
+            public void play() {} // necassary overrride
+        });
+    }
+
+    /**
+     * Find the player in a given game with a given name
+     * @param game the game
+     * @param withName the name of the player to search for
+     * @return the index of that player in the games list of players
+     */
+    private static int findPlayerIn(Joinable game, String withName){
+        return game.getPlayers().indexOf(new Player(0, withName) {});
+    }
+
+
+
+    //SECTION - command helper methods
+
+    private static void bettingCommand(SlashCommandInteractionEvent event){
+        event.deferReply();
+                
+        int gameInstance = findGameIn(event.getChannel());
+
+        if(gameInstance < 0){
+            event.reply("There is no game in here!").setEphemeral(true).queue();
+            return;
+        }
+
+        if(!(games.get(gameInstance) instanceof Betting)){
+            event.reply("Sorry, you cannot bet in this game.").setEphemeral(true).queue();
+            return;
+        }
+
+        int playerInstanceForBet = findPlayerIn((Joinable)games.get(gameInstance), event.getUser().getAsTag());
+
+        if(playerInstanceForBet == -1){
+            event.reply("Your not in this game!").setEphemeral(true).queue();
+            return;
+        }
+
+        int playerToBet = ((Betting)games.get(gameInstance)).getPlayerToBet();
+
+        if(playerToBet == -1){
+            event.reply("It's not time to bet yet!").setEphemeral(true).queue();
+            return;
+        }
+
+        if(playerInstanceForBet != playerToBet){
+            event.reply("It is not your turn to bet yet!").setEphemeral(true).queue();
+            return;
+        }
+
+        int bet = event.getOption("amount").getAsInt();
+        games.get(gameInstance).setChoice(bet);
+        event.reply("You bet ***" + bet + "*** chips").queue();
+    }
+
+    //!SECTION
 }

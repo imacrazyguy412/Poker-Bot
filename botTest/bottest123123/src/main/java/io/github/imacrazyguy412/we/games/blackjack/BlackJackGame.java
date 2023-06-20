@@ -2,7 +2,7 @@ package io.github.imacrazyguy412.we.games.blackjack;
 
 import java.util.ArrayList;
 
-import io.github.imacrazyguy412.we.arefarmers.commands.CommandManager;
+import io.github.imacrazyguy412.we.arefarmers.listeners.CommandManager;
 import io.github.imacrazyguy412.we.games.util.Betting;
 import io.github.imacrazyguy412.we.games.util.Deck;
 import io.github.imacrazyguy412.we.games.util.Game;
@@ -344,6 +344,7 @@ public class BlackJackGame extends Game implements Joinable, Betting {
     return playerToBet;
   }
 
+  @Override
   public int getPlayerToTurn(){
     return playerToTurn;
   }
@@ -363,7 +364,7 @@ public class BlackJackGame extends Game implements Joinable, Betting {
    * removes itself from the stored games
    */
   public void stop(){
-    CommandManager.blackJackGames.remove(this);
+    CommandManager.games.remove(this);
   }
 
   @Override

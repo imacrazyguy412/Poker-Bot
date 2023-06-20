@@ -2,7 +2,6 @@ package io.github.imacrazyguy412.we.games.poker;
 
 import java.util.ArrayList;
 
-import io.github.imacrazyguy412.we.arefarmers.DiscordBot;
 import io.github.imacrazyguy412.we.games.util.*;
 
 public class PokerGame extends Game implements Joinable, Betting {
@@ -310,5 +309,11 @@ public class PokerGame extends Game implements Joinable, Betting {
   public Player removePlayer(Player player) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'leave'");
+  }
+
+  @Override
+  public int getPlayerToTurn() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getPlayerToTurn'");
   }
 }

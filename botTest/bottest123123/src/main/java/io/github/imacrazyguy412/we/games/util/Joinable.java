@@ -20,4 +20,6 @@ public interface Joinable {
     public Player removePlayer(Player player);
 
     public ArrayList<? extends Player> getPlayers();
+
+    public int getPlayerToTurn();
 }

@@ -2,7 +2,7 @@ package io.github.imacrazyguy412.we.arefarmers;
 
 import javax.security.auth.login.LoginException;
 
-import io.github.imacrazyguy412.we.arefarmers.commands.CommandManager;
+import io.github.imacrazyguy412.we.arefarmers.listeners.CommandManager;
 import io.github.imacrazyguy412.we.arefarmers.listeners.Listeners;
 /**
  * Hello world!

@@ -1,4 +1,4 @@
-package io.github.imacrazyguy412.we.arefarmers.commands;
+package io.github.imacrazyguy412.we.arefarmers.listeners;
 
 
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
@@ -30,6 +30,8 @@ public class ButtonListeners extends ListenerAdapter{
         
     }
 
+
+    //FIXME - something's broken with the buttons
     public void onButtonInteraction(@NotNull ButtonInteractionEvent e){
         String id = e.getButton().getId();
 

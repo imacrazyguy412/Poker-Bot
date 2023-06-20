@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "DiscordBot",
+            "request": "launch",
+            "mainClass": "io.github.imacrazyguy412.we.arefarmers.DiscordBot",
+            "projectName": "bottest123123"
+        },
+        {
+            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"
@@ -14,7 +21,7 @@
             "type": "java",
             "name": "Launch Main",
             "request": "launch",
-            "mainClass": "we.arefarmers.DiscordBot",
+            "mainClass": "we.arefarmers.DiscordBot"
         }
     ]
 }

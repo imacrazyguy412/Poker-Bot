@@ -1,13 +1,30 @@
 package io.github.imacrazyguy412.we.arefarmers.commands;
 
-import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
-//import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import org.jetbrains.annotations.NotNull;
+
+import io.github.imacrazyguy412.we.arefarmers.commands.cmdobjects.AbstractCommand;
+import io.github.imacrazyguy412.we.games.blackjack.BlackJackGame;
+import io.github.imacrazyguy412.we.games.blackjack.BlackJackPlayer;
+import io.github.imacrazyguy412.we.games.poker.PokerGame;
+import io.github.imacrazyguy412.we.games.poker.PokerPlayer;
+import io.github.imacrazyguy412.we.games.util.Betting;
+import io.github.imacrazyguy412.we.games.util.Game;
+import io.github.imacrazyguy412.we.games.util.Joinable;
+import io.github.imacrazyguy412.we.games.util.Player;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 //import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -17,24 +34,12 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
-import java.util.List;
-import java.util.Random;
-
-import org.jetbrains.annotations.NotNull;
-
-import io.github.imacrazyguy412.we.games.blackjack.BlackJackGame;
-import io.github.imacrazyguy412.we.games.blackjack.BlackJackPlayer;
-import io.github.imacrazyguy412.we.games.poker.PokerGame;
-import io.github.imacrazyguy412.we.games.poker.PokerPlayer;
-import io.github.imacrazyguy412.we.games.util.Betting;
-import io.github.imacrazyguy412.we.games.util.Game;
-import io.github.imacrazyguy412.we.games.util.Joinable;
-import io.github.imacrazyguy412.we.games.util.Player;
-
-import java.util.ArrayList;
-
 
 public class CommandManager extends ListenerAdapter {
+
+    public static final String CMD_OBJECTS_PATH = "botTest\\bottest123123\\src\\main\\java\\io\\github\\imacrazyguy412\\we\\arefarmers\\commands\\cmdobjects";
+
+    protected static Map<String, AbstractCommand> commandMap; 
 
     public static ArrayList<BlackJackGame> blackJackGames = new ArrayList<BlackJackGame>();
     public static ArrayList<PokerGame> pokerGames = new ArrayList<PokerGame>();
@@ -45,6 +50,12 @@ public class CommandManager extends ListenerAdapter {
         int gameInstance;
 
         String command = event.getName();
+
+        System.out.println(commandMap.get(command));
+
+        commandMap.get(command).invoke(event);
+        //TODO - transfer this messy and stupid switch statement to the new system
+
         switch (command){
             case "welcome":
                 String userTag = event.getUser().getAsTag();
@@ -52,14 +63,7 @@ public class CommandManager extends ListenerAdapter {
                 break;
 
             case "urmom":
-                OptionMapping daddy = event.getOption("mom");
                 
-                if(daddy != null){
-                    String  mommy = daddy.getAsString();
-                    event.reply("I was in bed with ur mom, " + mommy + ", last night").queue();
-                } else{
-                    event.reply("no u").queue();
-                }
                 break;
 
             case "bet": //ANCHOR - betting command
@@ -272,8 +276,8 @@ public class CommandManager extends ListenerAdapter {
         
 
         //test
-        OptionData option1 = new OptionData(OptionType.STRING, "mom", "The name of ur mom");
-        commandData.add(Commands.slash("urmom", "tf bro").addOptions(option1));
+        //OptionData option1 = new OptionData(OptionType.STRING, "mom", "The name of ur mom");
+        //commandData.add(Commands.slash("urmom", "tf bro").addOptions(option1));
 
         //bet command
         OptionData betAmountData = new OptionData(OptionType.INTEGER, "amount", "The amount you want to bet", true);
@@ -307,7 +311,113 @@ public class CommandManager extends ListenerAdapter {
         //button test command
         commandData.add(Commands.slash("buttontest", "test the button"));
 
+        initCommandMap();
+        
+        // Add the commands that were found to the bot.
+        commandMap.forEach((name, command) -> {
+            Collection<? extends OptionData> data = command.getOptionData();
+            if(data != null){
+                commandData.add(Commands.slash(name, command.getDescription()).addOptions(data));
+            } else{
+                commandData.add(Commands.slash(name, command.getDescription()));
+            }
+        });
+        
         event.getGuild().updateCommands().addCommands(commandData).queue();
+    }
+    
+    /**
+     * Search through the directory specified by {@link #CMD_OBJECTS_PATH}
+     * (currently {@value #CMD_OBJECTS_PATH}) and for each java source code
+     * file found, get its class. If it is a command class (it extends 
+     * {@link AbstractCommand}), then we add it to our command map.
+     * <p>
+     * To add new commands, you just create a new file in cmdobjects
+     */
+    private void initCommandMap(){
+        commandMap = new HashMap<String, AbstractCommand>();
+        
+        File dir = new File(CMD_OBJECTS_PATH);
+        File[] listing = dir.listFiles();
+
+        if(listing != null){
+            // Search through every file in the "cmdobjects" folder
+            mapClassesFrom(listing);
+        } else {
+            System.out.println("dir: " + dir);
+        }
+        System.out.println(commandMap);
+    }
+
+    private void mapClassesFrom(File[] listing) {
+        for(int i = 0; i < listing.length; i++){
+            mapClassFrom(listing[i]);
+        }
+    }
+
+    private void mapClassFrom(File file) {
+        if(file.isFile()){
+            //Get the class name
+            final String className = file.getPath()
+                .replace("\\", ".") // Replace backslashes with dots (get package name)
+                .replace("botTest.bottest123123.src.main.java.", "") // Remove the part of the path that is not needed
+                .replaceFirst("(?s)(.*).java", "$1") // Remove .java file extension
+                .replaceFirst("(?s)(.*).jav", "$1"); // Remove .jav file extension
+
+            // Start as AbstractCommand to make the warnings shut up
+            Class<? extends AbstractCommand> cmdClass = AbstractCommand.class; 
+
+            try {
+
+                // Get the class in the file
+                Class<?> fileClass = Class.forName(className);
+
+                // Make sure it is supposed to be a command
+                if(AbstractCommand.class.isAssignableFrom(fileClass)){
+
+                    // These annotations are sometimes hard to work with
+                    @SuppressWarnings("unchecked")
+                    Class<? extends AbstractCommand> cmdClasstemp = (Class<? extends AbstractCommand>)fileClass;
+
+                    // Store that in a properly constrained class object
+                    cmdClass = cmdClasstemp; 
+                } else {
+                    return;
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                return;
+            }
+
+            // Ignore Abstract command, as it is abstract and not an actual command
+            if(cmdClass == AbstractCommand.class){
+                return;
+            }
+
+            try {
+
+                // Instantiate the command
+                AbstractCommand cmdInstance = cmdClass.getConstructor().newInstance();
+
+                // ...and finally map it
+                commandMap.putIfAbsent(cmdInstance.getName(), cmdInstance);
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException e) { // Should never happen
+                e.printStackTrace(); 
+            }
+
+        } else{
+            // If the file is not a source code file and is a directory,
+            // we search all of the files inside of it.
+            File[] listing = file.listFiles();
+
+            if(listing != null){
+                mapClassesFrom(listing);
+            }
+        }
     }
 
     /**

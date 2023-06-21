@@ -15,7 +15,7 @@ public class BetCommand extends AbstractCommand {
     }
 
     @Override
-    public void invoke(SlashCommandInteractionEvent event) {
+    protected void onExecution(SlashCommandInteractionEvent event) {
                 
         int gameInstance = findGameIn(event.getChannel());
 

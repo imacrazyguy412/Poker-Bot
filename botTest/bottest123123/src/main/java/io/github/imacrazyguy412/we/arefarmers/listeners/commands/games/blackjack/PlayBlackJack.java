@@ -13,7 +13,7 @@ public class PlayBlackJack extends AbstractCommand {
     }
 
     @Override
-    public void invoke(SlashCommandInteractionEvent event) {
+    protected void onExecution(SlashCommandInteractionEvent event) {
         if(findGameIn(event.getChannel()) != -1){
             event.reply("There is already a game in this channel.").setEphemeral(true).queue();
             return;

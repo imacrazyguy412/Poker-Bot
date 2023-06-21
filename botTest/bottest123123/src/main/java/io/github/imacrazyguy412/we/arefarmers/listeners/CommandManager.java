@@ -37,7 +37,7 @@ public class CommandManager extends ListenerAdapter {
 
         System.out.println(commandMap.get(command));
 
-        commandMap.get(command).invoke(event);
+        commandMap.get(command).execute(event);
         //switch (command){
 
             //poker commands

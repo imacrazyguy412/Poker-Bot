@@ -15,7 +15,7 @@ public class ShowHand extends AbstractCommand {
     }
 
     @Override
-    public void invoke(SlashCommandInteractionEvent event){
+    protected void onExecution(SlashCommandInteractionEvent event){
         final int gameInstance = games.indexOf(new PokerGame(event.getChannel()));
 
         if(gameInstance == -1){

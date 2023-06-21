@@ -14,7 +14,7 @@ public class ButtonTestCommand extends AbstractCommand {
     }
 
     @Override
-    public void invoke(SlashCommandInteractionEvent event){
+    protected void onExecution(SlashCommandInteractionEvent event){
         System.out.println("button tested");
         MessageCreateData message = new MessageCreateBuilder()
             .addContent("Here is ur button, stupid.")

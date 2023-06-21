@@ -15,7 +15,7 @@ public class HitCommand extends AbstractCommand {
     }
 
     @Override
-    public void invoke(SlashCommandInteractionEvent event) {
+    protected void onExecution(SlashCommandInteractionEvent event) {
         int gameInstance = games.indexOf(new BlackJackGame(event.getChannel()));
         //System.out.println("gameInstance: " + gameInstance);
 
@@ -33,11 +33,11 @@ public class HitCommand extends AbstractCommand {
             if(player == -1){
                 event.reply("You're not in the game, type /join to join it.").setEphemeral(true).queue();
             } else{
-                int temp = ((Joinable) games.get(gameInstance)).getPlayerToTurn();
+                int turn = ((Joinable) games.get(gameInstance)).getPlayerToTurn();
 
-                if(temp == -1){
+                if(turn == -1){
                     event.reply("It's not time to hit yet.").setEphemeral(true).queue();
-                } else if(temp == player){
+                } else if(turn == player){
                     event.reply("Here's your card.").queue();
                     games.get(gameInstance).setChoice("hit");
                     

@@ -21,7 +21,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
  * 
  * @author Matthew "Something Inconspicuous"
  */
-public abstract class AbstractCommand {
+public abstract class AbstractCommand implements Command {
     /** The name of the command. The command is used with {@code /name} */
     protected String name;
 
@@ -59,19 +59,42 @@ public abstract class AbstractCommand {
         }
     }
 
+    @Override
     public String getName(){
         return name;
     }
 
+    @Override
     public String getDescription(){
         return description;
     }
 
+    @Override
     public Collection<? extends OptionData> getOptionData(){
         return optionDataCollection;
     }
 
-    public abstract void invoke(SlashCommandInteractionEvent event);
+    protected abstract void onExecution(SlashCommandInteractionEvent event);
+
+    @Override
+    public final void execute(@NotNull SlashCommandInteractionEvent event){
+        try {
+            onExecution(event);
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                event.reply(fullExceptionMessage(e))
+                    .setEphemeral(true)
+                    .queue();
+            } catch (IllegalStateException f) {
+                // Event was acknowledged by execution
+                event.getHook()
+                    .sendMessage(fullExceptionMessage(f))
+                    .setEphemeral(true)
+                    .queue();
+            }
+        }
+    }
 
     protected void addOption(@NotNull OptionType type, @NotNull String name, @NotNull String description){
         addOption(type, name, description, false);
@@ -108,6 +131,14 @@ public abstract class AbstractCommand {
     protected static int findPlayerIn(Joinable game, String withName){
         return game.getPlayers().indexOf(new Player(0, withName) {});
     }
+
+    protected String exceptionMessage(Exception e){
+        return String.valueOf(e);
+    }
+    
+    private final String fullExceptionMessage(Exception e){
+        return String.format("Something went wrong:\n%s\nPlease try again or contact an admin of this server", exceptionMessage(e));
+    }
     
     @Override
     public String toString() {
@@ -122,6 +153,6 @@ public abstract class AbstractCommand {
     public boolean equals(Object obj) {
         if(!(obj instanceof AbstractCommand)) return false;
 
-        return getName().equals(((AbstractCommand)obj).getName());
+        return getName().equals(((Command)obj).getName());
     }
 }

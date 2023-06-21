@@ -17,7 +17,7 @@ public class DiceRollerCommand extends AbstractCommand {
     }
 
     @Override
-    public void invoke(SlashCommandInteractionEvent event){
+    protected void onExecution(SlashCommandInteractionEvent event){
         //TODO: finish this
 
         String choice = event.getOption("choice").getAsString();

@@ -1,5 +1,6 @@
-package io.github.imacrazyguy412.we.arefarmers.listeners.commands;
+package io.github.imacrazyguy412.we.arefarmers.listeners.commands.test;
 
+import io.github.imacrazyguy412.we.arefarmers.listeners.commands.AbstractCommand;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -14,7 +15,7 @@ public class UrmomCommand extends AbstractCommand {
     }
 
     @Override
-    public void invoke(SlashCommandInteractionEvent event) {
+    protected void onExecution(SlashCommandInteractionEvent event) {
         OptionMapping daddy = event.getOption("mom");
                 
         if(daddy != null){

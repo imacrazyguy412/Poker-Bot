@@ -9,7 +9,7 @@ public class WelcomeCommand extends AbstractCommand {
     }
 
     @Override
-    public void invoke(SlashCommandInteractionEvent event){
+    protected void onExecution(SlashCommandInteractionEvent event){
         String userTag = event.getUser().getAsTag();
         event.reply("Welcome to the server, **" + userTag + "**!").queue();
     }

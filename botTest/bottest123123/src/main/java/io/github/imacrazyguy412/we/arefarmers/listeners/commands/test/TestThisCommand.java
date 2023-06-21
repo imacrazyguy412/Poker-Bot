@@ -10,7 +10,7 @@ public class TestThisCommand extends AbstractCommand {
     }
 
     @Override
-    public void invoke(SlashCommandInteractionEvent event) {
+    protected void onExecution(SlashCommandInteractionEvent event) {
         System.out.println("Tested");
         event.reply("Hello").queue();
     }

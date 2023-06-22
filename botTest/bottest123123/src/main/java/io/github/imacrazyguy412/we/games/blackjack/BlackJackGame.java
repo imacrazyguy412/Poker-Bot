@@ -126,6 +126,7 @@ public class BlackJackGame extends Game implements Joinable, Betting {
 
         default:
           System.out.println("BlackJackGame.playerChoice() called without proper choice");
+          System.out.println(new Throwable().getStackTrace());
       }
   }
 
@@ -277,13 +278,16 @@ public class BlackJackGame extends Game implements Joinable, Betting {
   }
 
   private void showAllHands(){
-    for(BlackJackPlayer p : players){
-      message(p.getName() + "'s hand:");
-      message(p.getHand());
-      if(!p.getSplitHand().isEmpty()){
-        message(p.getName() + "'s split hand:");
-        message(p.getSplitHand());
-      }
+    for(int i = 0; i < players.size(); i++){
+      showHand(players.get(i));
+    }
+  }
+
+  private void showHand(BlackJackPlayer p) {
+    //StringBuilder sb = new StringBuilder();
+    message("%s's hand:\n%s", p.getName(), p.getHand());
+    if(!p.getSplitHand().isEmpty()){
+      message("%s's split hand:\n%s", p.getName(), p.getHand());
     }
   }
 

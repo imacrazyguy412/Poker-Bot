@@ -7,6 +7,7 @@ import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
 
+import io.github.imacrazyguy412.we.annotation.IgnoreAsCommand;
 import io.github.imacrazyguy412.we.games.util.Game;
 import io.github.imacrazyguy412.we.games.util.Joinable;
 import io.github.imacrazyguy412.we.games.util.Player;
@@ -21,6 +22,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
  * 
  * @author Matthew "Something Inconspicuous"
  */
+@IgnoreAsCommand
 public abstract class AbstractCommand implements Command {
     /** The name of the command. The command is used with {@code /name} */
     protected String name;
@@ -45,13 +47,13 @@ public abstract class AbstractCommand implements Command {
         this(name, "null");
     }
 
-    public AbstractCommand(@NotNull String name, @NotNull String description){
+    protected AbstractCommand(@NotNull String name, @NotNull String description){
         this.name = name;
         this.description = description;
         optionDataCollection = null;
     }
 
-    public AbstractCommand(@NotNull String name, @NotNull String description, OptionData... data){
+    protected AbstractCommand(@NotNull String name, @NotNull String description, OptionData... data){
         this(name, description);
         optionDataCollection = new ArrayList<OptionData>(data.length);
         for (OptionData optionData : data) {
@@ -86,10 +88,10 @@ public abstract class AbstractCommand implements Command {
                 event.reply(fullExceptionMessage(e))
                     .setEphemeral(true)
                     .queue();
-            } catch (IllegalStateException f) {
+            } catch (IllegalStateException ise) {
                 // Event was acknowledged by execution
                 event.getHook()
-                    .sendMessage(fullExceptionMessage(f))
+                    .sendMessage(fullExceptionMessage(ise))
                     .setEphemeral(true)
                     .queue();
             }
@@ -140,13 +142,17 @@ public abstract class AbstractCommand implements Command {
         return String.format("Something went wrong:\n%s\nPlease try again or contact an admin of this server", exceptionMessage(e));
     }
     
+    /**
+     * Returns a string representation of this command in the
+     * format of {@code "name: description"}
+     */
     @Override
     public String toString() {
         String desc = getDescription();
         if(desc == null){
             return getName();
         }
-        return String.format("%s, %s", getName(), getDescription());
+        return String.format("%s: %s", getName(), desc);
     }
 
     @Override

@@ -32,7 +32,7 @@
 			 "\t}",
 				"",
 			 "\t@Override",
-			 "\tpublic void onExecution(@NotNull SlashCommandInteractionEvent event){",
+			 "\tpublic void onExecution(SlashCommandInteractionEvent event){",
 				"",	
 			 "\t}",
 				"",
@@ -43,5 +43,15 @@
 		"scope": "java",
 		"prefix": "stimportgames",
 		"body": "import static io.github.imacrazyguy412.we.arefarmers.listeners.CommandManager.games;"
+	},
+	"event reply emphermeral": {
+		"scope": "java",
+		"prefix": "replyemph",
+		"body": "event.reply(\"$0\").setEphemeral(true).queue();"
+	},
+	"event reply": {
+		"scope": "java",
+		"prefix": "reply",
+		"body": "event.reply(\"$0\").queue();"
 	}
 }

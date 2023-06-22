@@ -7,9 +7,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.jetbrains.annotations.NotNull;
 
-import io.github.imacrazyguy412.we.arefarmers.listeners.commands.AbstractCommand;
+import io.github.imacrazyguy412.we.annotation.IgnoreAsCommand;
+import io.github.imacrazyguy412.we.annotation.Subcommand;
+import io.github.imacrazyguy412.we.annotation.Supercommand;
+import io.github.imacrazyguy412.we.arefarmers.listeners.commands.Command;
 import io.github.imacrazyguy412.we.games.util.Game;
 //import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
@@ -18,13 +22,15 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 
 
 public class CommandManager extends ListenerAdapter {
 
     public static final String CMD_OBJECTS_PATH = "botTest\\bottest123123\\src\\main\\java\\io\\github\\imacrazyguy412\\we\\arefarmers\\listeners\\commands";
 
-    protected static Map<String, AbstractCommand> commandMap; 
+    protected static Map<String, Command> commandMap; 
 
     //public static ArrayList<BlackJackGame> blackJackGames = new ArrayList<BlackJackGame>();
     //public static ArrayList<PokerGame> pokerGames = new ArrayList<PokerGame>();
@@ -35,7 +41,7 @@ public class CommandManager extends ListenerAdapter {
 
         String command = event.getName();
 
-        System.out.println(commandMap.get(command));
+        System.out.println("[WE] " + commandMap.get(command));
 
         commandMap.get(command).execute(event);
         //switch (command){
@@ -114,12 +120,70 @@ public class CommandManager extends ListenerAdapter {
         initCommandMap();
         
         // Add the commands that were found to the bot.
+        Map<Command, CommandData> cmdToCmdDataMap = new HashMap<Command, CommandData>();
+        Map<Command, List<SubcommandData>> subcmdDataToDoMap = new HashMap<Command, List<SubcommandData>>();
         commandMap.forEach((name, command) -> {
+            System.out.println("[WE] Converting command: " + command);
+
+            SlashCommandData slash = Commands.slash(name, command.getDescription());
             Collection<? extends OptionData> data = command.getOptionData();
+            
+            {List<SubcommandData> subcmdDataToAdd = subcmdDataToDoMap.get(command);
+            if(subcmdDataToAdd != null){
+                slash.addSubcommands(subcmdDataToAdd);
+            }} // Block memory manipulation
+
+            final Supercommand supcmd = command.getClass().getDeclaredAnnotation(Supercommand.class);
+
+            if(supcmd != null){
+                cmdToCmdDataMap.put(command, slash);
+            }
+
+            final Subcommand subcmd = command.getClass().getDeclaredAnnotation(Subcommand.class);
+            if(subcmd != null){
+                try {
+                    // Get this subcommand's super command
+                    Command supercmd = commandMap.get(subcmd.value().getConstructor().newInstance().getName());
+                    // And its data
+                    SlashCommandData supcmdData = (SlashCommandData) cmdToCmdDataMap.get(supercmd);
+                    
+                    // If its data is retrievable, we know we've already handled the super command
+                    if(supcmdData == null){
+                        // So we need to add it to out todo list
+
+                        List<SubcommandData> subcmdList = subcmdDataToDoMap.get(supercmd);
+                        
+                        // Check if the list already exists
+                        if(subcmdList == null){
+                            List<SubcommandData> subcmdToAdd = new ArrayList<SubcommandData>();
+                            subcmdToAdd.add(new SubcommandData(command.getName(), command.getDescription()));
+                            subcmdDataToDoMap.put(supercmd, subcmdToAdd);
+                        } else{
+                            subcmdList.add(new SubcommandData(command.getName(), command.getDescription()));
+                        }
+                    } else{
+                        // Otherwise, we can simply append out subcommand data to tthe command data
+                        supcmdData.addSubcommands(new SubcommandData(slash.getName(), slash.getDescription()));
+                    }
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (SecurityException e) {
+                    e.printStackTrace();
+                }
+            }
+
             if(data != null){
-                commandData.add(Commands.slash(name, command.getDescription()).addOptions(data));
+                commandData.add(slash.addOptions(data));
             } else{
-                commandData.add(Commands.slash(name, command.getDescription()));
+                commandData.add(slash);
             }
         });
         
@@ -129,43 +193,43 @@ public class CommandManager extends ListenerAdapter {
     /**
      * Search through the directory specified by {@link #CMD_OBJECTS_PATH}
      * (currently {@value #CMD_OBJECTS_PATH}) and for each java source code
-     * file found, get its class. If it is a command class (it extends 
-     * {@link AbstractCommand}), then we add it to our command map.
+     * file found, get its class. If it is a command class (it implements 
+     * {@link Command}), then we add it to our command map.
      * <p>
-     * To add new commands, you just create a new file in cmdobjects
+     * To add new commands, you just create a new file in "commands"
      */
-    private void initCommandMap(){
-        commandMap = new HashMap<String, AbstractCommand>();
+    private static void initCommandMap(){
+        commandMap = new HashMap<String, Command>();
         
         File dir = new File(CMD_OBJECTS_PATH);
         File[] listing = dir.listFiles();
 
         if(listing != null){
-            // Search through every file in the "cmdobjects" folder
+            // Search through every file in the "commands" folder
             mapClassesFrom(listing);
         } else {
-            System.out.println("dir: " + dir);
+            System.out.println("[WE] dir: " + dir);
         }
-        System.out.println(commandMap);
+        System.out.println("[WE] " + commandMap);
     }
 
-    private void mapClassesFrom(File[] listing) {
+    private static void mapClassesFrom(File[] listing) {
         for(int i = 0; i < listing.length; i++){
             mapClassFrom(listing[i]);
         }
     }
 
-    private void mapClassFrom(File file) {
+    private static void mapClassFrom(File file) {
         if(file.isFile()){
             //Get the class name
             final String className = file.getPath()
-                .replace("\\", ".") // Replace backslashes with dots (get package name)
+                .replace('\\', '.') // Replace backslashes with dots (get package name)
                 .replace("botTest.bottest123123.src.main.java.", "") // Remove the part of the path that is not needed
                 .replaceFirst("(?s)(.*).java", "$1") // Remove .java file extension
                 .replaceFirst("(?s)(.*).jav", "$1"); // Remove .jav file extension
 
-            // Start as AbstractCommand to make the warnings shut up
-            Class<? extends AbstractCommand> cmdClass = AbstractCommand.class; 
+            // Start as Command to make the warnings shut up
+            Class<? extends Command> cmdClass = Command.class; 
 
             try {
 
@@ -173,11 +237,11 @@ public class CommandManager extends ListenerAdapter {
                 Class<?> fileClass = Class.forName(className);
 
                 // Make sure it is supposed to be a command
-                if(AbstractCommand.class.isAssignableFrom(fileClass)){
+                if(Command.class.isAssignableFrom(fileClass)){
 
                     // These annotations are sometimes hard to work with
                     @SuppressWarnings("unchecked")
-                    Class<? extends AbstractCommand> cmdClasstemp = (Class<? extends AbstractCommand>)fileClass;
+                    Class<? extends Command> cmdClasstemp = (Class<? extends Command>)fileClass;
 
                     // Store that in a properly constrained class object
                     cmdClass = cmdClasstemp; 
@@ -189,15 +253,15 @@ public class CommandManager extends ListenerAdapter {
                 return;
             }
 
-            // Ignore Abstract command, as it is abstract and not an actual command
-            if(cmdClass == AbstractCommand.class){
+            // Ignore annotated command, as it is not an actual command
+            if(cmdClass.getDeclaredAnnotation(IgnoreAsCommand.class) != null){
                 return;
             }
 
             try {
 
                 // Instantiate the command
-                AbstractCommand cmdInstance = cmdClass.getConstructor().newInstance();
+                Command cmdInstance = cmdClass.getConstructor().newInstance();
 
                 // ...and finally map it
                 commandMap.putIfAbsent(cmdInstance.getName(), cmdInstance);
@@ -218,5 +282,9 @@ public class CommandManager extends ListenerAdapter {
                 mapClassesFrom(listing);
             }
         }
+    }
+
+    public static Command getCommandByName(String name){
+        return commandMap.get(name);
     }
 }

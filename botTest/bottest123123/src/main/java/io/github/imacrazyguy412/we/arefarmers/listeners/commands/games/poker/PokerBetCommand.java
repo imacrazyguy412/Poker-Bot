@@ -1,42 +1,46 @@
-package io.github.imacrazyguy412.we.arefarmers.listeners.commands.games;
+package io.github.imacrazyguy412.we.arefarmers.listeners.commands.games.poker;
 
 import static io.github.imacrazyguy412.we.arefarmers.listeners.CommandManager.games;
 
 import io.github.imacrazyguy412.we.arefarmers.listeners.commands.AbstractCommand;
-import io.github.imacrazyguy412.we.games.util.Betting;
-import io.github.imacrazyguy412.we.games.util.Joinable;
+import io.github.imacrazyguy412.we.games.poker.PokerGame;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
-public class BetCommand extends AbstractCommand {
-    public BetCommand() {
-        super("bet", "Place a bet", new OptionData(OptionType.INTEGER, "amount", "The amount you would like to bet", true));
+public class PokerBetCommand extends AbstractCommand {
+
+    public PokerBetCommand(){
+        super("bet", "Place a bet in poker.",
+            new OptionData(OptionType.INTEGER, "amount", "The amount you would like to bet.")
+                .setRequiredRange(0, PokerGame.MAX_BET)
+        );
     }
 
     @Override
-    protected void onExecution(SlashCommandInteractionEvent event) {
-                
-        int gameInstance = findGameIn(event.getChannel());
+    public void onExecution(SlashCommandInteractionEvent event){
+        int gameInstance = games.indexOf(new PokerGame(event.getMessageChannel()));
 
         if(gameInstance < 0){
             event.reply("There is no game in here!").setEphemeral(true).queue();
             return;
         }
 
-        if(!(games.get(gameInstance) instanceof Betting)){
-            event.reply("Sorry, you cannot bet in this game.").setEphemeral(true).queue();
+        if(!(games.get(gameInstance) instanceof PokerGame)){
+            event.reply("There is no poker game in here!").setEphemeral(true).queue();
             return;
         }
 
-        int playerInstanceForBet = findPlayerIn((Joinable)games.get(gameInstance), event.getUser().getAsTag());
+        PokerGame game = (PokerGame)(games.get(gameInstance));
+
+        int playerInstanceForBet = findPlayerIn(game, event.getUser().getAsTag());
 
         if(playerInstanceForBet == -1){
             event.reply("Your not in this game!").setEphemeral(true).queue();
             return;
         }
 
-        int playerToBet = ((Betting)games.get(gameInstance)).getPlayerToBet();
+        int playerToBet = game.getPlayerToBet();
 
         if(playerToBet == -1){
             event.reply("It's not time to bet yet!").setEphemeral(true).queue();
@@ -49,8 +53,8 @@ public class BetCommand extends AbstractCommand {
         }
 
         int bet = event.getOption("amount").getAsInt();
-        games.get(gameInstance).setChoice(bet);
+        game.setChoice(bet);
         event.reply("You bet ***" + bet + "*** chips").queue();
     }
-    
+
 }

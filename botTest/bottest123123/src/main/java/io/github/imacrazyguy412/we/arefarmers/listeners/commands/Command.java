@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import io.github.imacrazyguy412.we.annotation.IgnoreAsCommand;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.CommandInteractionPayload;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
 /**
@@ -30,6 +31,14 @@ public interface Command {
      * @return The name of the command
      */
     String getName();
+
+    /**
+     * Get the full path of the command
+     * 
+     * @return The path of the command
+     * @see CommandInteractionPayload#getCommandPath()
+     */
+    String getPath();
 
     /**
      * Get the description of the command. This is shown to

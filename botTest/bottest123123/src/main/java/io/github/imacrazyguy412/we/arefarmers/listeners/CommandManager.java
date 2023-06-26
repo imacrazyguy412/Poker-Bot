@@ -35,13 +35,14 @@ public class CommandManager extends ListenerAdapter {
     //public static ArrayList<BlackJackGame> blackJackGames = new ArrayList<BlackJackGame>();
     //public static ArrayList<PokerGame> pokerGames = new ArrayList<PokerGame>();
     public static ArrayList<Game> games = new ArrayList<Game>();
+    
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
 
         String command = event.getName();
 
-        System.out.println("[WE] " + commandMap.get(command));
+        System.out.println("[CommandManager] " + commandMap.get(command));
 
         commandMap.get(command).execute(event);
         //switch (command){
@@ -74,48 +75,11 @@ public class CommandManager extends ListenerAdapter {
         
         
     }
+    
     //guild command
     @Override
     public void onGuildReady(@NotNull GuildReadyEvent event) {
         List<CommandData> commandData = new ArrayList<>();
-        //commandData.add(Commands.slash("welcome", "Get welcomed by the bot"));
-        
-
-        //test
-        //OptionData option1 = new OptionData(OptionType.STRING, "mom", "The name of ur mom");
-        //commandData.add(Commands.slash("urmom", "tf bro").addOptions(option1));
-
-        //bet command
-        //OptionData betAmountData = new OptionData(OptionType.INTEGER, "amount", "The amount you want to bet", true);
-        //commandData.add(Commands.slash("bet", "make a bet").addOptions(betAmountData));
-
-        //playblackjack command
-        //OptionData numBlackJackPlayers = new OptionData(OptionType.INTEGER, "amount", "The amount of players.", true);
-        //commandData.add(Commands.slash("playblackjack", "Play BlackJack"));
-
-        //blackjackbet command
-        //OptionData blackJackBet = new OptionData(OptionType.INTEGER, "amount", "The amount you want to bet", true);
-        //commandData.add(Commands.slash("blackjackbet", "Place a bet (BlackJack)").addOptions(blackJackBet));
-
-        //commandData.add(Commands.slash("hit", "Take a card (Blackjack)"));
-
-        //playpoker command
-        //commandData.add(Commands.slash("playpoker", "I sure can't wait to do some poker"));
-
-        //pokerbet command
-        //OptionData pokerBet = new OptionData(OptionType.INTEGER, "amount", "the amount you want to bet");
-        //commandData.add(Commands.slash("pokerbet", "Place a bet (Poker)").addOptions(pokerBet));
-
-        //showhand command
-        //commandData.add(Commands.slash("showhand", "Look at your hand in poker (don't worry, only you can see it)"));
-
-        //diceroller command
-        //OptionData diceRollerBet = new OptionData(OptionType.INTEGER, "amount", "The amoumnt you want to bet", true);
-        //OptionData diceRollerChoice = new OptionData(OptionType.STRING, "choice", "Enter \"higher\" or \"lower\"", true);
-        //commandData.add(Commands.slash("diceroller", "Gamble if 2d6 will roll above or below 7").addOptions(diceRollerBet, diceRollerChoice));
-
-        //button test command
-        //commandData.add(Commands.slash("buttontest", "test the button"));
 
         initCommandMap();
         
@@ -123,18 +87,17 @@ public class CommandManager extends ListenerAdapter {
         Map<Command, CommandData> cmdToCmdDataMap = new HashMap<Command, CommandData>();
         Map<Command, List<SubcommandData>> subcmdDataToDoMap = new HashMap<Command, List<SubcommandData>>();
         commandMap.forEach((name, command) -> {
-            System.out.println("[WE] Converting command: " + command);
+            System.out.println("[CommandManager] Converting command: " + command);
 
-            SlashCommandData slash = Commands.slash(name, command.getDescription());
-            Collection<? extends OptionData> data = command.getOptionData();
+            SlashCommandData slash = Commands.slash(command.getName(), command.getDescription());
             
             {List<SubcommandData> subcmdDataToAdd = subcmdDataToDoMap.get(command);
             if(subcmdDataToAdd != null){
                 slash.addSubcommands(subcmdDataToAdd);
             }} // Block memory manipulation
-
+            
             final Supercommand supcmd = command.getClass().getDeclaredAnnotation(Supercommand.class);
-
+            
             if(supcmd != null){
                 cmdToCmdDataMap.put(command, slash);
             }
@@ -150,7 +113,7 @@ public class CommandManager extends ListenerAdapter {
                     // If its data is retrievable, we know we've already handled the super command
                     if(supcmdData == null){
                         // So we need to add it to out todo list
-
+                        
                         List<SubcommandData> subcmdList = subcmdDataToDoMap.get(supercmd);
                         
                         // Check if the list already exists
@@ -178,13 +141,16 @@ public class CommandManager extends ListenerAdapter {
                 } catch (SecurityException e) {
                     e.printStackTrace();
                 }
+            } else {
+                Collection<? extends OptionData> data = command.getOptionData();
+                if(data != null){
+                    commandData.add(slash.addOptions(data));
+                } else{
+                    commandData.add(slash);
+                }
             }
-
-            if(data != null){
-                commandData.add(slash.addOptions(data));
-            } else{
-                commandData.add(slash);
-            }
+            
+            
         });
         
         event.getGuild().updateCommands().addCommands(commandData).queue();
@@ -208,9 +174,9 @@ public class CommandManager extends ListenerAdapter {
             // Search through every file in the "commands" folder
             mapClassesFrom(listing);
         } else {
-            System.out.println("[WE] dir: " + dir);
+            //System.out.println("[CommandManager] dir: " + dir);
         }
-        System.out.println("[WE] " + commandMap);
+        //System.out.println("[CommandManager] " + commandMap);
     }
 
     private static void mapClassesFrom(File[] listing) {
@@ -264,7 +230,7 @@ public class CommandManager extends ListenerAdapter {
                 Command cmdInstance = cmdClass.getConstructor().newInstance();
 
                 // ...and finally map it
-                commandMap.putIfAbsent(cmdInstance.getName(), cmdInstance);
+                commandMap.putIfAbsent(cmdInstance.getPath(), cmdInstance);
             } catch (InstantiationException e) {
                 e.printStackTrace();
             } catch (InvocationTargetException e) {
@@ -284,7 +250,7 @@ public class CommandManager extends ListenerAdapter {
         }
     }
 
-    public static Command getCommandByName(String name){
+    public static Command getCommandByPath(String name){
         return commandMap.get(name);
     }
 }

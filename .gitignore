@@ -1,5 +1,8 @@
 Poop.java
 Poop.class
-target\
+target/
 
 *.class
+
+*.bat
+*.sh

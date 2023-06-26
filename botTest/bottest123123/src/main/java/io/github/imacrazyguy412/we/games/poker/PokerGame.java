@@ -6,6 +6,7 @@ import io.github.imacrazyguy412.we.games.util.*;
 
 public class PokerGame extends Game implements Joinable, Betting {
   private static final int START_CHIPS = 500, SMALL_BLIND = 10;
+  public static final int MAX_BET = 100;
   private int dealer = 0;
 
   //TODO - side pots

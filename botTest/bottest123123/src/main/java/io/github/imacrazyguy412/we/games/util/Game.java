@@ -18,8 +18,8 @@ import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
  * respective {@link MessageChannel} with the
  * {@link #message(Object)} method for output, and can use the
  * {@link #input()} method to wait for an input given via the
- * {@link #setChoice(String)} method. The {@link #choice} field
- * will hold the resulting input.
+ * {@link #setChoice(String)} method. {@link #input()} will return
+ * the input value.
  * <p>
  * In order to start a {@link Game}, the {@link #start()}
  * method can be used to start the {@link Thread} and will
@@ -143,6 +143,7 @@ public abstract class Game implements Runnable{
      * <p>
      * Gives {@link #choice} a value. The given value will be given with all spaces removed to choice
      * @param s -- the string to pass
+     * @see #input()
      */
     public synchronized final void setChoice(String s){
         choice = s.toLowerCase().replaceAll(" ", "");
@@ -152,8 +153,9 @@ public abstract class Game implements Runnable{
     /**
      * passes a {@code int} to {@link #choiceInt}
      * @param i -- the int to pass
+     * @see #inputAsInt()
      */
-    public final void setChoice(int i){
+    public synchronized final void setChoice(int i){
         choiceInt = Integer.valueOf(i);
         thread.interrupt();
     }

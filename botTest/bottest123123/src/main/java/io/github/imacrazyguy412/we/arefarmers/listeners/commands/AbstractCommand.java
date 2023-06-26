@@ -2,12 +2,15 @@ package io.github.imacrazyguy412.we.arefarmers.listeners.commands;
 
 import static io.github.imacrazyguy412.we.arefarmers.listeners.CommandManager.games;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
 import io.github.imacrazyguy412.we.annotation.IgnoreAsCommand;
+import io.github.imacrazyguy412.we.annotation.Subcommand;
 import io.github.imacrazyguy412.we.games.util.Game;
 import io.github.imacrazyguy412.we.games.util.Joinable;
 import io.github.imacrazyguy412.we.games.util.Player;
@@ -30,12 +33,11 @@ public abstract class AbstractCommand implements Command {
     /** A brief description of what the command is supposed to do. */
     protected String description;
 
-    protected Collection<OptionData> optionDataCollection;
+    protected List<OptionData> optionDataCollection = new ArrayList<>();
 
     /**
      * By defualt, constructs an empty command, with {@code "null"} as its name and
-     * description. Should be overriden to set defualt name and description, as well
-     * as option data.
+     * an empty description. Should be overriden to set defualt name and description.
      * 
      * @see #AbstractCommand(String, String)
      */
@@ -43,19 +45,37 @@ public abstract class AbstractCommand implements Command {
         this("null");
     }
     
+
+    /**
+     * Create a command with a given name and {@code ""} as its description
+     * 
+     * @param name The name of the command
+     * @see #AbstractCommand(String, String)
+     */
     public AbstractCommand(@NotNull String name){
-        this(name, "null");
+        this(name, "");
     }
 
+    /**
+     * Create a command with a given name and description.
+     * 
+     * @param name The name of the command
+     * @param description A brief description of the command
+     */
     protected AbstractCommand(@NotNull String name, @NotNull String description){
         this.name = name;
         this.description = description;
-        optionDataCollection = null;
     }
 
+    /**
+     * Create a command with the given name and description, as well as given option data.
+     * 
+     * @param name The name of the command
+     * @param description A brief description of the command
+     * @param data A list of {@link OptionData} to give the command
+     */
     protected AbstractCommand(@NotNull String name, @NotNull String description, OptionData... data){
         this(name, description);
-        optionDataCollection = new ArrayList<OptionData>(data.length);
         for (OptionData optionData : data) {
             optionDataCollection.add(optionData);
         }
@@ -64,6 +84,34 @@ public abstract class AbstractCommand implements Command {
     @Override
     public String getName(){
         return name;
+    }
+
+    @Override
+    public String getPath(){
+        Subcommand subcmd = getClass().getDeclaredAnnotation(Subcommand.class);
+
+        if(subcmd == null){
+            return getName();
+        }
+
+        try {
+            Command supcmdInstance = subcmd.value().getConstructor().newInstance();
+            return String.format("%s/%s", supcmdInstance.getName(), getName());
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+        // To signify which command had an exception
+        return "/" + getName() + "/";
     }
 
     @Override
@@ -83,15 +131,17 @@ public abstract class AbstractCommand implements Command {
         try {
             onExecution(event);
         } catch (Exception e) {
+            System.err.format("[%s] \n", getClass().getSimpleName());
             e.printStackTrace();
-            try {
-                event.reply(fullExceptionMessage(e))
+
+            // Check if event was acknowledged
+            if(event.getHook().getInteraction().isAcknowledged()){
+                event.getHook()
+                    .sendMessage(fullExceptionMessage(e))
                     .setEphemeral(true)
                     .queue();
-            } catch (IllegalStateException ise) {
-                // Event was acknowledged by execution
-                event.getHook()
-                    .sendMessage(fullExceptionMessage(ise))
+            } else{
+                event.reply(fullExceptionMessage(e))
                     .setEphemeral(true)
                     .queue();
             }
@@ -107,7 +157,11 @@ public abstract class AbstractCommand implements Command {
     }
     
     protected void addOption(@NotNull OptionType type, @NotNull String name, @NotNull String description, boolean required, boolean isAutoComplete){
-        optionDataCollection.add(new OptionData(type, name, description, required, isAutoComplete));
+        addOption(new OptionData(type, name, description, required, isAutoComplete));
+    }
+
+    protected void addOption(@NotNull OptionData option){
+        optionDataCollection.add(option);
     }
     
     /**
@@ -150,9 +204,9 @@ public abstract class AbstractCommand implements Command {
     public String toString() {
         String desc = getDescription();
         if(desc == null){
-            return getName();
+            return getPath();
         }
-        return String.format("%s: %s", getName(), desc);
+        return String.format("%s: %s", getPath(), desc);
     }
 
     @Override

@@ -1,16 +1,15 @@
-package io.github.imacrazyguy412.we.arefarmers.listeners.commands.games.blackjack;
+package io.github.imacrazyguy412.we.arefarmers.listeners.commands.games.poker;
 
 import io.github.imacrazyguy412.we.annotation.Supercommand;
 import io.github.imacrazyguy412.we.arefarmers.listeners.CommandManager;
 import io.github.imacrazyguy412.we.arefarmers.listeners.commands.AbstractCommand;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
-
 @Supercommand
-public class BlackJackCommand extends AbstractCommand {
+public class PokerCommand extends AbstractCommand {
 
-    public BlackJackCommand(){
-        super("blackjack", "Do something in blackjack");
+    public PokerCommand(){
+        super("poker", "Do something in poker.");
     }
 
     @Override

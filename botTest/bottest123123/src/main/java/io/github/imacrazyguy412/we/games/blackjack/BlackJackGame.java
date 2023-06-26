@@ -8,10 +8,11 @@ import io.github.imacrazyguy412.we.games.util.Deck;
 import io.github.imacrazyguy412.we.games.util.Game;
 import io.github.imacrazyguy412.we.games.util.Joinable;
 import io.github.imacrazyguy412.we.games.util.Player;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 
 
 public class BlackJackGame extends Game implements Joinable, Betting {
-  public static final int MAXBET = 500, MINBET = 2;
+  public static final int MAX_BET = 500, MIN_BET = 2;
   //private Scanner input = new Scanner(System.in);
   private ArrayList<BlackJackPlayer> players = new ArrayList<BlackJackPlayer>();
   //private BlackJackPlayer tempPlayer;
@@ -21,11 +22,11 @@ public class BlackJackGame extends Game implements Joinable, Betting {
 
   private int playerToBet = -1, playerToTurn = -1;
 
-  public BlackJackGame(net.dv8tion.jda.api.entities.channel.middleman.MessageChannel c){
+  public BlackJackGame(MessageChannel c){
     super(c);
   }
 
-  public BlackJackGame(net.dv8tion.jda.api.entities.channel.middleman.MessageChannel c, String startingPlayerName){
+  public BlackJackGame(MessageChannel c, String startingPlayerName){
     super(c);
     players.add(new BlackJackPlayer(startingPlayerName));
   }

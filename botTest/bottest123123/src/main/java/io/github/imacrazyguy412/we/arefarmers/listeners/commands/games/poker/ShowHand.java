@@ -2,12 +2,14 @@ package io.github.imacrazyguy412.we.arefarmers.listeners.commands.games.poker;
 
 import static io.github.imacrazyguy412.we.arefarmers.listeners.CommandManager.games;
 
+import io.github.imacrazyguy412.we.annotation.Subcommand;
 import io.github.imacrazyguy412.we.arefarmers.listeners.commands.AbstractCommand;
 import io.github.imacrazyguy412.we.games.poker.PokerGame;
 import io.github.imacrazyguy412.we.games.poker.PokerPlayer;
 import io.github.imacrazyguy412.we.games.util.Joinable;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
+@Subcommand(PokerCommand.class)
 public class ShowHand extends AbstractCommand {
 
     public ShowHand(){

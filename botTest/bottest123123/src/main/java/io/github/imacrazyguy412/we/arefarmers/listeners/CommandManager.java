@@ -42,7 +42,7 @@ public class CommandManager extends ListenerAdapter {
 
         String command = event.getName();
 
-        System.out.println("[CommandManager] " + commandMap.get(command));
+        System.out.format("[CommandManager] Recieved Command: %s\n", getCommandByPath(event.getCommandPath()));
 
         commandMap.get(command).execute(event);
         //switch (command){
@@ -91,10 +91,10 @@ public class CommandManager extends ListenerAdapter {
 
             SlashCommandData slash = Commands.slash(command.getName(), command.getDescription());
             
-            {List<SubcommandData> subcmdDataToAdd = subcmdDataToDoMap.get(command);
+            List<SubcommandData> subcmdDataToAdd = subcmdDataToDoMap.get(command);
             if(subcmdDataToAdd != null){
                 slash.addSubcommands(subcmdDataToAdd);
-            }} // Block memory manipulation
+            }
             
             final Supercommand supcmd = command.getClass().getDeclaredAnnotation(Supercommand.class);
             
@@ -119,14 +119,45 @@ public class CommandManager extends ListenerAdapter {
                         // Check if the list already exists
                         if(subcmdList == null){
                             List<SubcommandData> subcmdToAdd = new ArrayList<SubcommandData>();
-                            subcmdToAdd.add(new SubcommandData(command.getName(), command.getDescription()));
+
+                            Collection<? extends OptionData> subcmdOptions = command.getOptionData();
+                            //System.out.println("[CommandManager] Found options: " + subcmdOptions);
+                            if(subcmdOptions == null){
+                                subcmdToAdd.add(new SubcommandData(command.getName(), command.getDescription()));
+                            } else {
+                                subcmdToAdd.add(
+                                    new SubcommandData(command.getName(), command.getDescription())
+                                        .addOptions(subcmdOptions)
+                                );
+                            }
+
                             subcmdDataToDoMap.put(supercmd, subcmdToAdd);
                         } else{
-                            subcmdList.add(new SubcommandData(command.getName(), command.getDescription()));
+                            Collection<? extends OptionData> subcmdOptions = command.getOptionData();
+                            //System.out.println("[CommandManager] Found options: " + subcmdOptions);
+                            if(subcmdOptions == null){
+                                subcmdList.add(new SubcommandData(command.getName(), command.getDescription()));
+                            } else {
+                                subcmdList.add(
+                                    new SubcommandData(command.getName(), command.getDescription())
+                                        .addOptions(subcmdOptions)
+                                );
+                            }
                         }
                     } else{
-                        // Otherwise, we can simply append out subcommand data to tthe command data
-                        supcmdData.addSubcommands(new SubcommandData(slash.getName(), slash.getDescription()));
+                        // Otherwise, we can simply append our subcommand data to the command data
+                        // Along with its options, if present
+                        Collection<? extends OptionData> subcmdOptions = command.getOptionData();
+                        //System.out.println("[CommandManager] Found options: " + subcmdOptions);
+                        if(subcmdOptions == null){
+                            supcmdData.addSubcommands(new SubcommandData(slash.getName(), slash.getDescription()));
+                        } else {
+                            //System.out.println("[CommandManager] Added options");
+                            supcmdData.addSubcommands(
+                                new SubcommandData(slash.getName(), slash.getDescription())
+                                    .addOptions(subcmdOptions)
+                            );
+                        }
                     }
                 } catch (InstantiationException e) {
                     e.printStackTrace();

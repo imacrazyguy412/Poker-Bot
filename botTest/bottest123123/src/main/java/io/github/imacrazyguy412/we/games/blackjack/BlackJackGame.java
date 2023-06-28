@@ -20,7 +20,8 @@ public class BlackJackGame extends Game implements Joinable, Betting {
   private Deck deck;
   
 
-  private int playerToBet = -1, playerToTurn = -1;
+  private int playerToTurn = -1;
+  private boolean isBetting;
 
   public BlackJackGame(MessageChannel c){
     super(c);
@@ -32,11 +33,15 @@ public class BlackJackGame extends Game implements Joinable, Betting {
   }
   
   public void play(){
+    System.out.println("[BlackJackGame] Starting blackjack");
     do{
+      System.out.println("[BlackJackGame] New Game starting");
       setTable();
       
+      isBetting = true;
       betting(); //ANCHOR - betting
-      System.out.println("Betting Finished.");
+      isBetting = false;
+      System.out.println("[BlackJackGame] Betting Finished.");
 
       //showAllHands();
 
@@ -61,6 +66,7 @@ public class BlackJackGame extends Game implements Joinable, Betting {
     //input.close();
 
     message("Ending BlackJack Game");
+    System.out.println("[BlackJackGame] ending blackjack game");
 
     stop();
   }
@@ -328,25 +334,62 @@ public class BlackJackGame extends Game implements Joinable, Betting {
     }
   }
 
+  /**
+   * Execute the betting phase of a game of blackjack
+   */
   private void betting(){
-    String name;
-    for(int i = 0; i < players.size(); i++){
-      name = players.get(i).getName();
-      playerToBet = i;
-
-      message(name + ", make your bet with /bet.");
-      System.out.println("pretest");
-      final int playerBet = inputAsInt();
+    //String name;
+    //for(int i = 0; i < players.size(); i++){
+    //  name = players.get(i).getName();
+    //  playerToBet = i;
+//
+    //  message(name + ", make your bet with /blackjack bet.");
+    //  final int playerBet = inputAsInt();
+    //  
+    //  message(name + ", you have bet " + playerBet + " chips");
+    //  players.get(i).bet(playerBet);
+    //}
+    message("Everyone make your bets with `/blackjack bet`");
+    boolean someoneHasNotBet = true;
+    boolean hasPrompted = false;
+    synchronized (this) {
       
-      message(name + ", you have bet " + playerBet + " chips");
-      players.get(i).bet(playerBet);
+      while (someoneHasNotBet){
+
+        try {
+          wait();
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        } finally {
+          ArrayList<BlackJackPlayer> playersWhoNeedToBet = new ArrayList<BlackJackPlayer>(players.size());
+
+          // Check if there is someone who has not bet
+          for(BlackJackPlayer p : players){
+
+            if(p.getBet() == 0){
+              playersWhoNeedToBet.add(p);
+              System.out.format("[BlackJackGame] %s has not bet\n", p.getName());
+            }
+
+          }
+
+          someoneHasNotBet = !playersWhoNeedToBet.isEmpty();
+
+          if(!hasPrompted && playersWhoNeedToBet.size() <= (0.2 * players.size()) && playersWhoNeedToBet.size() > 1){
+            StringBuilder str = new StringBuilder();
+            for(BlackJackPlayer player : playersWhoNeedToBet){
+              str.append(player.getName()).append(", You need to bet"); //TODO - make mention
+            }
+          }
+        }
+
+      }
     }
-    playerToBet = -1;
   }
 
   @Override
   public int getPlayerToBet(){
-    return playerToBet;
+    return -1;//playerToBet;
   }
 
   @Override
@@ -384,5 +427,24 @@ public class BlackJackGame extends Game implements Joinable, Betting {
     int i = players.indexOf(new BlackJackPlayer(player.getName()));
     if(i < 0) return null;
     return players.remove(i);
+  }
+
+  @Override
+  public synchronized void placeBet(int bet, int forPlayerIndex) {
+    if(forPlayerIndex < 0) return;
+
+    System.out.format("[BlackJackGame] Placing bet of %d for player %d\n", bet, forPlayerIndex);
+    players.get(forPlayerIndex).bet(bet);
+    notifyAll();
+  }
+
+  @Override
+  public void placeBet(int bet, Player forPlayer) {
+    placeBet(bet, players.indexOf(forPlayer));
+  }
+
+  @Override
+  public boolean isBetting() {
+    return isBetting;
   }
 }

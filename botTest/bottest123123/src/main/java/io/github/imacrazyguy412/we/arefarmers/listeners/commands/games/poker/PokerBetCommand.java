@@ -2,17 +2,19 @@ package io.github.imacrazyguy412.we.arefarmers.listeners.commands.games.poker;
 
 import static io.github.imacrazyguy412.we.arefarmers.listeners.CommandManager.games;
 
+import io.github.imacrazyguy412.we.annotation.Subcommand;
 import io.github.imacrazyguy412.we.arefarmers.listeners.commands.AbstractCommand;
 import io.github.imacrazyguy412.we.games.poker.PokerGame;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
+@Subcommand(PokerCommand.class)
 public class PokerBetCommand extends AbstractCommand {
 
     public PokerBetCommand(){
         super("bet", "Place a bet in poker.",
-            new OptionData(OptionType.INTEGER, "amount", "The amount you would like to bet.")
+            new OptionData(OptionType.INTEGER, "amount", "The amount you would like to bet.", true)
                 .setRequiredRange(0, PokerGame.MAX_BET)
         );
     }

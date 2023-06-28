@@ -2,11 +2,14 @@ package io.github.imacrazyguy412.we.arefarmers.listeners.commands.games.blackjac
 
 import static io.github.imacrazyguy412.we.arefarmers.listeners.CommandManager.games;
 
+import io.github.imacrazyguy412.we.annotation.Subcommand;
 import io.github.imacrazyguy412.we.arefarmers.listeners.commands.AbstractCommand;
 import io.github.imacrazyguy412.we.games.blackjack.BlackJackGame;
 import io.github.imacrazyguy412.we.games.blackjack.BlackJackPlayer;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
+
+@Subcommand(BlackJackCommand.class)
 public class StandCommand extends AbstractCommand {
 
     public StandCommand(){

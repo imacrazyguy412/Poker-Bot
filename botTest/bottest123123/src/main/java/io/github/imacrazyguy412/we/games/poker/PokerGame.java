@@ -317,4 +317,22 @@ public class PokerGame extends Game implements Joinable, Betting {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'getPlayerToTurn'");
   }
+
+  @Override
+  public void placeBet(int bet, int forPlayerIndex) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'placeBet'");
+  }
+
+  @Override
+  public void placeBet(int bet, Player forPlayer) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'placeBet'");
+  }
+
+  @Override
+  public boolean isBetting() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'isBetting'");
+  }
 }

@@ -77,7 +77,7 @@ public abstract class AbstractCommand implements Command {
     protected AbstractCommand(@NotNull String name, @NotNull String description, OptionData... data){
         this(name, description);
         for (OptionData optionData : data) {
-            optionDataCollection.add(optionData);
+            addOption(optionData);
         }
     }
 
@@ -121,7 +121,7 @@ public abstract class AbstractCommand implements Command {
 
     @Override
     public Collection<? extends OptionData> getOptionData(){
-        return optionDataCollection;
+        return optionDataCollection.isEmpty() ? null : optionDataCollection;
     }
 
     protected abstract void onExecution(SlashCommandInteractionEvent event);
@@ -198,15 +198,32 @@ public abstract class AbstractCommand implements Command {
     
     /**
      * Returns a string representation of this command in the
-     * format of {@code "name: description"}
+     * format of <p>
+     * {@code "name <requiredoption> [optionaloption]: description"}
      */
     @Override
     public String toString() {
-        String desc = getDescription();
-        if(desc == null){
-            return getPath();
+        StringBuilder str = new StringBuilder(getPath());
+
+        @SuppressWarnings("unchecked")
+        List<OptionData> options = (List<OptionData>) getOptionData();
+
+        if(options != null){
+            for(OptionData option : options){
+                str.append(' ');
+                if(option.isRequired()){
+                    str.append('<').append(option.getName()).append('>');
+                } else {
+                    str.append('[').append(option.getName()).append(']');
+                }
+            }
         }
-        return String.format("%s: %s", getPath(), desc);
+
+        String desc = getDescription();
+        if(desc != null){
+            str.append(": " + desc);
+        }
+        return str.toString();
     }
 
     @Override

@@ -1,6 +1,8 @@
 Poop.java
 Poop.class
+
 target/
+.vscode/
 
 *.class
 

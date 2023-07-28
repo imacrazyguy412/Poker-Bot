@@ -1,5 +1,8 @@
 package io.github.imacrazyguy412.we.arefarmers.listeners.commands.test;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.github.imacrazyguy412.we.arefarmers.listeners.commands.AbstractCommand;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
@@ -9,13 +12,15 @@ import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
 public class ButtonTestCommand extends AbstractCommand {
 
+    private static final Logger log = LoggerFactory.getLogger(ButtonTestCommand.class);
+
     public ButtonTestCommand(){
         super("buttontest", "test the button");
     }
 
     @Override
     protected void onExecution(SlashCommandInteractionEvent event){
-        System.out.println("button tested");
+        log.info("button tested");
         MessageCreateData message = new MessageCreateBuilder()
             .addContent("Here is ur button, stupid.")
             .addComponents(

@@ -27,7 +27,7 @@ import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
  * by the extending class.
  * @author That "Inconspicuous" guy
  */
-public abstract class Game implements Runnable{
+public abstract class Game implements Runnable {
     protected MessageChannel channel;
     private String choice;
     private Integer choiceInt;
@@ -51,7 +51,7 @@ public abstract class Game implements Runnable{
      * @return {@code this}
      */
     public final Game start(){
-        thread = new Thread(this);
+        thread = new Thread(this, getClass().getSimpleName() + "@" + channel.getId());
         thread.start();
         return this;
     }

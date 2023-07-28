@@ -1,0 +1,14 @@
+<configuration scan="true" scanPeriod="1 seconds">
+    <appender name="Simple" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %d{HH:mm:ss.SSS} [%thread] %level %logger{0} - %msg%n%ex
+            </pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="Simple"/>
+    </root>
+
+</configuration>

@@ -2,6 +2,9 @@ package io.github.imacrazyguy412.we.games.blackjack;
 
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.github.imacrazyguy412.we.arefarmers.listeners.CommandManager;
 import io.github.imacrazyguy412.we.games.util.Betting;
 import io.github.imacrazyguy412.we.games.util.Deck;
@@ -12,6 +15,8 @@ import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 
 
 public class BlackJackGame extends Game implements Joinable, Betting {
+  private static final Logger log = LoggerFactory.getLogger(BlackJackGame.class);
+
   public static final int MAX_BET = 500, MIN_BET = 2;
   //private Scanner input = new Scanner(System.in);
   private ArrayList<BlackJackPlayer> players = new ArrayList<BlackJackPlayer>();
@@ -33,15 +38,15 @@ public class BlackJackGame extends Game implements Joinable, Betting {
   }
   
   public void play(){
-    System.out.println("[BlackJackGame] Starting blackjack");
+    log.info("Starting blackjack");
     do{
-      System.out.println("[BlackJackGame] New Game starting");
+      log.info("New Game starting");
       setTable();
       
       isBetting = true;
       betting(); //ANCHOR - betting
       isBetting = false;
-      System.out.println("[BlackJackGame] Betting Finished.");
+      log.info("Betting Finished.");
 
       //showAllHands();
 
@@ -66,7 +71,7 @@ public class BlackJackGame extends Game implements Joinable, Betting {
     //input.close();
 
     message("Ending BlackJack Game");
-    System.out.println("[BlackJackGame] ending blackjack game");
+    log.info("ending blackjack game");
 
     stop();
   }
@@ -78,10 +83,6 @@ public class BlackJackGame extends Game implements Joinable, Betting {
   private void playerTurn(BlackJackPlayer p){
 
     do{
-
-      //System.out.println("Dealers's cards:");
-      //System.out.println("Unknown\n" + dealer.getCard(1));
-      //System.out.println();
 
       showAllHands();
       
@@ -106,7 +107,7 @@ public class BlackJackGame extends Game implements Joinable, Betting {
   }
 
   private void playerChoice(BlackJackPlayer p, String s){
-    System.out.println(s);
+    log.debug("Player {} chose {}", p, s);
 
     switch(s){
         case "w":
@@ -132,8 +133,10 @@ public class BlackJackGame extends Game implements Joinable, Betting {
           break;
 
         default:
-          System.out.println("BlackJackGame.playerChoice() called without proper choice");
-          System.out.println(new Throwable().getStackTrace());
+          IllegalArgumentException e = new IllegalArgumentException("BlackJackGame.playerChoice() called without proper choice.");
+          log.error("", e);
+          throw e;
+          
       }
   }
 
@@ -151,40 +154,40 @@ public class BlackJackGame extends Game implements Joinable, Betting {
       p.payBet(1.5);
     } else{
       if(p.getScore() > 21){
-        System.out.println(p.getName() + " has lost their bet of " + p.getBet());
+        
         p.loseBet();
       } else if(dealer.getScore() > 21){
-        System.out.println(p.getName() + " has won their bet of " + p.getBet());
+       
         p.payBet();
       } else if(dealer.getScore() > p.getScore()){
-        System.out.println(p.getName() + " has lost their bet of " + p.getBet());
+        
         p.loseBet();
       } else if(dealer.getScore() < p.getScore()){
         p.payBet();
-        System.out.println(p.getName() + " has won their bet of " + p.getBet());
+        
       } else{
-        System.out.println(p.getName() + "'s bet of " + p.getBet() + " has been pushed");
+        
       }
     }
 
 
     if(p.getSplitScore() == 21 && p.getSplitHand().size() == 2){
-      System.out.println(p.getName() + " won their side bet of " + p.getBet() + " with blackjack");
+     
     } else{
       if(p.splitHandIsPlaying()){
         if(p.getSplitScore() > 21){
-          System.out.println(p.getName() + " has lost their side bet of " + p.getBet());
+          
           p.loseBet();
         } else if(dealer.getSplitScore() > 21){
-          System.out.println(p.getName() + " has won their side bet of " + p.getBet());
+         
           p.payBet();
         } else if(dealer.getScore() > p.getSplitScore()){
-          System.out.println(p.getName() + " has lost their side bet of " + p.getBet());
+         
           p.loseBet();
         } else if(dealer.getScore() < p.getSplitScore()){
           p.payBet();
         } else{
-          System.out.println(p.getName() + "'s side bet of " + p.getBet() + " has been pushed");
+         
         }
       }
     }
@@ -198,7 +201,7 @@ public class BlackJackGame extends Game implements Joinable, Betting {
   private boolean playersArePlaying(){
     for(int i = 0; i < players.size(); i++){
       if(players.get(i).getChips() <= 0){
-          System.out.println(players.get(i).getName() + " has bust out!");
+          
         players.remove(i);
       }
     }
@@ -212,19 +215,18 @@ public class BlackJackGame extends Game implements Joinable, Betting {
   private void hit(BlackJackPlayer p){
     if(p.isPlaying()){
       p.addCard(deck.dealTopCard());
-      //System.out.println("Your cards:");
       message(p.getHand());
       
       if(p.getScore() > 21){
-        //System.out.println("Bust with " + p.getScore());
+        
       }
     } else if(p.splitHandIsPlaying()){
       p.addCardSplit(deck.dealTopCard());
-      //System.out.println("Your cards:");
+      
       message(p.getSplitHand());
 
       if(p.getSplitScore() > 21){
-        //System.out.println("Bust with " + p.getSplitScore());
+        
       }
     }
   }
@@ -239,44 +241,44 @@ public class BlackJackGame extends Game implements Joinable, Betting {
 
   private void split(BlackJackPlayer p){
     if(p.splitHandIsPlaying()){
-      System.out.println("You've already split.");
+      
     } else{
       if(p.getHand().size() != 2){
-        System.out.println("You can only split on the first turn.");
+        
       } else if(p.getChips() < 2*p.getBet()){
-        System.out.println("Not enough points to split.");
+        
       } else if(p.getCard(0).face == p.getCard(1).face){
         p.split();
         p.addCard(deck.dealTopCard());
         p.addCardSplit(deck.dealTopCard());
 
-        System.out.println("Your new cards:");
+        
         message(p.getHand());
-        System.out.println("Hand 2:");
+        
         message(p.getSplitHand());
       } else{
-        System.out.println("Your two cards have to have the same face.");
+        
       }
     }
   }
 
   private void doubleDown(BlackJackPlayer p){
     if(p.splitHandIsPlaying()){
-      System.out.println("You can't double down after splitting.");
+     
     } else{
       if(p.getHand().size() != 2){
-        System.out.println("You can only double down on the first turn.");
+       
       } else if(p.getChips() < 2*p.getBet()){
-        System.out.println("Not enough points to double bet");
+       
       } else{
         p.bet(2*p.getBet());
         p.addCard(deck.dealTopCard());
 
-        System.out.println("Your new hand is:");
+       
         message(p.getHand());
         
         if(p.getScore() > 21){
-          System.out.println("Bust with " + p.getScore());
+         
         } else{
           p.stand();
         }
@@ -368,7 +370,7 @@ public class BlackJackGame extends Game implements Joinable, Betting {
 
             if(p.getBet() == 0){
               playersWhoNeedToBet.add(p);
-              System.out.format("[BlackJackGame] %s has not bet\n", p.getName());
+              System.out.format("%s has not bet\n", p.getName());
             }
 
           }
@@ -433,7 +435,7 @@ public class BlackJackGame extends Game implements Joinable, Betting {
   public synchronized void placeBet(int bet, int forPlayerIndex) {
     if(forPlayerIndex < 0) return;
 
-    System.out.format("[BlackJackGame] Placing bet of %d for player %d\n", bet, forPlayerIndex);
+    System.out.format("Placing bet of %d for player %d\n", bet, forPlayerIndex);
     players.get(forPlayerIndex).bet(bet);
     notifyAll();
   }

@@ -19,7 +19,6 @@ public class HitCommand extends AbstractCommand {
     @Override
     protected void onExecution(SlashCommandInteractionEvent event) {
         int gameInstance = games.indexOf(new BlackJackGame(event.getChannel()));
-        //System.out.println("gameInstance: " + gameInstance);
         
         //check if there is a game being played
         if(gameInstance == -1){
@@ -37,8 +36,6 @@ public class HitCommand extends AbstractCommand {
 
         //checks if the person is a player in the game
         player = ((Joinable) games.get(gameInstance)).getPlayers().indexOf(new BlackJackPlayer(event.getUser().getAsTag()));
-
-        System.out.println("Player: " + player);
 
         if(player == -1){
             event.reply("You're not in the game, type /join to join it.").setEphemeral(true).queue();

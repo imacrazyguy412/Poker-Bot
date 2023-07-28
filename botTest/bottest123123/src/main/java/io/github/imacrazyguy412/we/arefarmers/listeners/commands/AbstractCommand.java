@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.github.imacrazyguy412.we.annotation.IgnoreAsCommand;
 import io.github.imacrazyguy412.we.annotation.Subcommand;
@@ -27,6 +29,8 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
  */
 @IgnoreAsCommand
 public abstract class AbstractCommand implements Command {
+    protected final Logger log;
+
     /** The name of the command. The command is used with {@code /name} */
     protected String name;
 
@@ -65,6 +69,7 @@ public abstract class AbstractCommand implements Command {
     protected AbstractCommand(@NotNull String name, @NotNull String description){
         this.name = name;
         this.description = description;
+        log = LoggerFactory.getLogger(getClass());
     }
 
     /**
@@ -98,17 +103,17 @@ public abstract class AbstractCommand implements Command {
             Command supcmdInstance = subcmd.value().getConstructor().newInstance();
             return String.format("%s/%s", supcmdInstance.getName(), getName());
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            log.error("Error in finding path of " + this, e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            log.error("Error in finding path of " + this, e);
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            log.error("Error in finding path of " + this, e);
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            log.error("Error in finding path of " + this, e);
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            log.error("Error in finding path of " + this, e);
         } catch (SecurityException e) {
-            e.printStackTrace();
+            log.error("Error in finding path of " + this, e);
         }
         // To signify which command had an exception
         return "/" + getName() + "/";
@@ -131,8 +136,7 @@ public abstract class AbstractCommand implements Command {
         try {
             onExecution(event);
         } catch (Exception e) {
-            System.err.format("[%s] \n", getClass().getSimpleName());
-            e.printStackTrace();
+            log.error("Exception in execution of command: " + this, e);
 
             // Check if event was acknowledged
             if(event.getHook().getInteraction().isAcknowledged()){

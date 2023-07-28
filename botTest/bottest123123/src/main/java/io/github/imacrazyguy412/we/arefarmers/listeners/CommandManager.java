@@ -9,12 +9,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.github.imacrazyguy412.we.annotation.IgnoreAsCommand;
 import io.github.imacrazyguy412.we.annotation.Subcommand;
 import io.github.imacrazyguy412.we.annotation.Supercommand;
+import io.github.imacrazyguy412.we.arefarmers.Poop;
 import io.github.imacrazyguy412.we.arefarmers.listeners.commands.Command;
 import io.github.imacrazyguy412.we.games.util.Game;
+import net.dv8tion.jda.api.entities.Guild;
 //import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -27,6 +31,8 @@ import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 
 
 public class CommandManager extends ListenerAdapter {
+
+    private static final Logger log = LoggerFactory.getLogger(CommandManager.class);
 
     public static final String CMD_OBJECTS_PATH = "botTest\\bottest123123\\src\\main\\java\\io\\github\\imacrazyguy412\\we\\arefarmers\\listeners\\commands";
 
@@ -42,7 +48,7 @@ public class CommandManager extends ListenerAdapter {
 
         String command = event.getName();
 
-        System.out.format("[CommandManager] Recieved Command: %s\n", getCommandByPath(event.getCommandPath()));
+        log.info("Recieved Command \"{}\" from server {}", getCommandByPath(event.getCommandPath()), guildToString(event.getGuild()));
 
         commandMap.get(command).execute(event);
         //switch (command){
@@ -75,10 +81,16 @@ public class CommandManager extends ListenerAdapter {
         
         
     }
+
+    private static String guildToString(Guild guild){
+        return String.format("\"%s\" #%d", guild.getName(), guild.getIdLong());
+    }
     
     //guild command
     @Override
     public void onGuildReady(@NotNull GuildReadyEvent event) {
+        log.info("Getting ready for server: {}", guildToString(event.getGuild()));
+
         List<CommandData> commandData = new ArrayList<>();
 
         initCommandMap();
@@ -87,7 +99,15 @@ public class CommandManager extends ListenerAdapter {
         Map<Command, CommandData> cmdToCmdDataMap = new HashMap<Command, CommandData>();
         Map<Command, List<SubcommandData>> subcmdDataToDoMap = new HashMap<Command, List<SubcommandData>>();
         commandMap.forEach((name, command) -> {
-            System.out.println("[CommandManager] Converting command: " + command);
+            
+            log.debug("Converting command: {}", command);
+            
+            if(command.getPath().startsWith("debug")){
+                if(event.getGuild().getIdLong() != Poop.TESTING_SERVER){
+                    return;
+                }
+                log.warn("Debug command \"{}\" given to server: {}", command, guildToString(event.getGuild()));
+            }
 
             SlashCommandData slash = Commands.slash(command.getName(), command.getDescription());
             
@@ -121,7 +141,7 @@ public class CommandManager extends ListenerAdapter {
                             List<SubcommandData> subcmdToAdd = new ArrayList<SubcommandData>();
 
                             Collection<? extends OptionData> subcmdOptions = command.getOptionData();
-                            //System.out.println("[CommandManager] Found options: " + subcmdOptions);
+                            log.debug("Found options: {}", subcmdOptions);
                             if(subcmdOptions == null){
                                 subcmdToAdd.add(new SubcommandData(command.getName(), command.getDescription()));
                             } else {
@@ -134,7 +154,7 @@ public class CommandManager extends ListenerAdapter {
                             subcmdDataToDoMap.put(supercmd, subcmdToAdd);
                         } else{
                             Collection<? extends OptionData> subcmdOptions = command.getOptionData();
-                            //System.out.println("[CommandManager] Found options: " + subcmdOptions);
+                            log.debug("Found options: {}", subcmdOptions);
                             if(subcmdOptions == null){
                                 subcmdList.add(new SubcommandData(command.getName(), command.getDescription()));
                             } else {
@@ -148,11 +168,11 @@ public class CommandManager extends ListenerAdapter {
                         // Otherwise, we can simply append our subcommand data to the command data
                         // Along with its options, if present
                         Collection<? extends OptionData> subcmdOptions = command.getOptionData();
-                        //System.out.println("[CommandManager] Found options: " + subcmdOptions);
+                        log.debug("Found options: {}", subcmdOptions);
                         if(subcmdOptions == null){
                             supcmdData.addSubcommands(new SubcommandData(slash.getName(), slash.getDescription()));
                         } else {
-                            //System.out.println("[CommandManager] Added options");
+                            log.debug("Added options");
                             supcmdData.addSubcommands(
                                 new SubcommandData(slash.getName(), slash.getDescription())
                                     .addOptions(subcmdOptions)
@@ -160,17 +180,17 @@ public class CommandManager extends ListenerAdapter {
                         }
                     }
                 } catch (InstantiationException e) {
-                    e.printStackTrace();
+                    log.error(String.format("Error in command \"%s\" creation.", command), e);
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    log.error(String.format("Error in command \"%s\" creation.", command), e);
                 } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
+                    log.error(String.format("Error in command \"%s\" creation.", command), e);
                 } catch (InvocationTargetException e) {
-                    e.printStackTrace();
+                    log.error(String.format("Error in command \"%s\" creation.", command), e);
                 } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
+                    log.error(String.format("Error in command \"%s\" creation.", command), e);
                 } catch (SecurityException e) {
-                    e.printStackTrace();
+                    log.error(String.format("Error in command \"%s\" creation.", command), e);
                 }
             } else {
                 Collection<? extends OptionData> data = command.getOptionData();
@@ -204,10 +224,7 @@ public class CommandManager extends ListenerAdapter {
         if(listing != null){
             // Search through every file in the "commands" folder
             mapClassesFrom(listing);
-        } else {
-            //System.out.println("[CommandManager] dir: " + dir);
         }
-        //System.out.println("[CommandManager] " + commandMap);
     }
 
     private static void mapClassesFrom(File[] listing) {

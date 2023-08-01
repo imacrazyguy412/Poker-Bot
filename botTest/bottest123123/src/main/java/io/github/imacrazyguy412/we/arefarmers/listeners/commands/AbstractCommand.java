@@ -178,7 +178,7 @@ public abstract class AbstractCommand implements Command {
     protected static int findGameIn(MessageChannel channel){
         return games.indexOf(new Game(channel) {
             @Override
-            public void play() {} // necassary overrride
+            protected void play() {} // necassary overrride
         });
     }
 

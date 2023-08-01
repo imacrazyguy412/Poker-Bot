@@ -2,17 +2,6 @@ package io.github.imacrazyguy412.we.games.util;
 
 public interface Betting {
     /**
-     * Get the player's turn to bet. By defualt, will return {@code -1} which
-     * indicates that it is nobody's turn to bet. 
-     * Used for sequential betting.
-     * 
-     * @return the player whose turn it is to bet.
-     */
-    default int getPlayerToBet(){
-        return -1;
-    }
-
-    /**
      * Have the game place a bet for the player at given index.
      * 
      * @param bet The amount to bet

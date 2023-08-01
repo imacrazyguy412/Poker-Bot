@@ -37,7 +37,7 @@ public class BlackJackGame extends Game implements Joinable, Betting {
     players.add(new BlackJackPlayer(startingPlayerName));
   }
   
-  public void play(){
+  protected void play(){
     log.info("Starting blackjack");
     do{
       log.info("New Game starting");
@@ -247,7 +247,7 @@ public class BlackJackGame extends Game implements Joinable, Betting {
         
       } else if(p.getChips() < 2*p.getBet()){
         
-      } else if(p.getCard(0).face == p.getCard(1).face){
+      } else if(p.getCard(0).rank == p.getCard(1).rank){
         p.split();
         p.addCard(deck.dealTopCard());
         p.addCardSplit(deck.dealTopCard());
@@ -387,11 +387,6 @@ public class BlackJackGame extends Game implements Joinable, Betting {
 
       }
     }
-  }
-
-  @Override
-  public int getPlayerToBet(){
-    return -1;//playerToBet;
   }
 
   @Override

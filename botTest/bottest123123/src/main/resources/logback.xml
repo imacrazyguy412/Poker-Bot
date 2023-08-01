@@ -1,5 +1,5 @@
-<configuration scan="true" scanPeriod="1 seconds">
-    <appender name="Simple" class="ch.qos.logback.core.ConsoleAppender">
+<configuration scan="true" scanPeriod="1 seconds" debug="false">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>
                 %d{HH:mm:ss.SSS} [%thread] %level %logger{0} - %msg%n%ex
@@ -7,8 +7,28 @@
         </encoder>
     </appender>
 
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--<file>logs.log</file>-->
+
+        <immediateFlush>true</immediateFlush>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>logs/%d{yyyy-MM-dd}.log</fileNamePattern>
+
+            <maxHistory>1</maxHistory>
+            <totalSizeCap>50MB</totalSizeCap>
+
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %level %logger{-1} - %msg%n%ex</pattern>
+        </encoder>
+    </appender> 
+
     <root level="INFO">
-        <appender-ref ref="Simple"/>
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
     </root>
 
 </configuration>

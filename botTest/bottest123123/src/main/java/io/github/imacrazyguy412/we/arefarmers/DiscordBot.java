@@ -73,6 +73,7 @@ public class DiscordBot {
                 .addEventListeners(new Listeners(), new CommandManager())
                 .build();
 
+        //Runtime.getRuntime().addShutdownHook(new Thread(() -> log.info("Shutting down.\n"), "Shutdown"));
     }
 
     public static void setNewLogLevel(String logLevel){

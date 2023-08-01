@@ -1,12 +1,15 @@
 package io.github.imacrazyguy412.we.arefarmers.listeners;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -31,6 +34,11 @@ import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 
 
 public class CommandManager extends ListenerAdapter {
+
+    /**
+     *
+     */
+    private static final String CMD_OBJECTS_LIST_PATH_STRING = "botTest\\bottest123123\\src\\main\\java\\io\\github\\imacrazyguy412\\we\\arefarmers\\listeners\\CommandObjects.txt";
 
     private static final Logger log = LoggerFactory.getLogger(CommandManager.class);
 
@@ -217,13 +225,48 @@ public class CommandManager extends ListenerAdapter {
      */
     private static void initCommandMap(){
         commandMap = new HashMap<String, Command>();
-        
-        File dir = new File(CMD_OBJECTS_PATH);
-        File[] listing = dir.listFiles();
 
-        if(listing != null){
-            // Search through every file in the "commands" folder
-            mapClassesFrom(listing);
+        final File commandsListFile = new File(CMD_OBJECTS_LIST_PATH_STRING);
+        
+        List<String> paths = new ArrayList<String>();
+        try {
+            Scanner fileScanner = new Scanner(commandsListFile);
+
+            while(fileScanner.hasNextLine()){
+                paths.add(
+                    fileScanner.nextLine()
+                        // Remove comments (anything after a '//' or '#') and ALL spaces and tabs
+                        .replaceAll("((\\/\\/|#).*)| +|\t+", "")
+                        // Replace any single slashes with a backlash
+                        .replace("/", "\\")
+                );
+            }
+            
+            fileScanner.close();
+        } catch (FileNotFoundException e) {
+            log.error("Could not read Command Objects file.", e);
+            return;
+        }
+
+        log.info("paths: {}", paths);
+
+        //TODO - Add the ability to deny files with exclemation marks like in .gitignore
+
+        for(String path : paths){
+            if(path.endsWith("\\")){
+                // If the file is a directory, we check all files in it's listings
+                File dir = new File(path);
+                File[] listing = dir.listFiles();
+        
+                if(listing != null){
+                    // Search through every file in the "commands" folder
+                    mapClassesFrom(listing);
+                }
+            } else {
+                File file = new File(path);
+
+                mapClassFrom(file);
+            }
         }
     }
 
@@ -239,8 +282,7 @@ public class CommandManager extends ListenerAdapter {
             final String className = file.getPath()
                 .replace('\\', '.') // Replace backslashes with dots (get package name)
                 .replace("botTest.bottest123123.src.main.java.", "") // Remove the part of the path that is not needed
-                .replaceFirst("(?s)(.*).java", "$1") // Remove .java file extension
-                .replaceFirst("(?s)(.*).jav", "$1"); // Remove .jav file extension
+                .replaceFirst("\\.[Jj][Aa][Vv][Aa]?$", ""); // Remove .jav(a) file extension
 
             // Start as Command to make the warnings shut up
             Class<? extends Command> cmdClass = Command.class; 
@@ -255,15 +297,15 @@ public class CommandManager extends ListenerAdapter {
 
                     // These annotations are sometimes hard to work with
                     @SuppressWarnings("unchecked")
-                    Class<? extends Command> cmdClasstemp = (Class<? extends Command>)fileClass;
+                    Class<? extends Command> cmdClassTemp = (Class<? extends Command>)fileClass;
 
                     // Store that in a properly constrained class object
-                    cmdClass = cmdClasstemp; 
+                    cmdClass = cmdClassTemp; 
                 } else {
                     return;
                 }
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                log.error("Command not found", e);;
                 return;
             }
 

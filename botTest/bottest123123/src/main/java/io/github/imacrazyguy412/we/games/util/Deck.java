@@ -3,6 +3,8 @@ package io.github.imacrazyguy412.we.games.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Represents a deck of 52 {@link Card} object instances. Jokers are not included.
@@ -11,8 +13,8 @@ import java.util.Collections;
  * @see https://en.wikipedia.org/wiki/Playing_card
  * @see https://en.wikipedia.org/wiki/Standard_52-card_deck
  */
-public class Deck{
-  private ArrayList<Card> cards = new ArrayList<Card>();
+public class Deck implements Iterable<Card> {
+  private List<Card> cards = new ArrayList<Card>();
 
   /**
    * Creates a deck of 52 cards
@@ -56,5 +58,13 @@ public class Deck{
    */
   public boolean isEmpty(){
     return cards.isEmpty();
+  }
+
+  /**
+   * Returns an iterator over the remaining cards in the deck
+   */
+  @Override
+  public Iterator<Card> iterator() {
+    return cards.iterator();
   }
 }

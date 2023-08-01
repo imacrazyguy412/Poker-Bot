@@ -4,6 +4,7 @@ package io.github.imacrazyguy412.we.games.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * {@code ArrayList<Card>}
@@ -12,6 +13,18 @@ import java.util.Arrays;
  * @see Card
  */
 public class Hand extends ArrayList<Card>{
+
+  public Hand(){
+    super();
+  }
+
+  public Hand(int initialCapacity){
+    super(initialCapacity);
+  }
+
+  public Hand(Collection<? extends Card> c){
+    super(c);
+  }
 
   /**
    * Constructs a Hand that contains all of the given cards.
@@ -46,11 +59,13 @@ public class Hand extends ArrayList<Card>{
   public String toString(){
     //nevermind lol
 
-    StringBuilder str = new StringBuilder();
-    for(final Card card : this){
-      str.append(card).append('\n');
-    }
-    str.setLength(str.length() - 1); //remove last end line
-    return str.toString(); 
+    //StringBuilder str = new StringBuilder();
+    //for(final Card card : this){
+    //  str.append(card).append('\n');
+    //}
+    //str.setLength(str.length() - 1); //remove last end line
+    //return str.toString(); 
+
+    return super.toString().replaceAll(", ", "\n").replaceAll("\\[|\\]", "");
   }
 }

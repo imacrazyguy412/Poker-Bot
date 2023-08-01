@@ -1,5 +1,7 @@
 package io.github.imacrazyguy412.we.games.util;
 
+import java.util.Formatter;
+
 import io.github.imacrazyguy412.we.arefarmers.DiscordBot;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 
@@ -40,7 +42,18 @@ public abstract class Game implements Runnable {
     /**
      * gets called by the implemented {@link #run()} method
      */
-    public abstract void play();
+    protected abstract void play();
+
+    protected String threadName(){
+        return threadName(false);
+    }
+
+    protected String threadName(boolean hexString){
+        if(hexString){
+            return getClass().getSimpleName() + "#" + Long.toHexString(channel.getIdLong());  
+        }
+        return getClass().getSimpleName() + "#" + channel.getId(); 
+    }
 
     public final void run(){
         play();
@@ -51,7 +64,7 @@ public abstract class Game implements Runnable {
      * @return {@code this}
      */
     public final Game start(){
-        thread = new Thread(this, getClass().getSimpleName() + "@" + channel.getId());
+        thread = new Thread(this, threadName());
         thread.start();
         return this;
     }
@@ -165,5 +178,10 @@ public abstract class Game implements Runnable {
         if(!(obj instanceof Game)) return false;
         
         return ((Game)obj).channel.equals(channel);
+    }
+
+    @Override
+    public final int hashCode(){
+        return channel.hashCode();
     }
 }

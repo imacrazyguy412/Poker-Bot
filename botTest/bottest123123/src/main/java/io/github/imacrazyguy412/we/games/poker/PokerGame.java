@@ -2,9 +2,14 @@ package io.github.imacrazyguy412.we.games.poker;
 
 import java.util.ArrayList;
 
-import io.github.imacrazyguy412.we.games.util.*;
+import io.github.imacrazyguy412.we.games.util.Deck;
+import io.github.imacrazyguy412.we.games.util.Game;
+import io.github.imacrazyguy412.we.games.util.Hand;
+import io.github.imacrazyguy412.we.games.util.Joinable;
+import io.github.imacrazyguy412.we.games.util.Player;
+import io.github.imacrazyguy412.we.games.util.SequentialBetting;
 
-public class PokerGame extends Game implements Joinable, Betting {
+public class PokerGame extends Game implements Joinable, SequentialBetting {
   private static final int START_CHIPS = 500, SMALL_BLIND = 10;
   public static final int MAX_BET = 100;
   private int dealer = 0;
@@ -31,7 +36,7 @@ public class PokerGame extends Game implements Joinable, Betting {
     createTable(startingPlayerName);
   }
 
-  public void play(){
+  protected void play(){
     while(players.size() < 2); //wait until there are enough players
 
     pokerDeck.shuffle();
@@ -334,5 +339,11 @@ public class PokerGame extends Game implements Joinable, Betting {
   public boolean isBetting() {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'isBetting'");
+  }
+
+  @Override
+  public int getPlayerToBet() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getPlayerToBet'");
   }
 }

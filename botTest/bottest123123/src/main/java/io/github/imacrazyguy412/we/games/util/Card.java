@@ -1,23 +1,28 @@
 package io.github.imacrazyguy412.we.games.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The {@code Card} class represents a single playing card per instance.
  * <p>
- * Each card stores its own suit and face as integers. The cards are displayed as the 
+ * Each card stores its own suit and rank as integers. The cards are displayed as the 
  * <a href="https://en.wikipedia.org/wiki/French-suited_playing_cards">French Suited</a>,
  * <a href="https://en.wikipedia.org/wiki/Standard_52-card_deck">Standerd 52-card deck</a>
  * using the 
  * <a href=https://en.wikipedia.org/wiki/French-suited_playing_cards#English_pattern>English Pattern</a>.
  * 
  * 
- * @see #face()
+ * @see #rank()
  * @see #suit()
  * @see Deck
  * @see https://en.wikipedia.org/wiki/Playing_card
  */
-public class Card implements Comparable<Card>{
+public class Card implements Comparable<Card>, Cloneable {
+  public static final Logger log = LoggerFactory.getLogger(Card.class);
+
   public static final String[] suits = {"Null", "Clubs", "Diamonds", "Hearts", "Spades"};
-  public static final String[] faces = {
+  public static final String[] ranks = {
     "Null", "Ace", "Two", "Three", "Four", "Five",
     "Six", "Seven", "Eight", "Nine", "Ten", "Jack",
     "Queen", "King", "Ace"
@@ -48,17 +53,25 @@ public class Card implements Comparable<Card>{
    * The suit of the card. Readonly
    */
   public final int suit;
-  public final int face;
+  public final int rank;
 
   /**
-   * Creates a card with a suit s and face value f
+   * Creates a card with a suit s and rank value f
    * 
    * @param suit -- the suit of the card. 1 is Clubs, 2 is Diamonds, 3 is Hearts, and 4 is Spades
-   * @param face -- the face value of the card
+   * @param rank -- the rank value of the card
    */
-  public Card(int suit, int face){
+  public Card(int suit, int rank){
+    if(rank < 0 || rank > 14){
+      throw new IllegalArgumentException(String.format("Illegal value for rank (%d)", rank));
+    }
+
+    if(suit < 0 || suit > 4){
+      throw new IllegalArgumentException(String.format("Illegal value for suit (%d)", suit));
+    }
+
     this.suit = suit;
-    this.face = face;
+    this.rank = rank;
   }
 
   /**
@@ -68,13 +81,40 @@ public class Card implements Comparable<Card>{
    */
   @Override
   public String toString(){
-    return faces[face] + " of " + suits[suit];
+    return ranks[rank] + " of " + suits[suit];
   }
 
   @Override
   public int compareTo(Card o) {
-    final int thisValue = this.face * 4 + this.suit;
-    final int oValue = o.face * 4 + o.suit;
+    final int thisValue = this.rank * 4 + this.suit;
+    final int oValue = o.rank * 4 + o.suit;
     return thisValue - oValue;
+  }
+
+  public boolean equals(Card other){
+    if(other == null){
+      return false;
+    }
+
+    return this.suit == other.suit && this.rank == other.rank;
+  }
+
+  @Override
+  public boolean equals(Object other){
+    if(!(other instanceof Card)){
+      return false;
+    }
+
+    return this.equals((Card)other);
+  }
+
+  @Override
+  public Object clone(){
+    try {
+      return super.clone();
+    } catch (CloneNotSupportedException e) {
+      log.error(String.format("Clone of card (%s) failed.", this), e);
+      return new Card(suit, rank);
+    }
   }
 }

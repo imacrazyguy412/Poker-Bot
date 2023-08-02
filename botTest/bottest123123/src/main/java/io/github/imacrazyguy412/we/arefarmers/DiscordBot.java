@@ -32,6 +32,12 @@ public class DiscordBot {
     public static final Path LOGBACK_PATH = Path.of("botTest\\bottest123123\\src\\main\\resources\\logback.xml");
 
     public static void main(String[] args) throws LoginException, InterruptedException {
+        log.info(
+            "==============================================================================\n" +
+            "Starting Bot...\n" +
+            "==============================================================================\n"
+        );
+
         String logLevel;
         if(args.length < 1){
             logLevel = "INFO";
@@ -117,7 +123,7 @@ public class DiscordBot {
                 for (int i = 0; i < lines.size(); i++) {
                     newLines.add(lines.get(i).replace(logLevel, REPLACE_LOG_LEVEL));
                 }
-                Files.writeString(LOGBACK_PATH, String.join("\n", lines));
+                Files.writeString(LOGBACK_PATH, String.join("\n", newLines));
         
                 log.info("Replaced log level with replacement indicator (\"{}\")", REPLACE_LOG_LEVEL);
             } catch (IOException e) {

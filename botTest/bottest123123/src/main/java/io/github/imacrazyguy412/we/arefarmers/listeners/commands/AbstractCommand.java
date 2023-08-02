@@ -1,3 +1,11 @@
+// Line comment test
+//test 2
+/*
+ * block comment test
+ */
+
+/**test2 */
+
 package io.github.imacrazyguy412.we.arefarmers.listeners.commands;
 
 import static io.github.imacrazyguy412.we.arefarmers.listeners.CommandManager.games;

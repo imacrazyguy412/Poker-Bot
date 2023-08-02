@@ -26,7 +26,8 @@
         </encoder>
     </appender> 
 
-    <root level="INFO">
+    <!--The program replaces the string "___REPLACE_LOG_LEVEL___" with the appropriate log level the loggers should log at-->
+    <root level="___REPLACE_LOG_LEVEL___">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </root>

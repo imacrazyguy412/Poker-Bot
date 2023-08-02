@@ -1,1 +1,6 @@
+// Acts as a list for where to search for command objects
+// Comments are also a thing
+
 botTest/bottest123123/src/main/java/io/github/imacrazyguy412/we/arefarmers/listeners/commands/
+!botTest/bottest123123/src/main/java/io/github/imacrazyguy412/we/arefarmers/listeners/commands/Command.java
+!botTest/bottest123123/src/main/java/io/github/imacrazyguy412/we/arefarmers/listeners/commands/AbstractCommand.java

@@ -361,7 +361,7 @@ public class BlackJackGame extends Game implements Joinable, Betting {
         try {
           wait();
         } catch (InterruptedException e) {
-          e.printStackTrace();
+          log.error("Thread interrupted. Please use notify() instead.", e);
         } finally {
           ArrayList<BlackJackPlayer> playersWhoNeedToBet = new ArrayList<BlackJackPlayer>(players.size());
 

@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
 
-import io.github.imacrazyguy412.we.annotation.IgnoreAsCommand;
+//import io.github.imacrazyguy412.we.annotation.IgnoreAsCommand;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.CommandInteractionPayload;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -20,7 +20,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
  * @author Matthew "Something Inconspicuous"
  * @see AbstractCommand
  */
-@IgnoreAsCommand
+//@IgnoreAsCommand
 public interface Command {
 
 

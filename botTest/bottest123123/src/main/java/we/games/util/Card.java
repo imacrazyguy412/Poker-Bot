@@ -72,6 +72,12 @@ public class Card implements Comparable<Card>{
   }
 
   @Override
+  public boolean equals(Object obj) {
+    if(!(obj instanceof Card)) return false;
+    return face == ((Card)obj).face && suit == ((Card)obj).suit;
+  }
+
+  @Override
   public int compareTo(Card o) {
     final int thisValue = this.face * 4 + this.suit;
     final int oValue = o.face * 4 + o.suit;

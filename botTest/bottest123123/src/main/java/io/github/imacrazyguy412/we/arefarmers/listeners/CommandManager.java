@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +28,7 @@ import net.dv8tion.jda.api.entities.Guild;
 //import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -46,48 +48,33 @@ public class CommandManager extends ListenerAdapter {
 
     public static final String CMD_OBJECTS_PATH = "botTest\\bottest123123\\src\\main\\java\\io\\github\\imacrazyguy412\\we\\arefarmers\\listeners\\commands";
 
-    protected static Map<String, Command> commandMap; 
+    protected static Map<String, Command> commandMap;
+
+    protected static Map<String, Consumer<SlashCommandInteractionEvent>> commandConsumerMap;
 
     //public static ArrayList<BlackJackGame> blackJackGames = new ArrayList<BlackJackGame>();
     //public static ArrayList<PokerGame> pokerGames = new ArrayList<PokerGame>();
     public static List<Game> games = new ArrayList<Game>();
     
+    @Override
+    public void onReady(ReadyEvent event){
+        // Get rid of the command map and let the garbage collector deal with it, as we don't 
+        // need all the information anymore
+        commandMap = null;
+    }
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
 
-        String command = event.getName();
+        ///String command = event.getName();
 
-        log.info("Recieved Command \"{}\" from server {}", getCommandByPath(event.getCommandPath()), guildToString(event.getGuild()));
+        //log.info("Recieved Command \"{}\" from server {}", getCommandByPath(event.getCommandPath()), guildToString(event.getGuild()));
 
-        commandMap.get(command).execute(event);
-        //switch (command){
+        //commandMap.get(command).execute(event);
 
-            //poker commands
+        String commandPath = event.getCommandPath();
 
-            //TODO - test the generic bet command on poker games
-            //case "pokerbet":
-            //    event.reply("Currently Testing").setEphemeral(true).queue();
-            //    int pokerBetAmount = event.getOption("amount").getAsInt();
-            //    
-            //    gameInstance = pokerGames.indexOf(new PokerGame(event.getChannel()));
-            //
-            //    if(gameInstance == -1){
-            //        event.reply("There's no game in here!").setEphemeral(true).queue();
-            //    } else{
-            //        int player;
-            //
-            //        player = pokerGames.get(gameInstance).getPlayers().indexOf(new PokerPlayer(event.getUser().getAsTag()));
-            //        if(player == -1){
-            //            event.reply("You're not in the game, type /join to join it.").setEphemeral(true).queue();
-            //        } else{ //TODO: add a check to make sure it is the player's turn to bet
-            //            //pass the option pokerBet into the specific instance of PokerGame in the event channel
-            //            pokerGames.get(gameInstance).setChoice(pokerBetAmount);
-            //        }
-            //    }
-            //    break;
-                
-        //}
+        commandConsumerMap.get(commandPath).accept(event);
         
         
     }
@@ -228,6 +215,7 @@ public class CommandManager extends ListenerAdapter {
      */
     private static void initCommandMap(){
         commandMap = new HashMap<String, Command>();
+        commandConsumerMap = new HashMap<>();
 
         //NOTE - This all works fine on windows 10, but I have no way to know if
         // unix and mac systems respond the same way to paths with backslashes
@@ -426,6 +414,7 @@ public class CommandManager extends ListenerAdapter {
 
                 // ...and finally map it
                 commandMap.putIfAbsent(cmdInstance.getPath(), cmdInstance);
+                commandConsumerMap.putIfAbsent(cmdInstance.getPath(), cmdInstance::execute);
             } catch (InstantiationException e) {
                 log.error("Could not instatiate command object", e);
             } catch (InvocationTargetException e) {
@@ -446,6 +435,7 @@ public class CommandManager extends ListenerAdapter {
         }
     }
 
+    @Deprecated
     public static Command getCommandByPath(String name){
         return commandMap.get(name);
     }

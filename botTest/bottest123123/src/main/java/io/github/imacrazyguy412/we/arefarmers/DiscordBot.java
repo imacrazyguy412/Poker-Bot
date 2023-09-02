@@ -32,7 +32,7 @@ public class DiscordBot {
     public static final Path LOGBACK_PATH = Path.of("botTest\\bottest123123\\src\\main\\resources\\logback.xml");
 
     public static void main(String[] args) throws LoginException, InterruptedException {
-        log.info(
+        log.info( "\n" +
             "==============================================================================\n" +
             "Starting Bot...\n" +
             "==============================================================================\n"

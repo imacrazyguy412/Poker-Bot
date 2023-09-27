@@ -11,26 +11,20 @@ import we.games.util.*;
  * <p>
  * This implements the {@link Comparable} interface, and can be compared
  * to other instances of {@code PokerHandEvaluation} by their value.
- * @see #value()
  * @see #compareTo(PokerHandEvaluation)
  */
 public class PokerHandEvaluation implements Comparable<PokerHandEvaluation> {
+  Hand fullHand;
   Hand bestHand;
 
-  Card kicker;
-
-  int value;
+  int kicker;
 
   public PokerHandEvaluation(){
 
   }
 
   public PokerHandEvaluation(Hand hand){
-    
-  }
-
-  public PokerHandEvaluation(int value){
-    this.value = value;
+    fullHand = hand;
   }
 
   public Hand getBestHand(){
@@ -46,12 +40,10 @@ public class PokerHandEvaluation implements Comparable<PokerHandEvaluation> {
   }
 
   public String toString(){
+    for(int i = 0; i < fullHand.size(); i++){
+      
+    }
+
     return null;
-  }
-
-  public boolean equals(Object other){
-    if(other.getClass() != this.getClass()) return false;
-
-    return ((PokerHandEvaluation)other).value() == this.value();
   }
 }
